@@ -1,0 +1,340 @@
+﻿@model RadioCab.Models.MembershipFeatureVM
+@{
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link href="~/css/featurevalue.css" rel="stylesheet" />
+
+<div class="feature-management">
+    <div class="page-header">
+        <h2><i class="fas fa-sliders-h me-2"></i>MemberShip Feature Management</h2>
+        <button class="btn-add-feature">
+            <i class="fas fa-plus-circle"></i> Add New Feature
+        </button>
+    </div>
+
+    <!-- Feature Form -->
+    <div class="feature-form-container @(Model.ShowForm ? "show" : "")">
+        <div class="form-header">
+            <h3 id="formTitle">Add Membership Feature</h3>
+            <button type="button" class="btn-close-form">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form class="feature-form" asp-action="FeatureValue" asp-controller="Admin" method="post">
+            @Html.AntiForgeryToken()
+            <!-- Update the form validation section -->
+            <div asp-validation-summary="All" class="text-danger validation-summary mb-1"></div>
+            <input type="hidden" asp-for="MembershipFeature_form.MembershipFeatureId" />
+
+            <div class="form-row">
+
+                <!-- Membership Dropdown -->
+                <div class="form-group">
+                    <label asp-for="MembershipFeature_form.MembershipId">Membership *</label>
+                    <select class="form-control" asp-for="MembershipFeature_form.MembershipId"
+                            asp-items="@(new SelectList(ViewBag.Memberships, "MembershipId", "MembershipName"))">
+                        <option value="0">-- Select Membership --</option>
+                    </select>
+                    <span asp-validation-for="MembershipFeature_form.MembershipId" class="text-danger" style="color:red;"></span>
+                </div>
+
+                <!-- Feature Dropdown -->
+                <div class="form-group">
+                    <label asp-for="MembershipFeature_form.FeatureId">Feature *</label>
+                    <select class="form-control" asp-for="MembershipFeature_form.FeatureId"
+                            asp-items="@(new SelectList(ViewBag.Features, "FeatureId", "FeatureKey"))">
+                        <option value="0">-- Select Feature --</option>
+                    </select>
+                    <span asp-validation-for="MembershipFeature_form.FeatureId" class="text-danger" style="color:red;"></span>
+                </div>
+
+                <!-- Max Amount -->
+                <div class="form-group">
+                    <label asp-for="MembershipFeature_form.MaxAmount">Max Amount</label>
+                    <input type="number" class="form-control"
+                           asp-for="MembershipFeature_form.MaxAmount"
+                           placeholder="Enter max amount (optional)" />
+                    <span asp-validation-for="MembershipFeature_form.MaxAmount" class="text-danger" style="color:red;"></span>
+                </div>
+
+                <!-- Is Enabled -->
+                <div>
+                    <label>
+                        <input type="checkbox" asp-for="MembershipFeature_form.IsEnabled" style="color:red;" />
+                        Is Enabled
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button type="reset" class="btn-cancel">Cancel</button>
+                <button type="submit" class="btn-submit">Save</button>
+            </div>
+        </form>
+    </div>
+
+
+
+    <div class="features-table-container">
+        <div class="table-responsive">
+            <table class="features-table">
+                <thead>
+                    <tr>
+                        <th>MemberShip Plan</th>
+                        <th>Feature Key</th>
+                        <th>MaxAmount</th>
+                        <th>IsEnabled</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var f in Model.MembershipFeature_list)
+                    {
+
+                        <tr>
+                            <td><strong>@f.Membership.MembershipName</strong></td>
+                            <td>@f.Feature.FeatureKey</td>
+                            <td>@f.MaxAmount</td>
+                            @if (f.IsEnabled == true)
+                            {
+                                <td>Active</td>
+                            }else
+                            {
+                                <td>InActive</td>
+                            }
+                          
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="javascript:void(0);" class="btn-action btn-edit js-edit"
+                                       data-id="@f.MembershipFeatureId"
+                                       data-membership="@f.MembershipId"
+                                       data-feature="@f.FeatureId"
+                                       data-maxamount="@f.MaxAmount"
+                                       data-enabled="@f.IsEnabled">
+                                        <i class="fas fa-edit"></i>
+                                     </a>
+                                    <a data-id="@f.MembershipFeatureId" class="btn-action btn-delete js-delete" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const formContainer = document.querySelector(".feature-form-container");
+        const addBtn = document.querySelector(".btn-add-feature");
+        const cancelBtn = document.querySelector(".btn-cancel");
+        const closeBtn = document.querySelector(".btn-close-form");
+        const form = document.querySelector(".feature-form");
+
+        const idField = document.querySelector('[name="MembershipFeature_form.MembershipFeatureId"]');
+        const membershipField = document.querySelector('[name="MembershipFeature_form.MembershipId"]');
+        const featureField = document.querySelector('[name="MembershipFeature_form.FeatureId"]');
+        const maxAmountField = document.querySelector('[name="MembershipFeature_form.MaxAmount"]');
+        const isEnabledField = document.querySelector('[name="MembershipFeature_form.IsEnabled"]');
+        const submitBtn = document.querySelector(".btn-submit");
+        const formTitle = document.getElementById("formTitle");
+
+        // Check if we should show form on page load (from server-side validation)
+        const shouldShowForm = formContainer.classList.contains("show");
+        if (shouldShowForm) {
+            // If form should be shown, display it immediately
+            formContainer.style.display = "block";
+            setTimeout(() => formContainer.classList.add("show"), 10);
+
+            // DO NOT clear validation messages - keep server-rendered ones
+            // Instead, add error styling to invalid fields
+            highlightInvalidFields();
+        }
+
+        // SHOW FORM - Reset form but preserve validation if coming from server
+        function showForm(resetForm = true) {
+            formContainer.style.display = "block";
+            setTimeout(() => formContainer.classList.add("show"), 10);
+
+            if (resetForm) {
+                // Only clear validation if it's a fresh form open
+                clearValidationMessages();
+            }
+        }
+
+        // HIDE FORM - Clear form and validation messages
+        function hideForm() {
+            formContainer.classList.remove("show");
+            setTimeout(() => {
+                formContainer.style.display = "none";
+
+                // Reset form and clear validation messages
+                resetForm();
+                clearValidationMessages();
+            }, 250);
+        }
+
+        // RESET FORM TO DEFAULT STATE
+        function resetForm() {
+            form.reset();
+            idField.value = "0";
+            submitBtn.innerText = "Save";
+            formTitle.innerText = "Add Membership Feature";
+
+            // Clear dropdown selections (set to default)
+            membershipField.selectedIndex = 0;
+            featureField.selectedIndex = 0;
+
+            // Uncheck checkbox
+            isEnabledField.checked = false;
+        }
+
+        // HIGHLIGHT INVALID FIELDS (when form loads with server errors)
+        function highlightInvalidFields() {
+            // Find all fields with validation errors
+            document.querySelectorAll('[data-valmsg-for]').forEach(validationSpan => {
+                const fieldName = validationSpan.getAttribute('data-valmsg-for');
+                const errorText = validationSpan.textContent;
+
+                if (errorText && errorText.trim() !== '') {
+                    // Find the corresponding input field
+                    const fieldNameParts = fieldName.split('.');
+                    const simpleFieldName = fieldNameParts[fieldNameParts.length - 1];
+
+                    // Try to find the input field by name or ID
+                    let inputField = document.querySelector(`[name*="${simpleFieldName}"]`) ||
+                                    document.querySelector(`[id*="${simpleFieldName}"]`);
+
+                    if (inputField) {
+                        inputField.classList.add('is-invalid');
+                    }
+                }
+            });
+        }
+
+        // CLEAR VALIDATION MESSAGES (only when manually closing/opening form)
+        function clearValidationMessages() {
+            // Remove field error classes
+            document.querySelectorAll('.is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+
+            // Clear individual field validation messages
+            document.querySelectorAll('[data-valmsg-for]').forEach(el => {
+                el.textContent = '';
+                el.style.display = 'none';
+            });
+
+            // Clear validation summary (if exists)
+            const validationSummary = document.querySelector('.validation-summary-errors') ||
+                                     document.querySelector('[asp-validation-summary]');
+            if (validationSummary) {
+                validationSummary.innerHTML = '';
+                validationSummary.style.display = 'none';
+            }
+        }
+
+        // ADD NEW - Completely fresh form
+        addBtn.addEventListener("click", function () {
+            resetForm();
+            clearValidationMessages();
+            showForm(true); // true means reset form
+        });
+
+        // CANCEL BUTTON
+        cancelBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            hideForm();
+        });
+
+        // CLOSE (X) BUTTON
+        closeBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            hideForm();
+        });
+
+        // EDIT BUTTON
+        document.querySelectorAll(".js-edit").forEach(btn => {
+            btn.addEventListener("click", function () {
+                // Set form values
+                idField.value = this.dataset.id;
+                membershipField.value = this.dataset.membership;
+                featureField.value = this.dataset.feature;
+                maxAmountField.value = this.dataset.maxamount || "";
+                isEnabledField.checked = (this.dataset.enabled === "True" || this.dataset.enabled === "true");
+
+                // Update UI
+                submitBtn.innerText = "Update";
+                formTitle.innerText = "Edit Membership Feature";
+
+                // Clear any previous validation messages
+                clearValidationMessages();
+
+                // Show form without resetting validation
+                showForm(false); // false means don't reset validation
+            });
+        });
+
+        // FORM SUBMIT - Only clear validation on new submission attempt
+        form.addEventListener("submit", function (e) {
+            // The server will handle validation and return errors if any
+            // The validation messages will be preserved by the server render
+        });
+
+        // DELETE FUNCTIONALITY
+        document.querySelectorAll(".js-delete").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const id = this.dataset.id;
+                const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This feature will be deleted!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    confirmButtonText: 'Yes delete'
+                }).then(result => {
+                    if (!result.isConfirmed) return;
+
+                    fetch('/Admin/DeleteMembershipFeatureAjax', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: `id=${id}`
+                    })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.success) {
+                            Swal.fire('Deleted!', '', 'success');
+                            btn.closest("tr").remove();
+                        } else {
+                            Swal.fire('Error', 'Delete failed', 'error');
+                        }
+                    });
+                });
+            });
+        });
+    });
+
+
+</script>

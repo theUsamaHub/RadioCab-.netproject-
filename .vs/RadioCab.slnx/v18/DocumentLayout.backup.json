@@ -1,0 +1,69 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5827DD6E-F914-44B2-6DAF-973B80E65008}|RadioCab\\RadioCab.csproj|c:\\users\\usama saleem\\downloads\\radiocab\\radiocab\\radiocab\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{5827DD6E-F914-44B2-6DAF-973B80E65008}|RadioCab\\RadioCab.csproj|solutionrelative:radiocab\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\.gitignore",
+              "RelativeDocumentMoniker": "RadioCab\\.gitignore",
+              "ToolTip": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\.gitignore",
+              "RelativeToolTip": "RadioCab\\.gitignore",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAgwBgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-02-14T16:11:30.888Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 664,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 889,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{004be353-6879-467c-9d1e-9ac23cdf6d49}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,734 @@
+﻿@model IEnumerable<RadioCab.Models.Membership>
+
+@{
+    Layout = null;
+
+    bool hasProfile = ViewBag.HasDriverProfile ?? false;
+    int? currentMembershipId = ViewBag.CurrentMembershipId as int?;
+    bool hasActiveSubscription = ViewBag.HasActiveSubscription ?? false;
+    string registrationStatus = ViewBag.RegisterationStatus as string;
+    var prices = ViewBag.Price as List<PaymentAmount>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Membership Plans - RadioCab</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Enhanced CSS -->
+    <link href="~/Company/css/membership-enhanced.css" rel="stylesheet" />
+    <style>
+        /* Additional styles to enhance your design */
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+        }
+
+        /* Enhanced Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInDown 0.8s ease;
+            padding-top: 30px;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--light-yellow) 0%, var(--accent-yellow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+
+        .header h2 {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: #cccccc;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Container enhancements */
+        .container {
+            position: relative;
+            z-index: 2;
+            padding-bottom: 60px;
+        }
+
+        /* Card enhancements */
+        .subscription-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            padding: 35px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .card-header h3 {
+                font-size: 1.8rem;
+                font-weight: 700;
+                margin-bottom: 25px;
+                color: #ffffff;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+        .price-row {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+            .price-row:hover {
+                background: rgba(255, 255, 255, 0.08);
+                transform: translateY(-2px);
+            }
+
+            .price-row h4 {
+                font-size: 1rem;
+                font-weight: 800;
+                margin-bottom: 5px;
+                color: var(--light-yellow);
+            }
+
+            .price-row small {
+                color: #aaaaaa;
+                font-size: 0.9rem;
+                display: block;
+            }
+
+        /* Card body enhancements */
+        .card-body {
+            flex-grow: 1;
+            padding: 30px 25px;
+        }
+
+        .features-list {
+            margin: 0;
+            padding: 0;
+        }
+
+            .features-list li {
+                padding: 15px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                color: #e0e0e0;
+                font-size: 1rem;
+            }
+
+                .features-list li:last-child {
+                    border-bottom: none;
+                }
+
+                .features-list li i.fa-check {
+                    color: #4CAF50;
+                    font-size: 1.2rem;
+                    min-width: 24px;
+                }
+
+                .features-list li i.fa-times {
+                    color: #f44336;
+                    font-size: 1.2rem;
+                    min-width: 24px;
+                }
+
+                .features-list li .text-info {
+                    background: rgba(33, 150, 243, 0.1);
+                    padding: 2px 8px;
+                    border-radius: 4px;
+                    font-size: 0.8rem;
+                    margin-left: 5px;
+                }
+
+                .features-list li .text-warning {
+                    background: rgba(255, 193, 7, 0.1);
+                    padding: 2px 8px;
+                    border-radius: 4px;
+                    font-size: 0.8rem;
+                    margin-left: 5px;
+                }
+
+        /* Card footer enhancements */
+        .card-footer {
+            padding: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 30, 30, 0.8);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: 0.5s;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--light-yellow) 0%, var(--accent-yellow) 100%);
+            color: #000;
+            font-weight: 700;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(255, 213, 79, 0.3);
+            }
+
+        .btn-outline-primary {
+            background: transparent;
+            border: 2px solid var(--light-yellow);
+            color: var(--light-yellow);
+        }
+
+            .btn-outline-primary:hover {
+                background: var(--light-yellow);
+                color: #000;
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(255, 213, 79, 0.3);
+            }
+
+        .btn-outline-dark {
+            background: transparent;
+            border: 2px solid #666;
+            color: #999;
+        }
+
+            .btn-outline-dark:hover {
+                background: #666;
+                color: #fff;
+                border-color: #666;
+                transform: translateY(-3px);
+            }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+            .btn-success:hover {
+                background: #45a049;
+                transform: translateY(-3px);
+            }
+
+        /* Popular badge enhancement */
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: linear-gradient(135deg, var(--light-yellow) 0%, var(--accent-yellow) 100%);
+            color: #000;
+            padding: 10px 45px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            transform: rotate(45deg);
+            box-shadow: 0 5px 15px rgba(255, 213, 79, 0.3);
+            z-index: 3;
+            letter-spacing: 1px;
+        }
+
+        /* Current plan indicator */
+        .current-plan-indicator {
+            position: absolute;
+            top: 15px;
+            left: -15px;
+            background: #4CAF50;
+            color: white;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+            z-index: 2;
+        }
+
+        /* Feature highlights */
+        .feature-highlight {
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            right: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #aaa;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+
+        .subscription-card {
+            animation: cardEntrance 0.6s ease-out forwards;
+            animation-delay: calc(var(--card-index) * 0.1s);
+            opacity: 0;
+        }
+
+        /* Comparison table for features */
+        .feature-comparison {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .feature-comparison h4 {
+                color: var(--light-yellow);
+                margin-bottom: 25px;
+                text-align: center;
+                font-weight: 700;
+            }
+
+        /* Footer info */
+        .footer-info {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .footer-info h5 {
+                color: var(--light-yellow);
+                margin-bottom: 15px;
+            }
+
+            .footer-info p {
+                color: #aaa;
+                margin-bottom: 10px;
+                font-size: 0.95rem;
+            }
+
+        /* Tooltip for feature details */
+        .feature-tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+            .feature-tooltip .tooltip-text {
+                visibility: hidden;
+                width: 250px;
+                background-color: rgba(0, 0, 0, 0.9);
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 10px;
+                position: absolute;
+                z-index: 10;
+                bottom: 125%;
+                left: 50%;
+                transform: translateX(-50%);
+                opacity: 0;
+                transition: opacity 0.3s;
+                font-size: 0.85rem;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .feature-tooltip:hover .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
+
+        /* Free plan highlight */
+        .free-plan {
+            border: 2px solid var(--light-yellow);
+            position: relative;
+        }
+
+        .free-plan-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: var(--light-yellow);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        /* Membership status info */
+        .status-alert {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: var(--light-yellow);
+            text-align: center;
+        }
+
+            .status-alert i {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+                display: block;
+            }
+    </style>
+</head>
+
+<body>
+    <!-- Status Alert (if applicable) -->
+
+
+    <div class="header">
+        <div class="logo">RadioCab</div>
+        <h2>Choose Your Perfect Driver Plan</h2>
+        <p>Select a membership plan that fits your driving needs and unlock powerful features</p>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            @{
+                int cardIndex = 0;
+            }
+            @foreach (var m in Model)
+            {
+                cardIndex++;
+                var pricePlans = prices
+                .Where(p => p.MembershipId == m.MembershipId)
+                .OrderBy(p => p.DurationInMonths)
+                .Take(2)
+                .ToList();
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="subscription-card" style="--card-index: @cardIndex;">
+                        <!-- Popular Badge -->
+                        @if (m.MembershipName == "Premium")
+                        {
+                            <div class="popular-badge">RECOMMENDED</div>
+                        }
+                        else if (m.MembershipName == "Basic")
+                        {
+                            <div class="popular-badge" style="background: linear-gradient(135deg, #666 0%, #999 100%);">POPULAR</div>
+                        }
+
+                        <!-- Current Plan Indicator -->
+                        @if (currentMembershipId == m.MembershipId && hasActiveSubscription)
+                        {
+                            <div class="current-plan-indicator">
+                                <i class="fas fa-check-circle me-1"></i>CURRENT PLAN
+                            </div>
+                        }
+
+                        <!-- Free Plan Badge -->
+                        @if (m.MembershipName == "Free")
+                        {
+                            <div class="free-plan-badge">FREE FOREVER</div>
+                        }
+
+                        <div class="card-header text-center">
+                            <h3>
+                                <i class="fas fa-car me-2" style="color: var(--light-yellow);"></i>
+                                @m.MembershipName
+                            </h3>
+
+                            @if (pricePlans.Any())
+                            {
+                                <div class="price-row">
+                                    @if (pricePlans.Count == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h4>$.@pricePlans[0].Amount</h4>
+                                                <small>@pricePlans[0].PaymentType</small>
+                                                <small class="d-block">@pricePlans[0].DurationInMonths months</small>
+                                            </div>
+                                            <div class="col-6">
+                                                <h4>Pkr.@pricePlans[1].Amount</h4>
+                                                <small>@pricePlans[1].PaymentType</small>
+                                                <small class="d-block">@pricePlans[1].DurationInMonths months</small>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <h4>Pkr.@pricePlans[0].Amount</h4>
+                                        <small>@pricePlans[0].PaymentType</small>
+                                        <small class="d-block">@pricePlans[0].DurationInMonths months</small>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="price-row">
+                                    <h4>Free</h4>
+                                    <small>No payment required</small>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="card-body">
+                            <ul class="features-list">
+                                @foreach (var f in m.MembershipFeatures)
+                                {
+                                    <li>
+                                        @if (f.IsEnabled)
+                                        {
+                                            <i class="fas fa-check text-success"></i>
+                                            <span class="feature-tooltip">
+                                                @f.Feature.FeatureName
+                                            </span>
+                                            @if (f.MaxAmount.HasValue)
+                                            {
+                                                <small class="text-warning">(Max @f.MaxAmount)</small>
+                                            }
+                                            else if (!f.MaxAmount.HasValue)
+                                            {
+                                                <small class="text-info">(Unlimited)</small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times text-danger"></i>
+                                            <span class="text-white-50">@f.Feature.FeatureName</span>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="card-footer text-center">
+                            @if (!hasProfile)
+                            {
+                                <a asp-action="ProfileRegister"
+                                   asp-controller="Driver"
+                                   asp-route-id="@m.MembershipId"
+                                   class="btn btn-primary w-100 pulse-btn">
+                                    <i class="fas fa-user-plus me-2"></i>Start with @m.MembershipName
+                                </a>
+                            }
+                            else
+                            {
+                                if (currentMembershipId == m.MembershipId)
+                                {
+                                    if (hasActiveSubscription)
+                                    {
+                                        <button class="btn btn-success w-100" disabled>
+                                            <i class="fas fa-check-circle me-2"></i>Current Active Plan
+                                        </button>
+                                        <a asp-action="Payment"
+                                           asp-controller="Driver"
+                                           asp-route-membershipid="@m.MembershipId"
+                                           asp-route-isRenewal="true"
+                                           class="btn btn-outline-primary w-100 mt-3">
+                                            <i class="fas fa-sync-alt me-2"></i>Renew Early
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Payment"
+                                           asp-controller="Driver"
+                                           asp-route-membershipid="@m.MembershipId"
+                                           asp-route-isRenewal="true"
+                                           class="btn btn-primary w-100">
+                                            <i class="fas fa-bolt me-2"></i>Activate Plan
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    <a asp-action="Payment"
+                                       asp-controller="Driver"
+                                       asp-route-membershipid="@m.MembershipId"
+                                       asp-route-isUpgrade="true"
+                                       class="btn btn-primary w-100">
+                                        @if (m.MembershipId > currentMembershipId)
+                                        {
+                                            <i class="fas fa-arrow-up me-2"></i>
+                                            <text>Upgrade to @m.MembershipName</text>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-arrow-down me-2"></i>
+                                            <text>Downgrade to @m.MembershipName</text>
+                                        }
+                                    </a>
+                                 
+                                }
+                            }
+                        </div>
+
+                        <!-- Feature Highlight -->
+                      
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Feature Comparison -->
+        <div class="feature-comparison">
+            <h4><i class="fas fa-chart-bar me-2"></i>Plan Comparison for Drivers</h4>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            @foreach (var m in Model)
+                            {
+                                <th class="text-center">@m.MembershipName</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var allFeatures = Model.SelectMany(m => m.MembershipFeatures.Select(f => f.Feature))
+                            .Distinct()
+                            .OrderBy(f => f.FeatureName);
+                        }
+                        @foreach (var feature in allFeatures)
+                        {
+                            <tr>
+                                <td>@feature.FeatureName</td>
+                                @foreach (var m in Model)
+                                {
+                                    var membershipFeature = m.MembershipFeatures.FirstOrDefault(mf => mf.FeatureId == feature.FeatureId);
+                                    <td class="text-center">
+                                        @if (membershipFeature?.IsEnabled == true)
+                                        {
+                                            <i class="fas fa-check text-success"></i>
+                                            @if (membershipFeature.MaxAmount.HasValue)
+                                            {
+                                                <small class="d-block">@membershipFeature.MaxAmount</small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times text-danger"></i>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="footer-info">
+            <h5><i class="fas fa-shield-alt me-2"></i>What You Get With Every Plan</h5>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <p><i class="fas fa-check-circle text-success me-2"></i>24/7 Driver Support</p>
+                </div>
+                <div class="col-md-4">
+                    <p><i class="fas fa-check-circle text-success me-2"></i>Secure Payment Processing</p>
+                </div>
+                <div class="col-md-4">
+                    <p><i class="fas fa-check-circle text-success me-2"></i>Flexible Working Hours</p>
+                </div>
+            </div>
+            <p class="mt-3"><i class="fas fa-question-circle me-2"></i>Need help choosing? <a href="#" class="text-warning">Contact our driver support team</a></p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Add animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects
+            const cards = document.querySelectorAll('.subscription-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-15px) scale(1.02)';
+                    this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.35)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                    this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.25)';
+                });
+            });
+
+            // Highlight current plan
+            const currentPlanCard = document.querySelector('.current-plan-indicator')?.closest('.subscription-card');
+            if (currentPlanCard) {
+                currentPlanCard.style.border = '2px solid #4CAF50';
+                currentPlanCard.style.boxShadow = '0 15px 35px rgba(76, 175, 80, 0.2)';
+            }
+
+            // Animate elements on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.feature-comparison, .footer-info').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

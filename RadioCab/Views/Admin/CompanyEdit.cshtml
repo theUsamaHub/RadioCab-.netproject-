@@ -1,0 +1,377 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    ViewData["Title"] = "Edit Company Registration Status";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+<style>
+    .card {
+        border: 1px solid #e3e6f0;
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-bottom: 1px solid #e3e6f0;
+    }
+
+    .form-control-plaintext {
+        background-color: #f8f9fa;
+        border: 1px solid #e3e6f0;
+        border-radius: 0.375rem;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.9em;
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 0.75rem 0;
+    }
+
+    .btn-primary {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2653d4;
+        }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 text-gray-800">Edit Company Registration Status</h1>
+            <p class="text-muted mb-0">Company ID: #@Model.Single_Company?.CompanyId</p>
+        </div>
+        <a asp-controller="Admin" asp-action="CompanyManage" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Companies
+        </a>
+    </div>
+
+    @if (Model.Single_Company == null)
+    {
+        <div class="alert alert-danger">
+            Company not found!
+        </div>
+        return;
+    }
+
+    <!-- Main Content -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-building mr-2"></i> Company Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <!-- Company Logo -->
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label text-muted small">Company Logo</label>
+                            <div class="border rounded p-3 text-center bg-light">
+                                @if (!string.IsNullOrEmpty(Model.Single_Company.CompanyLogo))
+                                {
+                                    <img src="@Model.Single_Company.CompanyLogo"
+                                         alt="Company Logo"
+                                         class="img-fluid rounded"
+                                         style="max-height: 150px;">
+                                }
+                                else
+                                {
+                                    <i class="fas fa-building fa-3x text-secondary"></i>
+                                    <div class="mt-2 text-muted small">No logo</div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Company Details -->
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-muted small">Company Name</label>
+                                    <div class="form-control-plaintext bg-light p-3 border rounded">
+                                        <strong>@Model.Single_Company.CompanyName</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-muted small">Company Email</label>
+                                    <div class="form-control-plaintext bg-light p-3 border rounded">
+                                        @Model.Single_Company.CompanyEmail
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-muted small">Membership</label>
+                                    <div class="form-control-plaintext bg-light p-3 border rounded">
+                                        <span class="badge bg-info">@Model.Single_Company.MembershipName</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-muted small">Current Status</label>
+                                    <div class="form-control-plaintext bg-light p-3 border rounded">
+                                        @if (Model.Single_Company.RegisterationStatus == "Approved")
+                                        {
+                                            <span class="badge bg-success">@Model.Single_Company.RegisterationStatus</span>
+                                        }
+                                        else if (Model.Single_Company.RegisterationStatus == "Pending")
+                                        {
+                                            <span class="badge bg-warning">@Model.Single_Company.RegisterationStatus</span>
+                                        }
+                                        else if (Model.Single_Company.RegisterationStatus == "Rejected")
+                                        {
+                                            <span class="badge bg-danger">@Model.Single_Company.RegisterationStatus</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@Model.Single_Company.RegisterationStatus</span>
+                                        }
+                                    </div>
+                                </div>
+ 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label text-muted small">Address</label>
+                        <div class="form-control-plaintext bg-light p-3 border rounded">
+                            @Model.Single_Company.Address
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label class="form-label text-muted small">Description</label>
+                        <div class="form-control-plaintext bg-light p-3 border rounded" style="min-height: 100px;">
+                            @(string.IsNullOrEmpty(Model.Single_Company.Description) ? "No description provided" : Model.Single_Company.Description)
+                        </div>
+                    </div>
+
+
+                    <!-- Status Update Form -->
+                    <div class="border-top pt-4 mt-4">
+                        <h6 class="mb-4 text-primary">
+                            <i class="fas fa-edit mr-2"></i> Update Registration Status
+                        </h6>
+
+                        <form method="post" asp-action="CompanyEdit" id="updateStatusForm">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="Single_Company.CompanyId" />
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="RegisterationStatus" class="form-label fw-bold">Registration Status *</label>
+                                    <select asp-for="Single_Company.RegisterationStatus"
+                                            class="form-control"
+                                            id="RegisterationStatus"
+                                            required>
+                                        <option value="">-- Select Status --</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Rejected">Rejected</option>
+                                    </select>
+                                    <div class="form-text mt-2">
+                                        <i class="fas fa-info-circle text-primary mr-1"></i>
+                                        Changing the status will affect company access and permissions.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                                <strong>Note:</strong> Only the registration status can be modified. All other company details are read-only.
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-4 pt-4 border-top">
+                                <a asp-controller="Admin" asp-action="CompanyManage" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times mr-1"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <i class="fas fa-save mr-1"></i> Update Status
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                   
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar - Quick Info -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-info-circle mr-2"></i> Quick Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Company ID</span>
+                            <span class="fw-bold">#@Model.Single_Company.CompanyId</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Last Updated</span>
+                            <span class="fw-bold">Just now</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Action Required</span>
+                            <span class="badge bg-warning">Status Update</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6 class="text-primary mb-3">What each status means:</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success mr-2"></i>
+                                <strong>Approved:</strong> Company can post jobs and access all features
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-clock text-warning mr-2"></i>
+                                <strong>Pending:</strong> Company registration is under review
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-times-circle text-danger mr-2"></i>
+                                <strong>Rejected:</strong> Company registration is denied
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title">Confirm Status Update</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    You are about to change the registration status. This will affect company access immediately.
+                </div>
+                <div class="form-group">
+                    <label>New Status:</label>
+                    <div id="modalStatusDisplay" class="font-weight-bold h5 mt-2"></div>
+                </div>
+                <div class="form-group">
+                    <label>Company:</label>
+                    <div class="text-muted">@Model.Single_Company.CompanyName</div>
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmSubmit">Confirm Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Set current status as selected
+            $('#RegisterationStatus').val('@Model.Single_Company.RegisterationStatus');
+
+            // Update submit button text based on selected status
+            $('#RegisterationStatus').on('change', function() {
+                const newStatus = $(this).val();
+                const currentStatus = '@Model.Single_Company.RegisterationStatus';
+
+                if (newStatus && newStatus !== currentStatus) {
+                    $('#submitBtn').html('<i class="fas fa-exchange-alt mr-1"></i> Update to ' + newStatus);
+                } else {
+                    $('#submitBtn').html('<i class="fas fa-save mr-1"></i> Update Status');
+                }
+            });
+
+            // Form submission with confirmation
+            $('#updateStatusForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const newStatus = $('#RegisterationStatus').val();
+                const currentStatus = '@Model.Single_Company.RegisterationStatus';
+
+                if (!newStatus) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Status',
+                        text: 'Please select a new status',
+                        confirmButtonColor: '#4e73df'
+                    });
+                    return;
+                }
+
+                if (newStatus === currentStatus) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Change',
+                        text: 'The selected status is the same as current status.',
+                        confirmButtonColor: '#4e73df'
+                    });
+                    return;
+                }
+
+                // Show confirmation modal
+                $('#modalStatusDisplay').html(getStatusBadge(newStatus));
+                $('#confirmModal').modal('show');
+            });
+
+            // Handle confirm button click
+            $('#confirmSubmit').on('click', function() {
+                $('#confirmModal').modal('hide');
+
+                // Show loading
+                Swal.fire({
+                    title: 'Updating Status...',
+                    text: 'Please wait while we update the registration status',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Submit the form
+                $('#updateStatusForm').off('submit').submit();
+            });
+        });
+
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'Approved':
+                    return '<span class="badge bg-success">Approved</span>';
+                case 'Pending':
+                    return '<span class="badge bg-warning text-dark">Pending</span>';
+                case 'Rejected':
+                    return '<span class="badge bg-danger">Rejected</span>';
+                default:
+                    return '<span class="badge bg-secondary">' + status + '</span>';
+            }
+        }
+    </script>

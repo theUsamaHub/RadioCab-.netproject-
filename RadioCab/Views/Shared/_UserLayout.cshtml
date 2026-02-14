@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RadioCab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/user/layout.css" rel="stylesheet" />
+    @RenderSection("PageStyles", required: false)
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-warning" href="@Url.Action("Index", "User")">
+                <i class="fas fa-taxi me-2"></i>RadioCab
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" 
+                           href="@Url.Action("Index", "User")">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Companies" ? "active" : "")" 
+                           href="@Url.Action("Companies", "User")">
+                            <i class="fas fa-building me-1"></i>Companies
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Drivers" ? "active" : "")" 
+                           href="@Url.Action("Drivers", "User")">
+                            <i class="fas fa-user-tie me-1"></i>Drivers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Popular" ? "active" : "")" 
+                           href="@Url.Action("Advertisements", "User")">
+                            <i class="fas fa-star me-1"></i>Popular
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Services" ? "active" : "")" 
+                           href="@Url.Action("Services", "User")">
+                            <i class="fas fa-cogs me-1"></i>Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Vacancies" ? "active" : "")" 
+                           href="@Url.Action("Vacancies", "User")">
+                            <i class="fas fa-briefcase me-1"></i>Vacancies
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("RegCard", "Account")" class="btn btn-outline-warning">
+                        <i class="fas fa-user-plus me-1"></i>Register
+                    </a>
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-warning">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-5 mt-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-warning mb-3">
+                        <i class="fas fa-taxi me-2"></i>RadioCab
+                    </h5>
+                    <p class="text-light">
+                        Your trusted transportation platform connecting companies and drivers. 
+                        Find the best services and opportunities in one place.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-warning fs-4"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-warning fs-4"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-warning fs-4"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-warning fs-4"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-warning mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="@Url.Action("Index", "User")" class="text-light text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="@Url.Action("Companies", "User")" class="text-light text-decoration-none">Companies</a></li>
+                        <li class="mb-2"><a href="@Url.Action("Drivers", "User")" class="text-light text-decoration-none">Drivers</a></li>
+                        <li class="mb-2"><a href="@Url.Action("Services", "User")" class="text-light text-decoration-none">Services</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="text-warning mb-3">Services</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Transportation</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Logistics</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Delivery</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Courier</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="text-warning mb-3">Contact Info</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2 text-warning"></i>
+                            <span class="text-light">123 Main Street, City</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2 text-warning"></i>
+                            <span class="text-light">+1 234 567 8900</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2 text-warning"></i>
+                            <span class="text-light">info@radiocab.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="border-secondary my-4" />
+            
+            <div class="text-center">
+                <p class="text-light mb-0">
+                    &copy; @DateTime.Now.Year RadioCab. All rights reserved. | 
+                    <a href="#" class="text-warning text-decoration-none">Privacy Policy</a> | 
+                    <a href="#" class="text-warning text-decoration-none">Terms of Service</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="~/js/user-site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

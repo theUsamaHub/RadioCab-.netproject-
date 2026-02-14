@@ -1,0 +1,416 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    ViewData["Title"] = "Advertisement Management";
+    Layout = "/Views/Shared/admin.cshtml";
+}
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<link href="~/css/ads.css" rel="stylesheet" />
+
+<div class="ads-management">
+    <!-- Header -->
+    <div class="page-header">
+        <h1><i class="bi bi-megaphone-fill"></i> Advertisement Management</h1>
+        <p>Manage all advertisements from companies and drivers</p>
+    </div>
+
+    <!-- Stats Cards -->
+    @{
+        var pendingCount = Model.ad_list.Count(a => a.ApprovalStatus == "Pending");
+        var approvedCount = Model.ad_list.Count(a => a.ApprovalStatus == "Approved");
+        var rejectedCount = Model.ad_list.Count(a => a.ApprovalStatus == "Rejected");
+        var activeCount = Model.ad_list.Count(a => a.IsActive);
+        var companyCount = Model.ad_list.Count(a => a.AdvertiserType == "Company");
+        var driverCount = Model.ad_list.Count(a => a.AdvertiserType == "Driver");
+    }
+
+    <div class="stats-cards">
+        <div class="stat-card pending">
+            <div class="stat-icon pending">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <div class="stat-number">@pendingCount</div>
+            <div class="stat-label">Pending Approval</div>
+        </div>
+
+        <div class="stat-card approved">
+            <div class="stat-icon approved">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div class="stat-number">@approvedCount</div>
+            <div class="stat-label">Approved</div>
+        </div>
+
+        <div class="stat-card rejected">
+            <div class="stat-icon rejected">
+                <i class="bi bi-x-circle"></i>
+            </div>
+            <div class="stat-number">@rejectedCount</div>
+            <div class="stat-label">Rejected</div>
+        </div>
+
+        <div class="stat-card active">
+            <div class="stat-icon active">
+                <i class="bi bi-play-circle"></i>
+            </div>
+            <div class="stat-number">@activeCount</div>
+            <div class="stat-label">Active Ads</div>
+        </div>
+
+        <div class="stat-card company">
+            <div class="stat-icon company">
+                <i class="bi bi-building"></i>
+            </div>
+            <div class="stat-number">@companyCount</div>
+            <div class="stat-label">Company Ads</div>
+        </div>
+
+        <div class="stat-card driver">
+            <div class="stat-icon driver">
+                <i class="bi bi-car-front"></i>
+            </div>
+            <div class="stat-number">@driverCount</div>
+            <div class="stat-label">Driver Ads</div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessAds"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessAds"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle me-2"></i> @TempData["Error"]
+        </div>
+    }
+
+    <!-- Advertisement Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h2><i class="bi bi-list-ul"></i> All Advertisements</h2>
+            <div class="table-controls">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search...">
+                </div>
+                <select class="filter-select" id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <select class="filter-select" id="typeFilter">
+                    <option value="all">All Types</option>
+                    <option value="company">Company</option>
+                    <option value="driver">Driver</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="ads-table" id="adsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Advertiser</th>
+                        <th>Title</th>
+                        <th>Image</th>
+                        <th>ApprovalStatus</th>
+                        <th>Payment Status</th>
+                        <th>Duration</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adsTableBody">
+                    @if (!Model.ad_list.Any())
+                    {
+                        <tr>
+                            <td colspan="9">
+                                <div class="empty-state">
+                                    <i class="bi bi-megaphone"></i>
+                                    <h4>No Advertisements Found</h4>
+                                    <p>There are no advertisements in the system yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var ad in Model.ad_list)
+                        {
+                            <tr data-id="@ad.AdvertisementId"
+                                data-status="@ad.ApprovalStatus.ToLower()"
+                                data-type="@ad.AdvertiserType.ToLower()">
+                                <td><strong>@ad.AdvertisementId</strong></td>
+                                <td>
+                                    <span class="advertiser-badge @ad.AdvertiserType.ToLower()">
+                                        @ad.AdvertiserType
+                                    </span>
+                                </td>
+                                <td title="@ad.Title">
+                                    @ad.Title
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(ad.AdImage))
+                                    {
+                                        <img src="@ad.AdImage" 
+                                             class="ad-image" 
+                                             alt="@ad.Title"
+                                             title="Click to view" 
+                                             onclick="viewImage('@Url.Content(ad.AdImage)', '@ad.Title')">
+                                    }
+                                    @* "~/Upload/advertisedads/" +  ye content sy remnove ki hai*@
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="status-badge @ad.ApprovalStatus.ToLower()">
+                                        @if (ad.ApprovalStatus == "Pending")
+                                        {
+                                            <i class="bi bi-clock-history"></i>
+                                        }
+                                        else if (ad.ApprovalStatus == "Approved")
+                                        {
+                                            <i class="bi bi-check-circle"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-x-circle"></i>
+                                        }
+                                        @ad.ApprovalStatus
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="payment-status">
+                                        <span class="status-badge @(ad.Payment?.PaymentStatus?.ToLower() ?? "")">
+                                            @ad.Payment?.PaymentStatus
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-display">
+                                        <div>
+                                            <span class="date-label">From:</span>
+                                            <span class="date-value">@ad.StartDate.ToString("dd MMM")</span>
+                                        </div>
+                                        <div>
+                                            <span class="date-label">To:</span>
+                                            <span class="date-value">@ad.EndDate.ToString("dd MMM")</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-display">
+                                        <span class="date-value">@ad.CreatedAt.ToString("dd MMM")</span>
+                                        <span class="date-label">@ad.CreatedAt.ToString("yyyy")</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-controller="Admin" asp-action="EditAd" asp-route-id="@ad.AdvertisementId" 
+                                           class="btn-action btn-approve" title="Approve">
+                                            <i class="bi bi-check-circle"></i>
+                                        </a>
+                                        <a asp-controller="Admin" asp-action="ViewAds" asp-route-id="@ad.AdvertisementId" 
+                                           class="btn-action btn-view" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" data-id="@ad.AdvertisementId" 
+                                           class="btn-action btn-delete js-delete-payment" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<!-- Lightbox for images -->
+<div id="imageLightbox" class="image-lightbox" style="display: none;">
+    <div class="lightbox-content">
+        <span class="close-lightbox">&times;</span>
+        <img id="lightboxImage" src="" alt="">
+        <div id="lightboxCaption"></div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Add lightbox styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .image-lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+        }
+        .close-lightbox {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        #lightboxCaption {
+            color: white;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Image lightbox function
+    function viewImage(src, title) {
+        const lightbox = document.getElementById('imageLightbox');
+        const lightboxImg = document.getElementById('lightboxImage');
+        const caption = document.getElementById('lightboxCaption');
+        
+        lightboxImg.src = src;
+        caption.textContent = title;
+        lightbox.style.display = 'flex';
+    }
+    
+    // Close lightbox
+    document.querySelector('.close-lightbox').addEventListener('click', function() {
+        document.getElementById('imageLightbox').style.display = 'none';
+    });
+    
+    // Close lightbox on click outside
+    document.getElementById('imageLightbox').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    });
+
+    // Rest of your JavaScript functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set active navigation
+        document.querySelector('[data-page="ads"]')?.classList.add('active');
+        
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#adsTableBody tr[data-id]');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+        }
+        
+        // Filter functionality
+        const statusFilter = document.getElementById('statusFilter');
+        const typeFilter = document.getElementById('typeFilter');
+        
+        function applyFilters() {
+            const statusValue = statusFilter.value;
+            const typeValue = typeFilter.value;
+            const rows = document.querySelectorAll('#adsTableBody tr[data-id]');
+            
+            rows.forEach(row => {
+                const status = row.getAttribute('data-status');
+                const type = row.getAttribute('data-type');
+                
+                const showByStatus = statusValue === 'all' || status === statusValue;
+                const showByType = typeValue === 'all' || type === typeValue;
+                
+                row.style.display = (showByStatus && showByType) ? '' : 'none';
+            });
+        }
+        
+        if (statusFilter) statusFilter.addEventListener('change', applyFilters);
+        if (typeFilter) typeFilter.addEventListener('change', applyFilters);
+        
+        // Delete functionality
+        document.querySelectorAll('.js-delete-payment').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const adId = this.dataset.id;
+                const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+                
+                Swal.fire({
+                    title: 'Delete Advertisement?',
+                    text: 'This action cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Delete',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+    fetch('/Admin/DeleteAdvertisement', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id=${adId}&__RequestVerificationToken=${encodeURIComponent(token)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: 'Ad has been deleted.'
+            });
+
+            // Remove row from table
+            document.querySelector(`tr[data-id="${adId}"]`)?.remove();
+        } else {
+            Swal.fire('Error', data.message || 'Delete failed', 'error');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire('Error', 'Server error while deleting', 'error');
+    });
+
+                        console.log('Delete ad:', adId);
+                    }
+                });
+            });
+        });
+    });
+</script>

@@ -1,0 +1,165 @@
+@model IEnumerable<RadioCab.Models.AdvertisementListVM>
+@{
+    ViewData["Title"] = "My Advertisements";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">My Advertisements</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-info me-2">Membership ID: @ViewBag.MembershipId</span>
+                                <span class="badge bg-success">
+                                    Active Ads: @Model.Count(a => a.IsActive) / 
+                                    @(ViewBag.MaxActiveAds == -1 ? "Unlimited" : ViewBag.MaxActiveAds.ToString())
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            @if (ViewBag.MaxActiveAds == -1 || Model.Count(a => a.IsActive) < ViewBag.MaxActiveAds)
+                            {
+                                <a href="@Url.Action("CreateAdvertisement", "Company")" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Create New Advertisement
+                                </a>
+                            }
+                        </div>
+                    </div>
+
+                    @if (!Model.Any())
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-ad fa-3x text-muted mb-3"></i>
+                            <h5>No advertisements found</h5>
+                            <p class="text-muted">Create your first advertisement to get started.</p>
+                            <a href="@Url.Action("CreateAdvertisement", "Company")" class="btn btn-primary">
+                                Create Advertisement
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Payment Status</th>
+                                        <th>Approval Status</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ad in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(ad.AdImage))
+                                                {
+                                                    <img src="@ad.AdImage" alt="@ad.Title" class="img-thumbnail" style="max-width: 80px; max-height: 60px;" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="bg-secondary d-flex align-items-center justify-content-center" style="width: 80px; height: 60px;">
+                                                        <i class="fas fa-image text-white"></i>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td>@ad.Title</td>
+                                            <td>
+                                                <span class="text-truncate d-inline-block" style="max-width: 200px;" title="@ad.Description">
+                                                    @(ad.Description?.Length > 50 ? ad.Description.Substring(0, 50) + "..." : ad.Description)
+                                                </span>
+                                            </td>
+                                            <td>@ad.StartDate.ToString("MMM dd, yyyy")</td>
+                                            <td>@ad.EndDate.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                <span class="badge @(ad.PaymentStatus == "Paid" ? "bg-success" : ad.PaymentStatus == "Pending" ? "bg-warning" : "bg-danger")">
+                                                    @ad.PaymentStatus
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge @(ad.ApprovalStatus == "Approved" ? "bg-success" : ad.ApprovalStatus == "Pending" ? "bg-warning" : "bg-danger")">
+                                                    @ad.ApprovalStatus
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           id="status-@ad.AdvertisementId" 
+                                                           @(ad.IsActive ? "checked" : "")
+                                                           onchange="toggleStatus(@ad.AdvertisementId)">
+                                                    <label class="form-check-label" for="status-@ad.AdvertisementId">
+                                                        @(ad.IsActive ? "Active" : "Inactive")
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    @if (ad.CanEdit)
+                                                    {
+                                                        <a href="@Url.Action("EditAdvertisement", "Company", new { id = ad.AdvertisementId })" 
+                                                           class="btn btn-sm btn-outline-primary" title="Edit">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-sm btn-outline-secondary" disabled title="Cannot edit after start date">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    }
+                                                    
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                            onclick="deleteAdvertisement(@ad.AdvertisementId)" 
+                                                            title="Delete Advertisement">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/css/advertisement.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/advertisement.js"></script>
+}

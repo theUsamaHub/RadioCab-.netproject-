@@ -1,0 +1,253 @@
+﻿
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+}
+
+.filter-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 15px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.status-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.badge-paid {
+    background-color: rgba(39, 174, 96, 0.15);
+    color: var(--success-color);
+}
+
+.badge-pending {
+    background-color: rgba(243, 156, 18, 0.15);
+    color: var(--warning-color);
+}
+
+.badge-failed {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: var(--danger-color);
+}
+
+.method-badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.method-creditcard {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.method-paypal {
+    background-color: #e3f2fd;
+    color: #003087;
+}
+
+.method-bank {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.method-stripe {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.quick-filter-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    font-size: 13px;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+    .quick-filter-btn.active {
+        background: var(--secondary-color);
+        color: white;
+        border-color: var(--secondary-color);
+    }
+
+.section-title {
+    color: var(--primary-color);
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.empty-state {
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+    .empty-state i {
+        font-size: 3rem;
+        opacity: 0.5;
+    }
+
+/* Responsive table styles */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+    .table-responsive table {
+        min-width: 992px; /* Minimum width before scrolling starts */
+        margin-bottom: 0;
+    }
+
+    .table-responsive th,
+    .table-responsive td {
+        white-space: nowrap;
+        vertical-align: middle;
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .table-responsive thead th {
+        font-size: 13px;
+        font-weight: 600;
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+/* Action buttons container */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    min-width: 120px;
+}
+
+    .action-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+/* Small screen adjustments */
+ @media (max-width: 768px) {
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .filter-card {
+            padding: 12px;
+        }
+
+        .table-container {
+            padding: 12px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        body {
+            font-size: 13px;
+        }
+
+        .status-badge,
+        .method-badge {
+            font-size: 10px;
+        }
+
+        .action-buttons .btn {
+            width: 28px;
+            height: 28px;
+            padding: 3px 6px;
+        }
+    } 
+
+/* Hover effects */
+.btn-outline-danger:hover {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+/* Add to your existing CSS */
+
+.active-filters {
+    margin-top: 10px;
+}
+
+.filter-tag {
+    background: #e3f2fd;
+    border: 1px solid #bbdefb;
+    color: #1976d2;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+    .filter-tag .remove-filter {
+        background: none;
+        border: none;
+        color: #1976d2;
+        font-size: 10px;
+        margin-left: 5px;
+        cursor: pointer;
+        padding: 0;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .filter-tag .remove-filter:hover {
+            color: #d32f2f;
+        }

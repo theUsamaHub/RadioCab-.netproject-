@@ -1,0 +1,215 @@
+﻿@model RadioCab.Models.DriverValidate
+@{
+    ViewData["Title"] = "ProfileRegister";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cab Driver Registration</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="~/Driver/css/register.css" rel="stylesheet" />
+
+</head>
+<body>
+    <!-- Animated Background - More Visible -->
+    <div id="animated-background"></div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <div class="form-container">
+                    <div class="form-header">
+                        <div class="form-header-icon">
+                            <i class="fas fa-taxi"></i>
+                        </div>
+                        <h2 class="form-title">Cab Driver Registration</h2>
+                        <p class="text-muted">Join our professional driver network today</p>
+                    </div>
+
+                    <div class="form-note">
+                        <i class="fas fa-info-circle"></i>
+                        All fields marked with <span class="required-field">*</span> are required.
+                    </div>
+
+                    <form id="driverRegistrationForm" asp-action="ProfileRegister" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="MembershipId" />
+                        <div class="text-danger mb-2" asp-validation-summary="All"></div>
+                        <!-- Personal Information Section -->
+                        <div class="form-section">
+                            <h5 class="section-title"><i class="fas fa-user"></i> Personal Information</h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="DriverName" class="form-label">Full Name <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" id="name" asp-for="DriverName" placeholder="Enter your full name" readonly>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Email" class="form-label">Email Address <span class="required-field">*</span></label>
+                                    <input type="email" class="form-control" id="email" asp-for="Email" placeholder="Enter your email" readonly>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Telephone" class="form-label">Phone Number <span class="required-field">*</span></label>
+                                    <input type="tel" class="form-control" id="phone" asp-for="Telephone" placeholder="03XX-XXXXXXX" readonly>
+                                    <small class="form-text">Please enter a valid Pakistani phone number</small>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Cnic" class="form-label">CNIC Number <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" id="cnic" asp-for="Cnic" placeholder="XXXXX-XXXXXXX-X" pattern="[0-9]{5}-[0-9]{7}-[0-9]{1}">
+                                    <small class="form-text">Format: 12345-1234567-1</small>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label asp-for="Address" class="form-label">Full Address <span class="required-field">*</span></label>
+                                    <textarea class="form-control form-textarea" id="address" asp-for="Address" placeholder="Enter your complete residential address" rows="3"></textarea>
+                                    <small class="form-text">Include house number, street, area, and city</small>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label asp-for="CityId" class="form-label">City <span class="required-field">*</span></label>
+                                    <select class="form-select" id="city" asp-for="CityId" asp-items="@ViewBag.City" required>
+                                        <option value="" selected disabled>Select your city</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Driver Information Section -->
+                        <div class="form-section">
+                            <h5 class="section-title"><i class="fas fa-id-card"></i> Driver Information</h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="driverPhoto" class="form-label">Driver Photo <span class="required-field">*</span></label>
+                                    <div class="file-upload-container" id="driverPhotoUpload">
+                                        <div class="file-upload-icon">
+                                            <i class="fas fa-camera"></i>
+                                        </div>
+                                        <div class="file-upload-text">Click to upload driver photo</div>
+                                        <input type="file" class="d-none" id="driverPhoto" name="driverPhoto" accept="image/*" required>
+                                    </div>
+                                    <small class="form-text">JPG or PNG, max 2MB. Recommended size: 300x300px</small>
+                                    <img id="driverPhotoPreview" class="preview-image" alt="Driver Photo Preview">
+                                    <div id="driverPhotoName" class="file-name"></div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="DrivingLicenseNumber" class="form-label">Driving License Number <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" id="licenseNumber" asp-for="DrivingLicenseNumber" placeholder="Enter driving license number" required>
+
+                                    <label asp-for="Experience" class="form-label mt-3">Driving Experience <span class="required-field">*</span></label>
+                                    <div class="experience-input">
+                                        <input type="text" class="form-control" id="experience" asp-for="Experience" placeholder="5 Years">
+
+                                    </div>
+                                    <small class="form-text">Number of years of professional driving experience</small>
+
+                                    <label for="licenseFile" class="form-label mt-3">Driving License Copy <span class="required-field">*</span></label>
+                                    <div class="file-upload-container" id="licenseFileUpload">
+                                        <div class="file-upload-icon">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                        <div class="file-upload-text">Click to upload license (PDF/Image)</div>
+                                        <input type="file" class="d-none" id="licenseFile" name="licenseFile" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    </div>
+                                    <small class="form-text">Upload scanned copy of your driving license (PDF, JPG, PNG)</small>
+                                    <div id="licenseFileName" class="file-name"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Information Section -->
+                        <div class="form-section">
+                            <h5 class="section-title"><i class="fas fa-car"></i> Vehicle Information</h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="VehicleMake" class="form-label">Vehicle Make <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" id="vehicleMake" asp-for="VehicleMake" placeholder="e.g., Toyota, Honda, Suzuki" required>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="VehicleModel" class="form-label">Vehicle Model <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" id="vehicleModel" asp-for="VehicleModel" placeholder="e.g., Corolla, Civic, Cultus">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="VehicleYear" class="form-label">Vehicle Year <span class="required-field">*</span></label>
+                                    <input type="number" class="form-control" id="vehicleYear" asp-for="VehicleYear" min="2005" max="2024" placeholder="e.g., 2020">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="VehicleColor" class="form-label">Vehicle Color <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" id="vehicleColor" asp-for="VehicleColor" placeholder="e.g., White, Black, Silver">
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label asp-for="VehiclePlate" class="form-label">License Plate Number <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" id="vehiclePlate" asp-for="VehiclePlate" placeholder="e.g., ABC-123">
+                                    <small class="form-text">Enter your vehicle's registration plate number</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information Section -->
+                        <div class="form-section">
+                            <h5 class="section-title"><i class="fas fa-info-circle"></i> Additional Information</h5>
+
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label asp-for="Description" class="form-label">Description / Bio</label>
+                                    <textarea class="form-control form-textarea" id="description" asp-for="Description" placeholder="Tell us about yourself, your driving experience, and why you want to join our network..." rows="4"></textarea>
+                                    <small class="form-text">Optional: Share any additional information about yourself</small>
+                                </div>
+
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                                        <label class="form-check-label" for="terms">
+                                            I agree to the <a href="#" class="text-decoration-none" style="color: var(--soft-gold); font-weight: 600;">Terms and Conditions</a> and confirm that all provided information is accurate. <span class="required-field">*</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit & Reset Buttons Section -->
+                        <div class="submit-section">
+                            <div class="button-group">
+                                <button type="button" id="resetBtn" class="btn btn-secondary-custom">
+                                    <i class="fas fa-redo"></i> Reset Form
+                                </button>
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-paper-plane"></i> Submit Registration
+                                </button>
+                            </div>
+                            <p class="form-text mt-3">
+                                After submission, our team will contact you within 2-3 business days for verification.
+                            </p>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="footer">
+                    <p>© 2023 CityCab Driver Network. All rights reserved. | <a href="#" class="text-decoration-none" style="color: var(--soft-gold); font-weight: 600;">Privacy Policy</a> | <a href="#" class="text-decoration-none" style="color: var(--soft-gold); font-weight: 600;">Contact Support</a></p>
+                    <p class="mt-2"><i class="fas fa-phone-alt" style="color: var(--soft-gold);"></i> Helpline: 0800-CAB-HELP (0800-222-4357)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Driver/js/register.js" asp-append-version="true"></script>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,486 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link href="~/css/plainf.css" rel="stylesheet" />
+
+
+    <!-- Filters -->
+    <div class="filters-container">
+        <div class="filters-header">
+            <i class="fas fa-filter"></i>
+            <h2>Filter Complaints</h2>
+        </div>
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label for="filterCity">City</label>
+                <select id="filterCity" class="filter-select">
+                    <option value="all">All Cities</option>
+                    @foreach (var city in Model.City_list)
+                    {
+                        <option value="@city.CityName">@city.CityName</option>
+                    }
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filterStatus">Status</label>
+                <select id="filterStatus" class="filter-select">
+                    <option value="all">All Status</option>
+                <option value="New">New</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Closed">Closed</option>
+                </select>
+            </div>
+            <div class="filter-group filter-actions">
+                <button class="btn btn-secondary" id="applyFiltersBtn">
+                    <i class="fas fa-filter"></i> Apply
+                </button>
+                <button class="btn btn-secondary" id="clearFiltersBtn">
+                    <i class="fas fa-redo"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+
+@if (TempData["Successcom"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle me-2"></i> @TempData["Successcom"]
+    </div>
+}
+@if (TempData["Errorcom"] != null)
+{
+    <div class="alert alert-error">
+        <i class="fas fa-exclamation-circle me-2"></i> @TempData["Errorcom"]
+    </div>
+}
+
+    <!-- Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-header-left">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>Complaints List (@Model.feedback_list.Count)</h2>
+            </div>
+        </div>
+
+        <table class="table" id="complaintsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>City</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="complaintsTableBody">
+                @if (!Model.feedback_list.Any())
+                {
+                    <tr id="noDataRow">
+                        <td colspan="8" class="no-data">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>No complaints found</div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var c in Model.feedback_list)
+                    {
+                        <tr data-city="@c.City?.CityName" 
+                            data-type="@c.FeedbackType"
+                            data-status="@c.Status">
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-details">
+                                        <h4>@c.Name</h4>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@c.MobileNo</td>
+                            <td>@c.Email</td>
+                            <td>@c.City?.CityName</td>
+                            <td>
+                                @{
+                                    var badgeClass = c.FeedbackType == "Complaint" ? "badge-complaint" : 
+                                                   c.FeedbackType == "Suggestion" ? "badge-suggestion" : 
+                                                   "badge-feedback";
+                                }
+                                <span class="badge @badgeClass">@c.FeedbackType</span>
+                            </td>
+                            <td>
+                                <div class="description-preview" title="@c.Description">
+                                    @(c.Description?.Length > 50 ? c.Description.Substring(0, 50) + "..." : c.Description)
+                                </div>
+                            </td>
+                            <td>@c.Status</td>
+                            <td class="date-cell">
+                                @c.CreatedAt.ToString("dd MMM")
+                                <div style="font-size:11px;color:#999;">@c.CreatedAt.ToString("hh:mm tt")</div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" title="View" 
+                                            data-name="@c.Name"
+                                            data-mobile="@c.MobileNo"
+                                            data-email="@c.Email"
+                                            data-city="@c.City?.CityName"
+                                            data-type="@c.FeedbackType"
+                                            data-description="@c.Description"
+                                            data-created="@c.CreatedAt.ToString("dd MMM yyyy")">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                <a asp-action="ComplainEdit" asp-controller="Admin" asp-route-id="@c.FeedbackId" class="btn-action btn-edit" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                <a href="javascript:void(0);" class="btn-action btn-delete js-delete-feedback"
+                                            title="Delete" 
+                                            data-id="@c.FeedbackId"
+                                          data-name="@c.Name">
+                                        <i class="fas fa-trash"></i> </a>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+<!-- View Modal -->
+<div class="modal" id="viewComplaintModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Complaint Details</h3>
+            <button class="modal-close" id="closeViewModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-row">
+                <div class="detail-label">Customer Name:</div>
+                <div class="detail-value" id="viewName"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Mobile No:</div>
+                <div class="detail-value" id="viewMobile"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Email:</div>
+                <div class="detail-value" id="viewEmail"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">City:</div>
+                <div class="detail-value" id="viewCity"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Type:</div>
+                <div class="detail-value" id="viewType"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Created:</div>
+                <div class="detail-value" id="viewCreatedAt"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Description:</div>
+            </div>
+            <div class="detail-value description" id="viewDescription"></div>
+        </div>
+    </div>
+</div>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        // Initialize filters
+        initializeFilters();
+
+        // Initialize event listeners
+        initializeEventListeners();
+
+        // Set active navigation
+        document.querySelector('[data-page="complaints"]')?.classList.add('active');
+    });
+
+    function initializeFilters() {
+        // Apply filters button
+        document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
+
+         document.getElementById('clearFiltersBtn').addEventListener('click', function() {
+        document.getElementById('filterCity').value = 'all';
+        document.getElementById('filterStatus').value = 'all';
+
+              const rows = document.querySelectorAll('#complaintsTableBody tr[data-city]');
+           rows.forEach(r => r.style.display = '');
+
+             updateTableCount();
+            });
+
+
+        // Apply filters on dropdown change (optional)
+        document.getElementById('filterCity').addEventListener('change', applyFilters);
+        document.getElementById('filterStatus').addEventListener('change', applyFilters);
+    }
+
+    function applyFilters() {
+        const cityFilter = document.getElementById('filterCity').value;
+        const statusFilter = document.getElementById('filterStatus').value;
+
+        const rows = document.querySelectorAll('#complaintsTableBody tr[data-city]');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const city = row.getAttribute('data-city') || '';
+            const status = row.getAttribute('data-status') || '';
+
+            const cityMatch = cityFilter === 'all' || city === cityFilter;
+            const statusMatch = statusFilter === 'all' || status === statusFilter;
+
+            if (cityMatch && statusMatch) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const header = document.querySelector('.table-header-left h2');
+        if (header) {
+            header.textContent = `Complaints List (${visibleCount})`;
+        }
+
+        const noDataRow = document.getElementById('noDataRow');
+        if (noDataRow) {
+            noDataRow.style.display = visibleCount === 0 ? '' : 'none';
+        }
+    }
+
+
+    function initializeEventListeners() {
+        // View button click
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-view')) {
+                const button = e.target.closest('.btn-view');
+                viewComplaint(button);
+            }
+
+            if (e.target.closest('.js-delete-feedback')) {
+                const button = e.target.closest('.js-delete-feedback');
+                const feedbackId = button.getAttribute('data-id');
+                const feedbackName = button.getAttribute('data-name');
+                deleteFeedback(feedbackId, feedbackName);
+            }
+        });
+
+        // Close modal
+        document.getElementById('closeViewModal').addEventListener('click', function() {
+            document.getElementById('viewComplaintModal').classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('viewComplaintModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('viewComplaintModal').classList.contains('active')) {
+                document.getElementById('viewComplaintModal').classList.remove('active');
+            }
+        });
+
+        // Edit from view button
+        document.getElementById('editFromViewBtn').addEventListener('click', function() {
+            // Get the currently viewed complaint ID from the modal
+            const viewModal = document.getElementById('viewComplaintModal');
+            // You might want to store the ID in a data attribute on the modal
+            // For now, just close the modal and show message
+            viewModal.classList.remove('active');
+            Swal.fire({
+                title: 'Edit Complaint',
+                text: 'This would redirect to the edit page',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
+        });
+    }
+
+    function viewComplaint(button) {
+        // Extract data from button attributes
+        const name = button.getAttribute('data-name');
+        const mobile = button.getAttribute('data-mobile');
+        const email = button.getAttribute('data-email');
+        const city = button.getAttribute('data-city');
+        const type = button.getAttribute('data-type');
+        const description = button.getAttribute('data-description');
+        const created = button.getAttribute('data-created');
+
+        // Set badge class based on type
+        let badgeClass = 'badge-complaint';
+        let badgeText = type;
+
+        if (type === 'Suggestion') {
+            badgeClass = 'badge-suggestion';
+        } else if (type === 'Feedback') {
+            badgeClass = 'badge-feedback';
+        }
+
+        // Update modal content
+        document.getElementById('viewName').textContent = name || 'N/A';
+        document.getElementById('viewMobile').textContent = mobile || 'N/A';
+        document.getElementById('viewEmail').textContent = email || 'N/A';
+        document.getElementById('viewCity').textContent = city || 'N/A';
+        document.getElementById('viewType').innerHTML = `<span class="badge ${badgeClass}">${badgeText}</span>`;
+        document.getElementById('viewCreatedAt').textContent = created || 'N/A';
+        document.getElementById('viewDescription').textContent = description || 'No description';
+
+        // Show modal
+        document.getElementById('viewComplaintModal').classList.add('active');
+    }
+
+    function deleteFeedback(feedbackId, feedbackName) {
+        const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+        Swal.fire({
+            title: 'Delete Complaint',
+            html: `<p>Delete complaint from <strong>${feedbackName}</strong>?</p>
+                   <p class="text-muted" style="font-size: 14px;">This action cannot be undone.</p>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            width: '400px'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            Swal.fire({
+                title: 'Deleting...',
+                text: 'Please wait',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading(),
+                width: '300px'
+            });
+
+            fetch('/Admin/DeleteFeedbackAjax', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `id=${feedbackId}&__RequestVerificationToken=${token}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Complaint has been deleted.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    // Remove row from table
+                    const row = document.querySelector(`.js-delete-feedback[data-id="${feedbackId}"]`)?.closest('tr');
+                    if (row) {
+                        row.style.transition = 'opacity 0.3s';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.remove();
+
+                            // Check if table is empty
+                            const remainingRows = document.querySelectorAll('#complaintsTableBody tr[data-city]');
+                            if (remainingRows.length === 0) {
+                                showNoDataMessage();
+                            } else {
+                                // Update count
+                                updateTableCount();
+                            }
+                        }, 300);
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Failed to delete complaint',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Network error occurred. Please try again.',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
+    }
+
+    function showNoDataMessage() {
+        const tbody = document.getElementById('complaintsTableBody');
+        tbody.innerHTML = `
+            <tr id="noDataRow">
+                <td colspan="9" class="no-data">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>No complaints found</div>
+                </td>
+            </tr>
+        `;
+
+        // Update header count
+        updateTableCount();
+    }
+
+    function updateTableCount() {
+        const visibleRows = document.querySelectorAll('#complaintsTableBody tr[data-city]:not([style*="display: none"])');
+        const header = document.querySelector('.table-header-left h2');
+        if (header) {
+            header.textContent = `Complaints List (${visibleRows.length})`;
+        }
+    }
+
+    // Optional: Add filter persistence if needed
+    function saveFilterState() {
+        const filters = {
+            city: document.getElementById('filterCity').value,
+            status: document.getElementById('filterStatus').value
+        };
+        localStorage.setItem('complaintFilters', JSON.stringify(filters));
+    }
+
+    function loadFilterState() {
+        const saved = localStorage.getItem('complaintFilters');
+        if (saved) {
+            const filters = JSON.parse(saved);
+            document.getElementById('filterCity').value = filters.city || 'all';
+            document.getElementById('filterStatus').value = filters.status || 'all';
+            applyFilters();
+        }
+    }
+
+    // Uncomment these if you want to persist filters across page reloads
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     loadFilterState();
+    // });
+    //
+    // // Save filters when they change
+    // document.getElementById('filterCity').addEventListener('change', saveFilterState);
+    // document.getElementById('filterStatus').addEventListener('change', saveFilterState);
+</script>

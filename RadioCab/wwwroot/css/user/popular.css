@@ -1,0 +1,478 @@
+/**
+ * Popular Page Styles
+ * Popular companies, drivers, and services
+ */
+
+/* ===============================
+   PAGE HEADER
+   =============================== */
+
+.page-header {
+    background: var(--primary-black);
+    color: var(--white);
+    padding: 3rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="headerGrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,215,0,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23headerGrid)"/></svg>');
+    opacity: 0.2;
+}
+
+.page-header .display-4 {
+    color: var(--white);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.page-header .lead {
+    color: var(--light-gray);
+    font-size: 1.125rem;
+}
+
+.page-header .badge {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+}
+
+/* ===============================
+   POPULAR CARDS
+   =============================== */
+
+.popular-card {
+    background: var(--white);
+    border: 2px solid var(--primary-yellow);
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.popular-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary-yellow), var(--secondary-yellow));
+    border-radius: 15px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.popular-card:hover::before {
+    opacity: 0.3;
+}
+
+.popular-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(255, 215, 0, 0.2);
+}
+
+.popular-header {
+    margin-bottom: 1.5rem;
+}
+
+.popular-header .d-flex {
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.popular-header h5 {
+    color: var(--primary-black);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.popular-header p {
+    color: var(--medium-gray);
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
+
+.popular-header .text-end {
+    text-align: right;
+}
+
+.rating-display {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-black);
+    margin-bottom: 0.25rem;
+}
+
+.rating-display i {
+    color: var(--primary-yellow);
+    margin-right: 0.25rem;
+}
+
+.popular-header small {
+    color: var(--medium-gray);
+    font-size: 0.75rem;
+}
+
+.popular-logo,
+.popular-photo {
+    max-width: 60px;
+    max-height: 60px;
+    object-fit: contain;
+    border: 2px solid var(--primary-yellow);
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 1rem;
+    background: var(--white);
+}
+
+.popular-photo {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.popular-photo-placeholder {
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--primary-yellow);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    background: var(--light-gray);
+}
+
+.popular-body {
+    flex-grow: 1;
+}
+
+.popular-body p {
+    color: var(--medium-gray);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.popular-body .d-flex {
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ===============================
+   SERVICE POPULAR CARDS
+   =============================== */
+
+.service-popular-card {
+    background: var(--white);
+    border: 1px solid var(--light-gray);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.service-popular-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-yellow);
+}
+
+.service-popular-card .service-icon {
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.service-popular-card:hover .service-icon {
+    transform: scale(1.1);
+}
+
+.service-popular-card h4 {
+    color: var(--primary-black);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.service-popular-card p {
+    color: var(--medium-gray);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.service-stats {
+    margin-bottom: 1rem;
+}
+
+.service-stats .d-flex {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.service-stats .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.progress {
+    height: 8px;
+    background-color: var(--light-gray);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--primary-yellow), var(--secondary-yellow));
+    transition: width 0.6s ease;
+}
+
+/* ===============================
+   LEADERBOARD
+   =============================== */
+
+.leaderboard-card {
+    background: var(--white);
+    border: 1px solid var(--light-gray);
+    border-radius: 15px;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.leaderboard-card h4 {
+    color: var(--primary-black);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.leaderboard-card h4 i {
+    color: var(--primary-yellow);
+    margin-right: 0.5rem;
+}
+
+.leaderboard-item {
+    background: var(--light-gray);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.leaderboard-item:hover {
+    background: rgba(255, 215, 0, 0.1);
+    transform: translateX(5px);
+}
+
+.leaderboard-item .rank-badge {
+    margin-right: 1rem;
+}
+
+.leaderboard-item .rank-badge .badge {
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.5rem 0.75rem;
+}
+
+.leaderboard-item .flex-grow-1 h6 {
+    color: var(--primary-black);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.leaderboard-item .flex-grow-1 small {
+    color: var(--medium-gray);
+    font-size: 0.75rem;
+}
+
+.leaderboard-item .rating-badge {
+    font-weight: 700;
+    color: var(--primary-black);
+    font-size: 0.95rem;
+}
+
+.leaderboard-item .rating-badge i {
+    color: var(--primary-yellow);
+    margin-right: 0.25rem;
+}
+
+/* ===============================
+   ANIMATIONS
+   =============================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.popular-card,
+.service-popular-card,
+.leaderboard-item {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* ===============================
+   RESPONSIVE DESIGN
+   =============================== */
+
+@media (max-width: 992px) {
+    .page-header {
+        padding: 2rem 0;
+    }
+    
+    .page-header .display-4 {
+        font-size: 2rem;
+    }
+    
+    .page-header .lead {
+        font-size: 1rem;
+    }
+    
+    .popular-card {
+        padding: 1.25rem;
+    }
+    
+    .service-popular-card {
+        padding: 1.25rem;
+    }
+    
+    .leaderboard-card {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1.5rem 0;
+        text-align: center;
+    }
+    
+    .page-header .display-4 {
+        font-size: 1.75rem;
+    }
+    
+    .page-header .row {
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .popular-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .popular-header .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .popular-logo,
+    .popular-photo {
+        max-width: 50px;
+        max-height: 50px;
+    }
+    
+    .popular-photo,
+    .popular-photo-placeholder {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .service-popular-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .leaderboard-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .leaderboard-item {
+        padding: 0.75rem;
+    }
+    
+    .leaderboard-item .rank-badge {
+        margin-right: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header {
+        padding: 1rem 0;
+    }
+    
+    .page-header .display-4 {
+        font-size: 1.5rem;
+    }
+    
+    .page-header .badge {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .popular-card {
+        padding: 0.75rem;
+    }
+    
+    .popular-header h5 {
+        font-size: 1rem;
+    }
+    
+    .popular-body p {
+        font-size: 0.8rem;
+    }
+    
+    .service-popular-card {
+        padding: 0.75rem;
+    }
+    
+    .service-popular-card h4 {
+        font-size: 1rem;
+    }
+    
+    .service-popular-card p {
+        font-size: 0.8rem;
+    }
+    
+    .leaderboard-card {
+        padding: 0.75rem;
+    }
+    
+    .leaderboard-card h4 {
+        font-size: 1rem;
+    }
+    
+    .leaderboard-item {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .leaderboard-item .flex-grow-1 h6 {
+        font-size: 0.875rem;
+    }
+    
+    .leaderboard-item .rating-badge {
+        font-size: 0.875rem;
+    }
+}

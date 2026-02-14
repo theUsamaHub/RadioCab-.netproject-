@@ -1,0 +1,167 @@
+@model RadioCab.Models.AdvertisementCreateVM
+@{
+    ViewData["Title"] = "Create Advertisement";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create New Advertisement</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="CreateAdvertisement" asp-controller="Company" method="post" enctype="multipart/form-data" id="advertisementForm">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label asp-for="Title" class="form-label">Advertisement Title</label>
+                                    <input asp-for="Title" class="form-control" placeholder="Enter advertisement title" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Description" class="form-label">Description</label>
+                                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your advertisement"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="StartDate" class="form-label">Start Date</label>
+                                    <input asp-for="StartDate" class="form-control" type="date" />
+                                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                                    <small class="form-text text-muted">Advertisement cannot start before today's date</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Advertisement Image</label>
+                                    <input type="file" name="adImage" class="form-control" accept="image/*" id="adImageInput" />
+                                    <small class="form-text text-muted">Image upload is required (JPG, PNG, GIF)</small>
+                                    <div id="imagePreview" class="mt-2"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Payment Details</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Duration & Amount</label>
+                                            <select name="paymentAmountId" class="form-select" id="paymentAmountSelect">
+                                                <option value="">Select duration</option>
+                                                @if (ViewBag.PaymentAmounts != null)
+                                                {
+                                                    @foreach (var amount in ViewBag.PaymentAmounts)
+                                                    {
+                                                        <option value="@amount.PaymentAmountId" data-amount="@amount.Amount" data-duration="@amount.DurationInMonths">
+                                                            @amount.PaymentType - $@amount.Amount (@amount.DurationInMonths months)
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                            <small class="form-text text-muted">Advertisement duration and amount</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Payment Method</label>
+                                            <select name="paymentMethodId" class="form-select">
+                                                <option value="">Select payment method</option>
+                                                @if (ViewBag.PaymentMethods != null)
+                                                {
+                                                    @foreach (var method in ViewBag.PaymentMethods)
+                                                    {
+                                                        <option value="@method.PaymentMethodId">@method.MethodName</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <span class="text-danger" id="paymentMethodError"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Transaction ID</label>
+                                            <input type="text" name="transactionId" class="form-control" placeholder="Enter transaction ID" />
+                                            <span class="text-danger" id="transactionIdError"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Payment Screenshot</label>
+                                            <input type="file" name="paymentScreenshot" class="form-control" accept="image/*" id="paymentScreenshotInput" />
+                                            <small class="form-text text-muted">Upload payment screenshot (JPG, PNG, GIF)</small>
+                                            <div id="screenshotPreview" class="mt-2"></div>
+                                        </div>
+
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle"></i>
+                                            <strong>Payment Process:</strong>
+                                            <ol class="mb-0 small">
+                                                <li>Fill advertisement details (left side)</li>
+                                                <li>Select payment duration and method</li>
+                                                <li>Upload payment screenshot</li>
+                                                <li>Enter transaction ID</li>
+                                                <li>Submit to create advertisement</li>
+                                                <li>Advertisement will be active after payment approval</li>
+                                            </ol>
+                                        </div>
+
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <strong>Important Notes:</strong>
+                                            <ul class="mb-0 small">
+                                                <li>Image upload is required</li>
+                                                <li>Start date cannot be in the past</li>
+                                                <li>Payment screenshot is required</li>
+                                                <li>Transaction ID must be unique</li>
+                                                <li>Advertisement will show as "Pending" until payment is approved</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a href="@Url.Action("AdvertisementList", "Company")" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Back to List
+                                    </a>
+                                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                                        <i class="fas fa-save"></i> Create Advertisement
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/css/advertisement.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/advertisement.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

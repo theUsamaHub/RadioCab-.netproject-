@@ -1,0 +1,240 @@
+@model RadioCab.Models.AdvertisementCreateVM
+@{
+    ViewData["Title"] = "Create Advertisement";
+    Layout = "~/Views/Shared/driverlayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-ad me-2"></i>Create Advertisement
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="CreateAdvertisement" asp-controller="Driver" method="post" enctype="multipart/form-data" id="advertisementForm">
+                        @Html.AntiForgeryToken()
+                        
+                        <!-- Advertisement Details Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>Advertisement Details
+                                </h6>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Title" class="form-label fw-bold">
+                                    <i class="fas fa-heading me-1"></i>Advertisement Title
+                                </label>
+                                <input asp-for="Title" class="form-control" placeholder="Enter advertisement title" maxlength="100" />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StartDate" class="form-label fw-bold">
+                                    <i class="fas fa-calendar me-1"></i>Start Date
+                                </label>
+                                <input asp-for="StartDate" class="form-control" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="StartDate" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label asp-for="Description" class="form-label fw-bold">
+                                    <i class="fas fa-align-left me-1"></i>Description
+                                </label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your advertisement..." maxlength="500"></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                                <div class="form-text">Maximum 500 characters</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-image me-1"></i>Advertisement Image
+                                </label>
+                                <input type="file" name="adImage" class="form-control" accept="image/*" id="adImageInput" />
+                                <div class="form-text small">Allowed formats: JPG, PNG, GIF. Max size: 5MB</div>
+                                <div id="adImagePreview" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Details Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fas fa-credit-card me-2"></i>Payment Details
+                                </h6>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-dollar-sign me-1"></i>Payment Amount
+                                </label>
+                                <select name="paymentAmountId" class="form-select" id="paymentAmountSelect" required>
+                                    <option value="">Select payment amount</option>
+                                    @if (ViewBag.PaymentAmounts != null)
+                                    {
+                                        @foreach (var amount in ViewBag.PaymentAmounts)
+                                        {
+                                            <option value="@amount.PaymentAmountId" 
+                                                    data-amount="@amount.Amount" 
+                                                    data-duration="@amount.DurationInMonths">
+                                                @amount.Amount.ToString("C") (@amount.DurationInMonths month@(amount.DurationInMonths > 1 ? "s" : ""))
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <div id="selectedAmount" class="form-text small text-primary fw-bold mt-1"></div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-wallet me-1"></i>Payment Method
+                                </label>
+                                <select name="paymentMethodId" class="form-select" required>
+                                    <option value="">Select payment method</option>
+                                    @if (ViewBag.PaymentMethods != null)
+                                    {
+                                        @foreach (var method in ViewBag.PaymentMethods)
+                                        {
+                                            <option value="@method.PaymentMethodId">@method.MethodName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-receipt me-1"></i>Transaction ID
+                                </label>
+                                <input type="text" name="transactionId" class="form-control" 
+                                       placeholder="Enter transaction ID" maxlength="100" 
+                                       pattern="[A-Z0-9\-]+" title="Transaction ID should contain only uppercase letters, numbers, and hyphens" required />
+                                <div class="form-text small">Format: ABC123-XYZ (uppercase letters, numbers, hyphens only)</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-camera me-1"></i>Payment Screenshot
+                                </label>
+                                <input type="file" name="paymentScreenshot" class="form-control"                   
+                                accept="image/*,.pdf,.doc,.docx"
+                                id="paymentScreenshotInput" required />
+                                <div class="form-text small">Allowed formats: Images, PDF, DOC. Max size: 5MB</div>
+                                <div id="paymentScreenshotPreview" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="@Url.Action("AdvertisementList", "Driver")" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                                    </a>
+                                    <div>
+                                        <button type="reset" class="btn btn-outline-warning me-2" onclick="resetForm()">
+                                            <i class="fas fa-redo me-2"></i>Reset
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                                            <i class="fas fa-save me-2"></i>Create Advertisement
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Validation Summary -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-3">
+        <h6><i class="fas fa-exclamation-triangle me-2"></i>Please fix the following errors:</h6>
+        <ul class="mb-0">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/js/driver-advertisement.js"></script>
+    <script>
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            const adManager = new DriverAdvertisementManager();
+            
+            // Setup payment amount change handler
+            const paymentAmountSelect = document.getElementById('paymentAmountSelect');
+            if (paymentAmountSelect) {
+                paymentAmountSelect.addEventListener('change', updatePaymentAmount);
+            }
+            
+            // Setup form submission
+            const form = document.getElementById('advertisementForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    adManager.handleFormSubmit(e);
+                });
+            }
+        });
+
+        // Payment amount selection handler
+        function updatePaymentAmount() {
+            const paymentAmountSelect = document.getElementById('paymentAmountSelect');
+            if (paymentAmountSelect) {
+                const selectedOption = paymentAmountSelect.options[paymentAmountSelect.selectedIndex];
+                if (selectedOption && selectedOption.value) {
+                    const amount = selectedOption.getAttribute('data-amount');
+                    const duration = selectedOption.getAttribute('data-duration');
+                    
+                    // Update display if element exists
+                    const amountDisplay = document.getElementById('selectedAmount');
+                    if (amountDisplay) {
+                        amountDisplay.textContent = `Selected: $${amount} (${duration} month${duration > 1 ? 's' : ''})`;
+                    }
+                } else {
+                    const amountDisplay = document.getElementById('selectedAmount');
+                    if (amountDisplay) {
+                        amountDisplay.textContent = '';
+                    }
+                }
+            }
+        }
+
+        // Reset form function
+        function resetForm() {
+            document.getElementById('advertisementForm').reset();
+            document.getElementById('adImagePreview').innerHTML = '';
+            document.getElementById('paymentScreenshotPreview').innerHTML = '';
+            document.getElementById('selectedAmount').textContent = '';
+        }
+    </script>
+}

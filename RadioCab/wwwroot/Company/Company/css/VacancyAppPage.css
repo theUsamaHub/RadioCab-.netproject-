@@ -1,0 +1,311 @@
+﻿
+:root {
+    --primary: #212A27;
+    --secondary: #F6A90F;
+    --accent1: #FECA5A;
+    --accent2: #EE6E13;
+    --neutral-dark: #736664;
+    --neutral-light: #706A74;
+    --background: #F9FAFB;
+}
+
+
+/* Header Styles */
+.header-container {
+    background: linear-gradient(135deg, var(--primary) 0%, #1a2530 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Filter Section */
+.filter-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+}
+
+    .filter-container .form-label {
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .filter-container .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .filter-container .form-select:focus {
+            border-color: var(--accent1);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+
+/* Table Container */
+.application-table-container {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.table-header {
+    background: var(--neutral-light);
+    padding: 1.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* Table Styles */
+.application-table-container table {
+    margin-bottom: 0;
+}
+
+.application-table-container thead {
+    background: var(--primary);
+    color: white;
+}
+
+.application-table-container th {
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: none;
+}
+
+.application-table-container tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+    .application-table-container tbody tr:hover {
+        background-color: rgba(52, 152, 219, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+.application-table-container td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+/* Job Type Badge */
+.job-type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+    .job-type-badge[data-type="full time"] {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: #27ae60;
+        border: 1px solid #2ecc71;
+    }
+
+    .job-type-badge[data-type="part time"] {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: #2980b9;
+        border: 1px solid #3498db;
+    }
+
+    .job-type-badge[data-type="contract based"] {
+        background-color: rgba(155, 89, 182, 0.1);
+        color: #8e44ad;
+        border: 1px solid #9b59b6;
+    }
+
+/* Applicant Avatar */
+.applicant-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+}
+
+/* Email Link */
+.email-link {
+    color: var(--accent1);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+    .email-link:hover {
+        color: #1a5276;
+        text-decoration: underline;
+    }
+
+/* Status Badges */
+.badge-status {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0.5px;
+}
+
+.badge-pending {
+    background-color: rgba(243, 156, 18, 0.1);
+    color: #d35400;
+    border: 1px solid #f39c12;
+}
+
+.badge-reviewed {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: #2980b9;
+    border: 1px solid #3498db;
+}
+
+.badge-shortlisted {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #27ae60;
+    border: 1px solid #2ecc71;
+}
+
+.badge-hired {
+    background-color: rgba(39, 174, 96, 0.1);
+    color: #229954;
+    border: 1px solid #27ae60;
+}
+
+.badge-rejected {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #c0392b;
+    border: 1px solid #e74c3c;
+}
+
+/* Action Buttons */
+.action-btn {
+    padding: 0.35rem 0.75rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.view-btn {
+    background-color: var(--accent1);
+    color: white;
+}
+
+    .view-btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(52, 152, 219, 0.3);
+    }
+
+/* Search Input */
+.input-group {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .input-group input {
+        border: 2px solid #e9ecef;
+        border-right: none;
+    }
+
+    .input-group .btn {
+        border: 2px solid #e9ecef;
+        background: white;
+        color: var(--primary);
+    }
+
+        .input-group .btn:hover {
+            background: var(--neutral-light);
+        }
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .application-table-container table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .applicant-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+
+    .action-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Statistics Cards */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--neutral-dark);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--neutral-dark);
+}
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #bdc3c7;
+        margin-bottom: 1rem;
+    }
+
+/* Footer Note */
+.footer-note {
+    color: var(--neutral-dark);
+    font-size: 0.9rem;
+    padding: 1rem 0;
+    border-top: 1px solid #e9ecef;
+    margin-top: 2rem;
+}

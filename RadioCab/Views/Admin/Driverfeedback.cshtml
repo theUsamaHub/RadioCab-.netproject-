@@ -1,0 +1,795 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    ViewData["Title"] = "Driver Feedback Management";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<style>
+    :root {
+        --compact-header-height: 50px;
+        --compact-row-height: 45px;
+        --compact-font-size: 12px;
+    }
+
+    /* Compact Feedback Management */
+    .feedback-management {
+        padding: 0;
+        max-width: 100%;
+        background-color: #f8f9fa;
+        min-height: calc(100vh - var(--compact-header-height));
+    }
+
+    /* Compact Header */
+    .page-header {
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+        .page-header h2 {
+            font-size: 16px;
+            margin: 0;
+            color: white;
+            font-weight: 600;
+        }
+
+    /* Compact Stats Cards */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 0 15px 15px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 4px;
+        padding: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid #dee2e6;
+        text-align: center;
+    }
+
+        .stat-card .stat-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .stat-card .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .stat-card .stat-label {
+            font-size: 11px;
+            color: #6c757d;
+            margin: 2px 0 0;
+        }
+
+    /* Compact Table Controls */
+    .table-controls {
+        display: flex;
+        gap: 10px;
+        padding: 10px 15px;
+        background: white;
+        border-radius: 4px;
+        margin: 0 15px 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+    }
+
+        .search-box input {
+            width: 100%;
+            padding: 6px 10px 6px 30px;
+            border: 1px solid #ced4da;
+            border-radius: 3px;
+            font-size: 12px;
+            height: 30px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+    .filter-group {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+
+        .filter-group label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #2c3e50;
+            white-space: nowrap;
+        }
+
+        .filter-group select {
+            padding: 5px 8px;
+            border: 1px solid #ced4da;
+            border-radius: 3px;
+            font-size: 11px;
+            height: 30px;
+            min-width: 100px;
+        }
+
+    /* Compact Table */
+    .feedback-list-container {
+        margin: 0 15px 15px;
+        background: white;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+        overflow: hidden;
+    }
+
+    .table-responsive {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .feedback-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: var(--compact-font-size);
+    }
+
+        .feedback-table thead {
+            background: #2c3e50;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .feedback-table th {
+            padding: 8px 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #1a252f;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .feedback-table tbody tr {
+            height: var(--compact-row-height);
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.1s;
+        }
+
+            .feedback-table tbody tr:hover {
+                background-color: #f8f9fa;
+            }
+
+        .feedback-table td {
+            padding: 6px 10px;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+
+    /* Compact Cells */
+    .company-cell, .user-cell {
+        min-width: 140px;
+        max-width: 140px;
+    }
+
+        .company-cell strong, .user-cell strong {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .company-cell small, .user-cell small {
+            display: block;
+            color: #6c757d;
+            font-size: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+    .rating-cell {
+        width: 100px;
+    }
+
+    .comment-cell {
+        max-width: 250px;
+        min-width: 150px;
+    }
+
+    .comment-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.4;
+        font-size: 11px;
+        color: #495057;
+    }
+
+    .date-cell {
+        width: 100px;
+        white-space: nowrap;
+    }
+
+        .date-cell .date {
+            font-size: 11px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .date-cell .time {
+            font-size: 10px;
+            color: #6c757d;
+        }
+
+    /* Compact Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 4px;
+    }
+
+    .btn-action {
+        width: 26px;
+        height: 26px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-view {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+        .btn-view:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+    .btn-delete {
+        background: #ffebee;
+        color: #d32f2f;
+    }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+            color: white;
+        }
+
+    /* Compact Empty State */
+    .empty-state {
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+        .empty-state i {
+            font-size: 36px;
+            color: #adb5bd;
+            margin-bottom: 10px;
+        }
+
+        .empty-state h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 5px;
+            color: #2c3e50;
+        }
+
+        .empty-state p {
+            font-size: 11px;
+            color: #6c757d;
+            margin: 0;
+        }
+
+    /* Compact View Modal */
+    #viewModal .modal-dialog {
+        max-width: 500px;
+    }
+
+    #viewModal .modal-header {
+        padding: 12px 15px;
+        background: #2c3e50;
+    }
+
+        #viewModal .modal-header h5 {
+            font-size: 14px;
+            margin: 0;
+            color: white;
+        }
+
+    #viewModal .modal-body {
+        padding: 15px;
+    }
+
+    .feedback-details {
+        display: grid;
+        gap: 10px;
+    }
+
+    .detail-row {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
+        font-size: 12px;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .detail-value {
+        color: #495057;
+        line-height: 1.4;
+    }
+
+    /* Filter results counter */
+    .filter-results {
+        padding: 5px 15px;
+        background: #e9ecef;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 11px;
+        color: #6c757d;
+    }
+</style>
+
+<div class="feedback-management">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2 class="p-3">
+            <i class="fas fa-comments"></i>
+            Driver Feedback Management
+        </h2>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-comment-alt"></i>
+            </div>
+            <div class="stat-value" id="totalFeedback">@Model.Driverfeedback_list.Count</div>
+            <div class="stat-label">Total Feedback</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-building"></i>
+            </div>
+            <div class="stat-value" id="totalDrivers">
+                @Model.Driverfeedback_list.Select(f => f.DriverId).Distinct().Count()
+            </div>
+            <div class="stat-label">Drivers Reviewed</div>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="table-controls">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search by company, user, or comment...">
+        </div>
+        <div class="filter-group">
+            <label for="ratingFilter">Rating:</label>
+            <select id="ratingFilter">
+                <option value="all">All Ratings</option>
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Feedback List -->
+    <div class="feedback-list-container">
+        <div class="filter-results">
+            Showing <span id="visibleCount">@Model.Driverfeedback_list.Count</span> of <span id="totalCount">@Model.Driverfeedback_list.Count</span> feedback entries
+        </div>
+
+        @if (!Model.Driverfeedback_list.Any())
+        {
+            <div class="empty-state">
+                <i class="fas fa-comment-slash"></i>
+                <h3>No Feedback Found</h3>
+                <p>There are no driver feedback submissions yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="feedback-table">
+                    <thead>
+                        <tr>
+                            <th>Driver</th>
+                            <th>Reviewer</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feedbackTableBody">
+                        @foreach (var feedback in Model.Driverfeedback_list)
+                        {
+                            <tr class="feedback-row"
+                                data-rating="@feedback.Rating"
+                                data-driver="@feedback.Driver?.DriverName?.ToLower()"
+                                data-user="@feedback.Email?.ToLower()"
+                                data-comment="@feedback.Comment?.ToLower()">
+
+                                <td class="company-cell">
+                                    <strong>@feedback.Driver?.DriverName</strong>
+                                </td>
+
+                                <td class="user-cell">
+                                    @if (!string.IsNullOrEmpty(feedback.Name))
+                                    {
+                                        <strong>@feedback.Name</strong>
+                                    }
+                                    else
+                                    {
+                                        <strong>Anonymous</strong>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(feedback.Email))
+                                    {
+                                        <small>@feedback.Email</small>
+                                    }
+                                </td>
+
+                                <td class="rating-cell">
+                                    @if (feedback.Rating > 0)
+                                    {
+                                        <div class="star-rating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= feedback.Rating)
+                                                {
+                                                    <i class="fas fa-star"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="far fa-star"></i>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="rating-text">@feedback.Rating stars</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No rating</span>
+                                    }
+                                </td>
+
+                                <td class="comment-cell">
+                                    <div class="comment-text" title="@feedback.Comment">
+                                        @if (!string.IsNullOrEmpty(feedback.Comment))
+                                        {
+                                            @(feedback.Comment.Length > 100 ? feedback.Comment.Substring(0, 100) + "..." : feedback.Comment)
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No comment</span>
+                                        }
+                                    </div>
+                                </td>
+
+                                <td class="date-cell">
+                                    @if (feedback.CreatedAt.HasValue)
+                                    {
+                                        <span class="date">@feedback.CreatedAt.Value.ToString("MMM dd, yyyy")</span>
+                                        <span class="time">@feedback.CreatedAt.Value.ToString("hh:mm tt")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">N/A</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="action-buttons">
+                                        <button type="button" class="btn-action btn-view js-view-feedback"
+                                                data-id="@feedback.FeedbackId"
+                                                title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn-action btn-delete js-delete-feedback"
+                                                data-id="@feedback.FeedbackId"
+                                                data-driver="@feedback.Driver?.DriverName"
+                                                title="Delete Feedback">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Anti-Forgery Token for AJAX -->
+<form id="antiForgeryForm" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<!-- View Feedback Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Feedback Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="feedback-details" id="feedbackDetails">
+                    <!-- Details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize variables
+        const feedbackRows = document.querySelectorAll('.feedback-row');
+        const searchInput = document.getElementById('searchInput');
+        const ratingFilter = document.getElementById('ratingFilter');
+        const visibleCountSpan = document.getElementById('visibleCount');
+        const totalCountSpan = document.getElementById('totalCount');
+        const antiForgeryToken = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+         document.querySelector('[data-page="df"]').classList.add('active');
+
+        // Initialize counts
+        totalCountSpan.textContent = feedbackRows.length;
+        visibleCountSpan.textContent = feedbackRows.length;
+
+        // Filter function
+        function filterFeedback() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const ratingValue = ratingFilter.value;
+            let visibleCount = 0;
+
+            feedbackRows.forEach(row => {
+                let showRow = true;
+
+                // Search filter
+                if (searchTerm) {
+                    const driverName = row.getAttribute('data-driver') || '';
+                    const userEmail = row.getAttribute('data-user') || '';
+                    const comment = row.getAttribute('data-comment') || '';
+
+                    if (!driverName.includes(searchTerm) &&
+                        !userEmail.includes(searchTerm) &&
+                        !comment.includes(searchTerm)) {
+                        showRow = false;
+                    }
+                }
+
+                // Rating filter
+                if (showRow && ratingValue !== 'all') {
+                    const rowRating = row.getAttribute('data-rating');
+                    if (rowRating !== ratingValue) {
+                        showRow = false;
+                    }
+                }
+
+                // Show/hide row
+                if (showRow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Update visible count
+            visibleCountSpan.textContent = visibleCount;
+        }
+
+        // Event listeners for filters
+        searchInput.addEventListener('input', filterFeedback);
+        ratingFilter.addEventListener('change', filterFeedback);
+
+        // View feedback functionality
+        document.querySelectorAll('.js-view-feedback').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const feedbackId = this.getAttribute('data-id');
+
+                // Get the row data
+                const row = this.closest('tr');
+                const driverName = row.querySelector('.company-cell strong').textContent;
+                const userId = row.querySelector('.user-cell strong').textContent;
+                const userEmail = row.querySelector('.user-cell small').textContent;
+                const rating = row.getAttribute('data-rating');
+                const comment = row.querySelector('.comment-text').getAttribute('title') || row.querySelector('.comment-text').textContent;
+                const date = row.querySelector('.date-cell .date').textContent;
+                const time = row.querySelector('.date-cell .time').textContent;
+
+                // Create stars HTML
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    starsHtml += `<i class="${i <= rating ? 'fas' : 'far'} fa-star"></i>`;
+                }
+
+                // Populate modal
+                const detailsHtml = `
+                    <div class="detail-row">
+                        <div class="detail-label">Feedback ID:</div>
+                        <div class="detail-value">${feedbackId}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Driver:</div>
+                        <div class="detail-value">${driverName}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">User:</div>
+                        <div class="detail-value">${userId}<br><small>${userEmail}</small></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Rating:</div>
+                        <div class="detail-value">
+                            <div style="color: #ffc107; margin-bottom: 5px;">
+                                ${starsHtml}
+                            </div>
+                            <div>${rating} out of 5 stars</div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Date:</div>
+                        <div class="detail-value">${date} at ${time}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Comment:</div>
+                        <div class="detail-value" style="white-space: pre-line; max-height: 200px; overflow-y: auto;">${comment || 'No comment provided'}</div>
+                    </div>
+                `;
+
+                document.getElementById('feedbackDetails').innerHTML = detailsHtml;
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('viewModal'));
+                modal.show();
+            });
+        });
+
+        // Delete functionality
+        document.querySelectorAll('.js-delete-feedback').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const feedbackId = this.getAttribute('data-id');
+                const driverName = this.getAttribute('data-driver') || 'this feedback';
+                const row = this.closest('tr');
+
+                Swal.fire({
+                    title: 'Delete Feedback?',
+                    text: `Are you sure you want to delete ${driverName}'s feedback? This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#6c7280',
+                    confirmButtonText: 'Yes, delete',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true,
+                    width: '400px'
+                }).then((result) => {
+                    if (!result.isConfirmed) return;
+
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    fetch('/Admin/DeleteDriverfeedbackAjax', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': antiForgeryToken
+                        },
+                        body: `id=${feedbackId}`
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: 'Feedback has been deleted.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+
+                            // Remove row from table
+                            row.remove();
+
+                            // Update counts
+                            const remainingRows = document.querySelectorAll('.feedback-row');
+                            visibleCountSpan.textContent = remainingRows.length;
+                            totalCountSpan.textContent = remainingRows.length;
+
+                            // Update stats
+                            document.getElementById('totalFeedback').textContent = remainingRows.length;
+
+                            // Refilter to update display
+                            filterFeedback();
+                        } else {
+                            Swal.fire('Error', data.message || 'Failed to delete feedback', 'error');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        Swal.fire('Error', 'Network error. Please try again.', 'error');
+                    });
+                });
+            });
+        });
+    });
+</script>

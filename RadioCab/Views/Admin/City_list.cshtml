@@ -1,0 +1,144 @@
+﻿@model RadioCab.Models.CityPageVM
+@{
+    ViewData["Title"] = "City Management";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="~/css/city.css" rel="stylesheet" />
+@Html.AntiForgeryToken()
+
+<div class="dashboard-content">
+    <!-- Add City Form -->
+    <div class="form-container">
+        <div class="form-header">
+            <i class="fas fa-plus-circle"></i>
+            <h2>Add New City</h2>
+        </div>
+        <form id="cityForm" asp-controller="Admin" method="post" asp-action="City_list">
+            <div class="city-form">
+                <div class="form-group">
+                    <label for="CityName" class="required">City Name</label>
+                    <input type="text" id="CityName" asp-for="City_Validate.CityName"
+                           class="form-control"
+                           placeholder="Enter city name" />
+                    <span class="error-message" asp-validation-for="City_Validate.CityName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="ZipCode">City Code / Zip Code</label>
+                    <input type="text" id="ZipCode" asp-for="City_Validate.ZipCode"
+                           class="form-control"
+                           placeholder="Enter zip code" />
+                    <span class="error-message" asp-validation-for="City_Validate.ZipCode"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i>
+                        Save City
+                    </button>
+                    <button type="reset" class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i>
+                        Clear Form
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- City List Table -->
+    <!-- City List Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-header-left">
+                <i class="fas fa-city"></i>
+                <h2>Cities List</h2>
+                <span class="table-stats" id="cityCount">
+                    @Model.City_list.Count cities
+                </span>
+            </div>
+        </div>
+
+        @if (!Model.City_list.Any())
+        {
+            <div id="emptyState" style="display: block;">
+                <i class="fas fa-city"></i>
+                <h3>No Cities Found</h3>
+                <p>Add your first city using the form above</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>City Name</th>
+                            <th>Zip Code</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var city in Model.City_list)
+                        {
+                            <tr>
+                                <td>@city.CityName</td>
+                                <td>@city.ZipCode</td>
+                                <td>
+                                    <button class="btn btn-sm btn-edit" onclick="editCity(@city.CityId)">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <a href="javascript:void(0);" class="btn btn-sm btn-delete js-delete-user" data-id="@city.CityId">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+    <div style="background:white; width:400px; margin:100px auto; padding:20px; border-radius:10px;">
+        <h3>Edit City</h3>
+
+        <input type="hidden" id="editCityId" />
+
+        <div class="form-group">
+            <label>City Name *</label>
+            <input type="text" id="editCityName" class="form-control"  />
+            <span id="editCityNameError" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Zip Code</label>
+            <input type="text" id="editZipCode" class="form-control" />
+            <span id="editZipCodeError" class="text-danger"></span>
+        </div>
+
+        <div style="margin-top:20px;">
+            <button onclick="saveEdit()" class="btn btn-primary">Save Changes</button>
+            <button onclick="closeEditModal()" class="btn btn-secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/city.js"></script>

@@ -1,0 +1,585 @@
+﻿
+:root {
+    --gold: #D4AF37;
+    --gold-light: #F4E8C1;
+    --gold-dark: #B7950B;
+    --black: #121212;
+    --gray: #F8F9FA;
+    --white: #FFFFFF;
+    --vehicle-blue: #2C3E50;
+    --vehicle-gray: #95A5A6;
+    --success-green: #27AE60;
+    --info-blue: #3498DB;
+    --input-border: #E0E0E0;
+    --input-border-hover: #B0B0B0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+    padding: 20px;
+}
+
+/* Unique split layout container */
+.split-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    min-height: 750px;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Left panel - Contact info */
+.contact-panel {
+    flex: 1;
+    background: linear-gradient(145deg, var(--white) 0%, var(--gray) 100%);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border-right: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+    .contact-panel::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 3px;
+        background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    }
+
+/* Right panel - Form */
+.form-panel {
+    flex: 1.4;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    overflow-y: auto;
+}
+
+/* Contact card styling */
+.contact-header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.contact-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: var(--white);
+    font-size: 32px;
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+    .contact-icon::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transform: translateX(-100%);
+        animation: shine 3s infinite;
+    }
+
+.contact-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 5px;
+}
+
+.contact-title {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+/* Contact info items */
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 15px;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid var(--gold);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .info-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+.info-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--gold-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: var(--gold-dark);
+    flex-shrink: 0;
+}
+
+.info-content h5 {
+    color: var(--black);
+    font-size: 14px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-content p {
+    color: var(--black);
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Form styling */
+.form-header {
+    margin-bottom: 30px;
+}
+
+    .form-header h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--black);
+        margin-bottom: 10px;
+        position: relative;
+        display: inline-block;
+    }
+
+        .form-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--gold);
+        }
+
+    .form-header p {
+        color: #666;
+        font-size: 16px;
+    }
+
+/* Vehicle Information Section */
+.section-header {
+    margin: 30px 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gold-light);
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+    animation-delay: 0.6s;
+}
+
+    .section-header h4 {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--vehicle-blue);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-header hr {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold), transparent);
+        margin-top: 8px;
+    }
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--black);
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+    .form-label i {
+        color: var(--gold);
+        width: 20px;
+    }
+
+/* UPDATED: Input field styling - Gray border with gold glow on hover/focus */
+.form-control, .form-select {
+    border: 2px solid var(--input-border);
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--white);
+    width: 100%;
+}
+
+    /* UPDATED: Hover state - Gray to light gold border with glow */
+    .form-control:hover, .form-select:hover {
+        border-color: var(--input-border-hover);
+        box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1);
+    }
+
+    /* UPDATED: Focus state - Gold border with stronger glow */
+    .form-control:focus, .form-select:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+        outline: none;
+    }
+
+    /* UPDATED: Active state (when typing) */
+    .form-control:active, .form-select:active {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+    }
+
+/* Special styling for CNIC input */
+#cnic {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    background: linear-gradient(to right, #f8f9fa 0%, #ffffff 100%);
+}
+
+
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Buttons */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--white);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    min-width: 120px;
+}
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+    }
+
+    .submit-btn:active {
+        transform: translateY(-1px);
+    }
+
+    /* Back button style */
+    .submit-btn:first-child {
+        background: linear-gradient(135deg, var(--vehicle-gray), #7F8C8D);
+    }
+
+        .submit-btn:first-child:hover {
+            box-shadow: 0 10px 25px rgba(149, 165, 166, 0.3);
+        }
+
+/* Decorative elements */
+.decorative-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 30px 0;
+    opacity: 0.3;
+}
+
+/* Contact note stays at bottom of left panel */
+.contact-note {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+    .contact-note p {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+/* Animation */
+@keyframes shine {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    60%, 100% {
+        transform: translateX(100%);
+    }
+}
+
+.form-group, .info-item, .section-header {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* UPDATED: Remove green validation styles */
+.form-control:valid, .form-select:valid {
+    border-color: var(--input-border);
+}
+
+.form-control:invalid:not(:focus):not(:placeholder-shown),
+.form-select:invalid:not(:focus) {
+    border-color: var(--input-border);
+}
+
+/* Keep only required field indication */
+.form-control:required, .form-select:required {
+    background-image: linear-gradient(45deg, transparent 50%, rgba(212, 175, 55, 0.1) 50%);
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 8px 8px;
+}
+
+/* Placeholder styling */
+::placeholder {
+    color: #999;
+    opacity: 1;
+}
+
+/* Scrollbar styling for form panel */
+.form-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.form-panel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.form-panel::-webkit-scrollbar-thumb {
+    background: var(--gold-light);
+    border-radius: 10px;
+}
+
+    .form-panel::-webkit-scrollbar-thumb:hover {
+        background: var(--gold);
+    }
+
+/* Experience dropdown specific styling */
+#experience option {
+    padding: 10px;
+    font-size: 14px;
+}
+
+/* Vehicle year dropdown styling */
+#vehicleYear option {
+    padding: 8px;
+}
+
+/* Plate number input specific */
+#plateNumber {
+    font-weight: 600;
+    background: linear-gradient(to right, #f8f9fa 0%, #f0f0f0 100%);
+}
+
+/* Custom styling for select dropdown arrow */
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23D4AF37' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 12px;
+    padding-right: 40px;
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+    .split-container {
+        flex-direction: column;
+        max-width: 700px;
+        min-height: auto;
+    }
+
+    .contact-panel {
+        border-right: none;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        padding: 30px;
+    }
+
+        .contact-panel::after {
+            display: none;
+        }
+
+    .form-panel {
+        padding: 30px;
+        overflow-y: visible;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .section-header {
+        margin: 25px 0 15px 0;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .submit-btn {
+        width: 100%;
+    }
+
+    .contact-note {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .split-container {
+        border-radius: 15px;
+        margin: 10px;
+    }
+
+    .contact-panel, .form-panel {
+        padding: 25px 20px;
+    }
+
+    .contact-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+
+    .contact-name {
+        font-size: 24px;
+    }
+
+    .info-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 12px;
+    }
+
+    .info-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .form-header h2 {
+        font-size: 24px;
+    }
+
+    .section-header h4 {
+        font-size: 18px;
+    }
+
+    .form-control, .form-select {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .split-container {
+        box-shadow: none;
+        border-radius: 0;
+        max-width: 100%;
+        min-height: auto;
+    }
+
+    .submit-btn {
+        display: none;
+    }
+
+    .form-panel {
+        overflow-y: visible;
+    }
+}
+
+

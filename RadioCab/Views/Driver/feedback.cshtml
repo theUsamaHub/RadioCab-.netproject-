@@ -1,0 +1,371 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/driverlayout.cshtml";
+}
+
+@{
+    ViewData["Title"] = "Customer Feedback";
+    var feedbacks = ViewBag.Feedbacks as List<DriverFeedback>;
+    var averageRating = ViewBag.AverageRating;
+    var totalFeedbacks = ViewBag.TotalFeedbacks;
+    var ratingDistribution = ViewBag.RatingDistribution as Dictionary<int, int>;
+    var ratingPercentages = ViewBag.RatingPercentages as Dictionary<int, double>;
+    var driverName = ViewBag.DriverName;
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0">Customer Feedback</h1>
+                    <p class="text-muted">View feedback from your passengers</p>
+                </div>
+                <div>
+                    <span class="badge bg-primary">
+                        <i class="fas fa-user"></i> @driverName
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row mb-4">
+        <!-- Average Rating Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Average Rating
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @averageRating <small class="h6">/ 5</small>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-star fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Feedbacks Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Feedbacks
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@totalFeedbacks</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5 Star Ratings Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                5 Star Ratings
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @(ratingDistribution != null && ratingDistribution.ContainsKey(5) ? ratingDistribution[5] : 0)
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-thumbs-up fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Recent Feedback
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @if (feedbacks != null && feedbacks.Any())
+                                {
+                                    var latest = feedbacks.First();
+                                    <small>@latest.CreatedAt?.ToString("MMM dd")</small>
+                                }
+                                else
+                                {
+                                    <small>No feedback yet</small>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Distribution Chart -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Rating Distribution</h6>
+                    <div class="badge bg-primary">
+                        @totalFeedbacks total ratings
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (ratingDistribution != null && totalFeedbacks > 0)
+                    {
+                        for (int i = 5; i >= 1; i--)
+                        {
+                            var count = ratingDistribution.ContainsKey(i) ? ratingDistribution[i] : 0;
+                            var percentage = ratingPercentages.ContainsKey(i) ? ratingPercentages[i] : 0;
+
+                            <div class="mb-4">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <div class="text-sm font-weight-bold">
+                                        @i <i class="fas fa-star text-warning"></i>
+                                        <span class="text-muted ml-1">(@count)</span>
+                                    </div>
+                                    <div class="text-sm font-weight-bold text-gray-800">
+                                        @percentage%
+                                    </div>
+                                </div>
+                                <div class="progress" style="height: 15px;">
+                                    <div class="progress-bar bg-@(i >= 4 ? "success" : i == 3 ? "warning" : "danger")"
+                                         role="progressbar"
+                                         style="width: @percentage%"
+                                         aria-valuenow="@percentage"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-bar fa-3x text-gray-300 mb-3"></i>
+                            <h5 class="text-gray-500">No Rating Data</h5>
+                            <p class="text-muted">You haven't received any ratings yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Your Rating Summary</h6>
+                </div>
+                <div class="card-body">
+                    @if (ratingDistribution != null && totalFeedbacks > 0)
+                    {
+                        <div class="text-center">
+                            <!-- Large Rating Display -->
+                            <div class="display-2 text-primary mb-2">@averageRating</div>
+                            <div class="mb-4">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="fas fa-star fa-2x @(i <= Math.Round(averageRating) ? "text-warning" : "text-gray-300")"></i>
+                                }
+                                <div class="text-muted mt-2">out of 5 stars</div>
+                            </div>
+                            <p class="text-muted mb-4">Based on @totalFeedbacks passenger feedback(s)</p>
+
+                            <hr class="my-4">
+
+                            <!-- Quick Stats -->
+                            <div class="row text-center">
+                                <div class="col-6 border-right">
+                                    <div class="h4 mb-0 text-success">@(ratingDistribution.ContainsKey(5) ? ratingDistribution[5] : 0)</div>
+                                    <small class="text-muted">5 Stars</small>
+                                </div>
+                                <div class="col-6">
+                                    <div class="h4 mb-0 text-danger">@(ratingDistribution.ContainsKey(1) ? ratingDistribution[1] : 0)</div>
+                                    <small class="text-muted">1 Stars</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <div class="mb-3">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="fas fa-star fa-2x text-gray-300"></i>
+                                }
+                            </div>
+                            <h5 class="text-gray-500">No Ratings Yet</h5>
+                            <p class="text-muted">Start driving to receive passenger feedback</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">All Passenger Feedbacks</h6>
+                    <span class="badge bg-primary rounded-pill">@totalFeedbacks</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (feedbacks != null && feedbacks.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var feedback in feedbacks)
+                            {
+                                <div class="list-group-item p-4">
+                                    <div class="row align-items-center">
+                                        <!-- Rating Column -->
+                                        <div class="col-md-2 mb-3 mb-md-0">
+                                            <div class="text-center">
+                                                <div class="display-4 text-primary mb-1">@feedback.Rating</div>
+                                                <div class="mb-2">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        <i class="fas fa-star @(i <= feedback.Rating ? "text-warning" : "text-gray-300")"></i>
+                                                    }
+                                                </div>
+                                                <small class="text-muted">out of 5</small>
+                                            </div>
+                                        </div>
+
+                                        <!-- Comment Column -->
+                                        <div class="col-md-7 mb-3 mb-md-0">
+                                            <p class="mb-2">@feedback.Comment</p>
+                                            <div class="text-muted small">
+                                                <i class="far fa-clock mr-1"></i>
+                                                @feedback.CreatedAt?.ToString("MMMM dd, yyyy • hh:mm tt")
+                                            </div>
+                                        </div>
+
+                                        <!-- User Info Column -->
+                                        <!-- User Info Column -->
+                                        <div class="col-md-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="mr-3">
+                                                    <div class="icon-circle bg-primary">
+                                                        <i class="fas fa-user text-white"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="font-weight-bold">
+                                                        @if (!string.IsNullOrEmpty(feedback.Name))
+                                                        {
+                                                            @feedback.Name
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>Anonymous Passenger</span>
+                                                        }
+                                                    </div>
+                                                    @if (!string.IsNullOrEmpty(feedback.Email))
+                                                    {
+                                                        <div class="text-muted small">
+                                                            <i class="fas fa-envelope mr-1"></i>@feedback.Email
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="text-muted small">Passenger</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-comments fa-4x text-gray-300"></i>
+                            </div>
+                            <h4 class="text-gray-500">No Feedback Received Yet</h4>
+                            <p class="text-gray-500 mb-4">Your passengers haven't left any feedback yet.</p>
+                            <div class="alert alert-info" role="alert">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Feedback will appear here after passengers rate your service.
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS for Driver Feedback -->
+<style>
+    .progress {
+        border-radius: 10px;
+    }
+
+    .progress-bar {
+        border-radius: 10px;
+    }
+
+    .list-group-item {
+        border-bottom: 1px solid #e3e6f0;
+        transition: background-color 0.3s;
+    }
+
+        .list-group-item:hover {
+            background-color: #f8f9fc;
+        }
+
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+    .icon-circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .border-right {
+        border-right: 1px solid #e3e6f0 !important;
+    }
+
+    .display-2 {
+        font-size: 3.5rem;
+        font-weight: 300;
+        line-height: 1.2;
+    }
+</style>

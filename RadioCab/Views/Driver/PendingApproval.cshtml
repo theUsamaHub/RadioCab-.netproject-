@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Driver Registration Pending";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="~/Company/css/pendingaprroval.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="container">
+        <div class="driver-icon">🚚</div>
+        <h2>Your Driver Registration is Pending</h2>
+
+        <div class="status-message">
+            <p>Your driver account is under review by the admin. You will automatically be redirected to your dashboard once approved.</p>
+        </div>
+
+        <div class="loading-indicator">
+            <div class="spinner"></div>
+            <span>Checking approval status...</span>
+        </div>
+
+        <div class="countdown">
+            Next check in: <span id="countdown">5</span> seconds
+        </div>
+
+        <div class="info-box">
+            <h3>Driver Registration Process:</h3>
+            <ul>
+                <li>Document verification takes 24-48 hours</li>
+                <li>Background check completion required</li>
+          
+                <li>Automatic redirect to driver dashboard</li>
+                <li>Keep your documents ready for first trip</li>
+            </ul>
+        </div>
+
+        <div class="contact-info">
+            <p><strong>Driver Support:</strong> driversupport@RadioCab.com | +92 330 2174315</p>
+            <p class="note">Support available 24/7 for registered drivers</p>
+        </div>
+    </div>
+
+    <script>
+        // Countdown timer
+        let countdown = 5;
+        const countdownElement = document.getElementById('countdown');
+
+        function updateCountdown() {
+            countdown--;
+            if (countdown <= 0) {
+                countdown = 5;
+            }
+            countdownElement.textContent = countdown;
+        }
+
+        // Start countdown
+        setInterval(updateCountdown, 1000);
+
+        // Poll the server every 5 seconds to check if registration is approved
+        setInterval(function() {
+            fetch('@Url.Action("CheckStatus", "Driver")')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "Approved") {
+                        window.location.href = '@Url.Action("Index", "Driver")';
+                    }
+                })
+                .catch(err => console.error(err));
+
+            // Reset countdown after check
+            countdown = 5;
+            countdownElement.textContent = countdown;
+        }, 5000); // check every 5 seconds
+    </script>
+</body>
+</html>

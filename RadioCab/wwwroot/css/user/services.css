@@ -1,0 +1,207 @@
+/**
+ * Services Page - Minimal Styles
+ */
+
+/* Filter Card */
+.filter-card {
+    background: var(--white);
+    border: 1px solid var(--light-gray);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 100px;
+}
+
+/* Platform Service Items */
+.platform-service-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--light-gray);
+    color: var(--medium-gray);
+    font-size: 0.875rem;
+}
+
+    .platform-service-item:last-child {
+        border-bottom: none;
+    }
+
+/* Search Bar */
+.search-bar .input-group {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--light-gray);
+}
+
+.search-bar .form-control {
+    border: none;
+    padding: 0.75rem 1rem;
+}
+
+    .search-bar .form-control:focus {
+        box-shadow: none;
+    }
+
+.search-bar .btn {
+    border-radius: 0;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Service Card */
+.service-card {
+    background: var(--white);
+    border: 1px solid var(--light-gray);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+    .service-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border-color: var(--primary-yellow);
+    }
+
+.service-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-yellow);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--primary-black);
+}
+
+.service-title {
+    color: var(--primary-black);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.service-description {
+    color: var(--medium-gray);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+/* Service Tags */
+.service-tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+    .tag.driver {
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+    }
+
+    .tag.company {
+        background: rgba(23, 162, 184, 0.1);
+        color: #17a2b8;
+    }
+
+/* Service Stats */
+.service-stats {
+    margin-bottom: 1rem;
+}
+
+.stat {
+    font-size: 0.875rem;
+    color: var(--medium-gray);
+}
+
+    .stat i {
+        color: var(--primary-yellow);
+        margin-right: 0.5rem;
+    }
+
+/* Service Footer */
+.service-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--light-gray);
+}
+
+.status {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-weight: 500;
+}
+
+    .status.active {
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+    }
+
+    .status.inactive {
+        background: rgba(108, 117, 125, 0.1);
+        color: var(--medium-gray);
+    }
+
+/* How It Works Steps */
+.step {
+    padding: 1.5rem;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-yellow);
+    color: var(--primary-black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin: 0 auto 1rem;
+}
+
+/* Remove underline from all links */
+a {
+    text-decoration: none !important;
+}
+
+    a:hover {
+        text-decoration: none !important;
+    }
+
+/* Modal */
+.modal-header.bg-black {
+    background-color: var(--primary-black) !important;
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filter-card {
+        position: static;
+        margin-bottom: 2rem;
+    }
+
+    .service-card {
+        padding: 1rem;
+    }
+
+    .service-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+}

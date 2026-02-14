@@ -1,0 +1,288 @@
+﻿@model RadioCab.Models.CDVM
+
+@{
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link href="~/css/drivermanage.css" rel="stylesheet" />
+
+
+
+<!-- Content will be placed inside: <div class="dashboard-content"> -->
+<div class="driver-management-page">
+
+
+    <!-- Driver Actions Bar -->
+    <div class="driver-actions-bar">
+        <div class="action-buttons-container">
+            <form method="get" asp-action="DriverManage" asp-controller="Admin" class="filter-form">
+
+                <div class="status-filter">
+                    <select class="status-select"
+                            name="membershipId"
+                            asp-for="SelectedMembershipId"
+                            asp-items="@(new SelectList(Model.membership_list, "MembershipId", "MembershipName"))">
+                        <option value="">All Memberships</option>
+                    </select>
+                </div>
+                <div class="status-filter">
+                    <select class="status-select"
+                            name="cityId"
+                            asp-for="SelectedCityId"
+                            asp-items="@(new SelectList(Model.cities, "CityId", "CityName"))">
+                        <option value="">All Cities</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-outline">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    @if (TempData["DSuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            @TempData["DSuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Drivers Table -->
+    <div class="drivers-table-container">
+        <div class="table-wrapper">
+            <form id="antiForgeryForm">
+                @Html.AntiForgeryToken()
+            </form>
+
+            <table class="drivers-table">
+                <thead>
+                    <tr>
+                        <th>Driver Name</th>
+                        <th>City</th>
+                        <th>Email</th>
+                        <th>Driver Photo</th>
+                        <th>License Number</th>
+                        <th>License File</th>
+                        <th>Vehicle Info</th>
+                        <th>Membership</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Driver_list.Any())
+                    {
+                        <tr>
+                            <td colspan="12" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="bi bi-person-badge display-4 text-muted mb-3"></i>
+                                    <h4 class="text-muted">No Driver Found</h4>
+                                    <p class="text-muted mb-4">There are no Driver records to display.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+
+                    @foreach(var item in Model.Driver_list) {  
+
+                    <tr>
+                        <td>
+                            <div class="driver-info">                                
+                                <div class="driver-details">
+                                    <strong>@item.DriverName</strong>
+                                    <small>ID: DRV @item.DriverId</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>@item.CityName</td>
+                        <td>@item.UserEmail</td>
+                            <td>
+                                <div class="photo-preview">
+                                    @if (!string.IsNullOrEmpty(item.DriverPhoto))
+                                    {
+                                        <img src="@item.DriverPhoto"
+                                             alt="Driver Photo"
+                                             style="width:50px;height:50px;border-radius:50%;object-fit:cover;cursor:pointer"
+                                             onclick="openImage(this.src)" />
+                                    }
+                                    else
+                                    {
+                                        <div class="photo-placeholder">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                        <td>DL-1234567890</td>
+                            <td>
+                                <div class="file-link">
+                                    @if (!string.IsNullOrEmpty(item.DrivingLicenseFile))
+                                    {
+                                        <a href="@item.DrivingLicenseFile"
+                                           target="_blank">
+                                            <i class="fas fa-file-pdf"></i> View License
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span>No File</span>
+                                    }
+                                </div>
+                            </td>
+                        <td>
+                            <div class="vehicle-info">
+                                <strong>@item.VehicleInfo</strong>
+                            </div>
+                        </td>
+                        <td>
+                                @if(item.MembershipName == "Premium")
+                                {
+                                    <span class="membership-badge premium">PREMIUM</span>
+                                }else if (item.MembershipName == "Basic")
+                                {
+                                    <span class="membership-badge basic">BASIC</span>
+                                }else
+                                {
+                                    <span class="membership-badge free">@item.MembershipName</span>
+                                }
+                                
+                              
+
+                        </td>
+                        <td>
+                                @if (item.RegisterationStatus == "Approved")
+                                {
+                                    <span class="status-badge active">Approved</span>
+                                }
+                                else if (item.RegisterationStatus == "Rejected")
+                                {
+                                    <span class="status-badge blocked">Rejected</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge pending">Pending</span>
+                                }
+
+                            
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                    <a asp-controller="Admin" asp-action="DriverDetail" asp-route-id="@item.DriverId" class="btn-action view" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                    <a asp-controller ="Admin" asp-action="EditDriver" asp-route-id="@item.DriverId" class="btn-action edit" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>                                            
+                                <a href="javascript:void(0);" data-id="@item.DriverId" class="btn-action delete js-delete-user" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    }
+
+                </tbody>
+            </table>
+        </div>     
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+
+            document.addEventListener('DOMContentLoaded', function() {
+        // Set active navigation
+        document.querySelector('[data-page="drivers"]').classList.add('active');
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('.js-delete-user').forEach(btn => {
+
+            btn.addEventListener('click', function () {
+
+                const userId = this.dataset.id;
+                const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This Driver will be permanently deleted!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete'
+                }).then((result) => {
+
+                    if (!result.isConfirmed) return;
+
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    fetch('/Admin/DeleteDriverAjax', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `id=${userId}&__RequestVerificationToken=${token}`
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: 'Driver has been deleted.'
+                            });
+
+                            // Remove row from table
+                            btn.closest('tr').remove();
+
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+
+                    })
+                    .catch(() => {
+                        Swal.fire('Error', 'Something went wrong.', 'error');
+                    });
+
+                });
+
+            });
+
+        });
+
+    });
+
+
+        function openImage(src) {
+        Swal.fire({
+            imageUrl: src,
+            imageAlt: 'Driver Photo',
+            showCloseButton: true,
+            showConfirmButton: false
+        });
+    }
+</script>

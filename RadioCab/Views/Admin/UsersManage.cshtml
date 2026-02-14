@@ -1,0 +1,567 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    ViewData["Title"] = "Users Management";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link href="~/css/usermanage.css" rel="stylesheet" />
+
+<div class="user-management-page">
+    <!-- User Actions Bar -->
+    <div class="user-actions-bar">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text"
+                   id="userSearch"
+                   placeholder="Search users by name, email, mobile or ID..."
+                   autocomplete="off">
+            <div class="search-suggestions" style="display: none;"></div>
+        </div>
+
+        <div class="action-buttons-container">
+            <button type="button" class="btn btn-outline" id="exportBtn">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <button type="button" class="btn btn-primary" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Search Results Info -->
+    <div class="search-results-info" id="searchResultsInfo" style="display: none;">
+        <div class="results-count">
+            Showing <span id="resultsCount">0</span> results for "<span id="searchTerm"></span>"
+        </div>
+        <a href="javascript:void(0)" class="clear-search" id="clearSearchBtn">
+            <i class="fas fa-times"></i> Clear Search
+        </a>
+    </div>
+
+    <form id="antiForgeryForm">
+        @Html.AntiForgeryToken()
+    </form>
+
+    <!-- Users Table -->
+    <div class="users-table-container">
+        <div class="loading-overlay container" id="loadingOverlay">
+            <div class="spinner"></div>
+            <p>Loading users...</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="users-table" id="usersTable">
+                @if (!Model.User_list.Any())
+                {
+                    <div class="no-user-container">
+                        <i class="fas fa-users no-user-icon"></i>
+                        <h3>No Users Found</h3>
+                        <p>There are currently no users available.</p>
+                    </div>
+                }
+                else
+                {
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="d-flex align-items-center">
+                                    <span>User</span>
+                                    <button type="button" class="sort-btn ms-2" data-sort="name">
+                                        <i class="fas fa-sort"></i>
+                                    </button>
+                                </div>
+                            </th>
+                            <th>Mobile No</th>
+                            <th>Email</th>
+                            <th>Created At</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        @foreach (var u in Model.User_list)
+                        {
+                            <tr data-userid="@u.UserID"
+                                data-name="@u.FullName.ToLower()"
+                                data-email="@u.Email.ToLower()"
+                                data-phone="@u.Phone" >
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-sm">
+                                            @u.FullName.Substring(0, 1).ToUpper()
+                                        </div>
+                                        <div class="user-details">
+                                            <strong>@u.FullName</strong>
+                                            <small>Customer ID: #@u.UserID</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@u.Phone</td>
+                                <td>@u.Email</td>
+                                <td>
+                                    <div class="date-info">
+                                        <div>@u.CreatedAt</div>
+                                    </div>
+                                </td>
+                                <td>  
+
+                                    <span class="status-badge @u.Status">@u.Status</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-action="UserDetail" asp-controller="Admin" asp-route-id="@u.UserID"
+                                           class="btn-action view" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <button type="button"
+                                                class="btn-action delete js-delete-user"
+                                                data-id="@u.UserID"
+                                                data-name="@u.FullName"
+                                                title="Delete User">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                }
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile Floating Action Button -->
+    <div class="mobile-fab" id="mobileFab" title="Quick Actions">
+        <i class="fas fa-bars"></i>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+        // Initialize
+        initializeUserManagement();
+
+        // Set active navigation
+        $('[data-page="user"]').addClass('active');
+
+        // Mobile FAB click handler
+        $('#mobileFab').click(function() {
+            Swal.fire({
+                title: 'Quick Actions',
+                html: `
+                    <div class="text-left">
+                        <button class="btn btn-outline-primary w-100 mb-2" onclick="$('#userSearch').focus()">
+                            <i class="fas fa-search mr-2"></i> Search Users
+                        </button>
+                        <button class="btn btn-outline-success w-100 mb-2" id="exportMobileBtn">
+                            <i class="fas fa-download mr-2"></i> Export Data
+                        </button>
+                        <button class="btn btn-outline-info w-100" id="refreshMobileBtn">
+                            <i class="fas fa-sync-alt mr-2"></i> Refresh List
+                        </button>
+                    </div>
+                `,
+                showConfirmButton: false,
+                showCloseButton: true
+            });
+        });
+    });
+
+    function initializeUserManagement() {
+        // Variables
+        let searchTimeout;
+        let currentSort = { column: 'name', direction: 'asc' };
+
+        // Search functionality
+        $('#userSearch').on('input', function() {
+            const searchTerm = $(this).val().trim().toLowerCase();
+
+            // Show loading indicator
+            $(this).addClass('loading');
+
+            // Clear previous timeout
+            clearTimeout(searchTimeout);
+
+            // Set new timeout for search
+            searchTimeout = setTimeout(() => {
+                performSearch(searchTerm);
+                $(this).removeClass('loading');
+            }, 500);
+        });
+
+        // Clear search button
+        $('#clearSearchBtn').click(function() {
+            $('#userSearch').val('');
+            performSearch('');
+            $('#searchResultsInfo').slideUp();
+        });
+
+        // Refresh button
+        $('#refreshBtn, #refreshMobileBtn').click(function() {
+            refreshUserList();
+        });
+
+        // Export button
+        $('#exportBtn, #exportMobileBtn').click(function() {
+            exportUsers();
+        });
+
+        // Sort functionality
+        $('.sort-btn').click(function() {
+            const column = $(this).data('sort');
+            sortTable(column);
+        });
+
+        // Delete user functionality
+        $(document).on('click', '.js-delete-user', function() {
+            const userId = $(this).data('id');
+            const userName = $(this).data('name');
+            deleteUser(userId, userName);
+        });
+
+        // Keyboard shortcuts
+        $(document).keydown(function(e) {
+            // Ctrl/Cmd + F to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                $('#userSearch').focus();
+            }
+
+            // Esc to clear search
+            if (e.key === 'Escape' && $('#userSearch').is(':focus')) {
+                $('#userSearch').val('');
+                performSearch('');
+            }
+        });
+
+        // Highlight search terms in table
+        $('#userSearch').on('input', highlightSearchTerms);
+    }
+
+    function performSearch(searchTerm) {
+        const $rows = $('#usersTableBody tr');
+        let visibleCount = 0;
+
+        if (!searchTerm) {
+            // Show all rows
+            $rows.show();
+            $('#searchResultsInfo').slideUp();
+            return;
+        }
+
+        // Filter rows
+        $rows.each(function() {
+            const $row = $(this);
+            const name = $row.data('name');
+            const email = $row.data('email');
+            const phone = $row.data('phone');
+            const userId = $row.data('userid').toString();
+
+            // Check if any field contains search term
+            const matches = name.includes(searchTerm) ||
+                           email.includes(searchTerm) ||
+                           phone.includes(searchTerm) ||
+                           userId.includes(searchTerm);
+
+            if (matches) {
+                $row.show();
+                visibleCount++;
+            } else {
+                $row.hide();
+            }
+        });
+
+        // Update search results info
+        if (searchTerm) {
+            $('#resultsCount').text(visibleCount);
+            $('#searchTerm').text(searchTerm);
+            $('#searchResultsInfo').slideDown();
+        } else {
+            $('#searchResultsInfo').slideUp();
+        }
+
+        // Show/hide no results message
+        if (visibleCount === 0 && searchTerm) {
+            showNoResultsMessage(searchTerm);
+        } else {
+            hideNoResultsMessage();
+        }
+    }
+
+    function showNoResultsMessage(searchTerm) {
+        let $noResults = $('.no-user-container');
+
+        if ($noResults.length === 0) {
+            $noResults = $(`
+                <div class="no-user-container">
+                    <i class="fas fa-search no-user-icon"></i>
+                    <h3>No Users Found</h3>
+                    <p>No users found matching "<span class="search-term-highlight">${searchTerm}</span>"</p>
+                    <button class="btn btn-outline mt-3" id="clearSearchNoResults">
+                        <i class="fas fa-times mr-2"></i> Clear Search
+                    </button>
+                </div>
+            `);
+
+            $('#usersTable').append($noResults);
+
+            // Add click handler for clear button
+            $('#clearSearchNoResults').click(function() {
+                $('#userSearch').val('');
+                performSearch('');
+            });
+        } else {
+            $noResults.find('p').html(`No users found matching "<span class="search-term-highlight">${searchTerm}</span>"`);
+            $noResults.show();
+        }
+
+        // Hide table body
+        $('#usersTableBody').hide();
+    }
+
+    function hideNoResultsMessage() {
+        $('.no-user-container').hide();
+        $('#usersTableBody').show();
+    }
+
+    function highlightSearchTerms() {
+        const searchTerm = $('#userSearch').val().toLowerCase();
+
+        if (!searchTerm) {
+            $('.user-details strong, .users-table td').removeHighlight();
+            return;
+        }
+
+        // Highlight in user names
+        $('.user-details strong').each(function() {
+            const text = $(this).text();
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            const highlighted = text.replace(regex, '<span class="highlight">$1</span>');
+            $(this).html(highlighted);
+        });
+
+        // Highlight in other columns
+        $('.users-table td:not(:first-child):not(:last-child)').each(function() {
+            const text = $(this).text();
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            const highlighted = text.replace(regex, '<span class="highlight">$1</span>');
+            $(this).html(highlighted);
+        });
+    }
+
+    // Custom jQuery plugin for removing highlights
+    $.fn.removeHighlight = function() {
+        return this.each(function() {
+            const element = $(this);
+            const text = element.text();
+            element.text(text);
+        });
+    };
+
+    function sortTable(column) {
+        const $tableBody = $('#usersTableBody');
+        const $rows = $tableBody.find('tr').toArray();
+
+        // Toggle sort direction
+        if (currentSort.column === column) {
+            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSort.column = column;
+            currentSort.direction = 'asc';
+        }
+
+        // Update sort icon
+        $('.sort-btn i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
+        const $currentSortBtn = $(`.sort-btn[data-sort="${column}"]`);
+        $currentSortBtn.find('i')
+            .removeClass('fa-sort')
+            .addClass(currentSort.direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down');
+
+        // Sort rows
+        $rows.sort(function(a, b) {
+            const $a = $(a);
+            const $b = $(b);
+            let valA, valB;
+
+            switch(column) {
+                case 'name':
+                    valA = $a.data('name');
+                    valB = $b.data('name');
+                    break;
+                case 'email':
+                    valA = $a.data('email');
+                    valB = $b.data('email');
+                    break;
+                case 'created':
+                    valA = new Date($a.data('created'));
+                    valB = new Date($b.data('created'));
+                    break;
+                default:
+                    return 0;
+            }
+
+            if (currentSort.direction === 'asc') {
+                return valA > valB ? 1 : -1;
+            } else {
+                return valA < valB ? 1 : -1;
+            }
+        });
+
+        // Reattach sorted rows
+        $.each($rows, function(index, row) {
+            $tableBody.append(row);
+        });
+    }
+
+    function refreshUserList() {
+        $('#loadingOverlay').show();
+
+        // Simulate API call
+        setTimeout(() => {
+            // In real implementation, you would make an AJAX call here
+            // For now, just reload the page
+            window.location.reload();
+        }, 1000);
+    }
+
+    function exportUsers() {
+        // Collect visible user data
+        const users = [];
+        $('#usersTableBody tr:visible').each(function() {
+            const $row = $(this);
+            users.push({
+                name: $row.find('.user-details strong').text(),
+                phone: $row.find('td:eq(1)').text(),
+                email: $row.find('td:eq(2)').text(),
+                created: $row.find('td:eq(3)').text(),
+                status: $row.find('td:eq(4) .status-badge').text()
+            });
+        });
+
+        // Convert to CSV
+        const csv = convertToCSV(users);
+
+        // Download CSV
+        downloadCSV(csv, 'users.csv');
+
+        // Show success message
+        Swal.fire({
+            icon: 'success',
+            title: 'Export Complete',
+            text: `Exported ${users.length} users to CSV file`,
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    function convertToCSV(users) {
+        const headers = ['Name', 'Mobile', 'Email', 'Created At', 'Status'];
+        const rows = users.map(user => [
+            `"${user.name}"`,
+            `"${user.phone}"`,
+            `"${user.email}"`,
+            `"${user.created}"`,
+            `"${user.status}"`
+        ]);
+
+        return [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    }
+
+    function downloadCSV(csv, filename) {
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }
+
+    function deleteUser(userId, userName) {
+        const token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+
+        Swal.fire({
+            title: 'Delete User',
+            html: `<p>Are you sure you want to delete <strong>${userName}</strong>?</p>
+                   <p class="text-danger">This action cannot be undone.</p>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return fetch('/Admin/DeleteUserAjax', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `id=${userId}&__RequestVerificationToken=${token}`
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.message || 'Deletion failed');
+                    }
+                    return data;
+                })
+                .catch(error => {
+                    Swal.showValidationMessage(`Request failed: ${error.message}`);
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Remove row from table
+                $(`tr[data-userid="${userId}"]`).fadeOut(300, function() {
+                    $(this).remove();
+
+                    // Check if table is empty
+                    if ($('#usersTableBody tr').length === 0) {
+                        showNoUsersMessage();
+                    }
+                });
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: 'User has been deleted successfully.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        });
+    }
+
+    function showNoUsersMessage() {
+        $('#usersTableBody').hide();
+        $('.users-table thead').hide();
+
+        if ($('.no-user-container').length === 0) {
+            $('#usersTable').append(`
+                <div class="no-user-container">
+                    <i class="fas fa-users no-user-icon"></i>
+                    <h3>No Users Found</h3>
+                    <p>There are currently no users available.</p>
+                </div>
+            `);
+        }
+    }
+
+    // Add CSS for highlights
+    $('<style>')
+        .text('.highlight { background-color: #fff3cd; padding: 2px 4px; border-radius: 3px; color: #856404; font-weight: 600; }')
+        .appendTo('head');
+</script>

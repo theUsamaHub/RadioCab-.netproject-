@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Payment Pending Approval";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Payment Pending</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+    <!-- Auto recheck every 10 seconds -->
+    <meta http-equiv="refresh" content="10" />
+</head>
+
+<body class="bg-light">
+
+    <div class="container min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="card shadow-lg p-4 text-center" style="max-width: 520px; width:100%;">
+
+            <div class="mb-4">
+                <i class="fas fa-clock fa-3x text-warning"></i>
+            </div>
+
+            <h3 class="fw-bold mb-2">Payment Pending Approval</h3>
+
+            <p class="text-muted mb-4">
+                Your payment has been received and is currently under review.
+                Access to your driver account will be granted automatically once approved.
+            </p>
+
+            <hr />
+
+            <div class="text-start mb-3">
+                <p class="mb-1">
+                    <strong>Transaction ID:</strong>
+                    <span class="text-secondary">@ViewBag.TransactionId</span>
+                </p>
+
+                <p class="mb-1">
+                    <strong>Amount:</strong>
+                    <span class="text-secondary">$@ViewBag.Amount</span>
+                </p>
+
+                <p class="mb-0">
+                    <strong>Submitted On:</strong>
+                    <span class="text-secondary">
+                        @(((DateTime)ViewBag.PaymentDate).ToString("dd MMM yyyy, hh:mm tt"))
+                    </span>
+                </p>
+            </div>
+
+            <hr />
+
+            <div class="alert alert-info mb-0">
+                This page refreshes automatically every 10 seconds.
+                Do not resubmit payment.
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

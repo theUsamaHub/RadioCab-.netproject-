@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Registration Pending";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+<link href="~/Company/css/pendingaprroval.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h2>Your Company Registration is Pending</h2>
+
+        <div class="status-message">
+            <p>Your account is under review by the admin. You will automatically be redirected once approved.</p>
+        </div>
+
+        <div class="loading-indicator">
+            <div class="spinner"></div>
+            <span>Checking approval status...</span>
+        </div>
+
+        <div class="info-box">
+            <h3>What to Expect:</h3>
+            <ul>
+                <li>Review process takes 1-2 business days</li>
+              
+                <li>Automatic redirection to dashboard after approval</li>
+                <li>No action required from your side</li>
+            </ul>
+        </div>
+
+        <div class="contact-info">
+            <p><strong>Need Help?</strong> Contact support: support@RadioCab.com | +92 330 2174315</p>
+            <p class="note">Business Hours: Mon-Fri, 9AM-5PM EST</p>
+        </div>
+    </div>
+
+    <script>
+        // Poll the server every 5 seconds to check if registration is approved
+        setInterval(function() {
+            fetch('@Url.Action("CheckStatus", "Company")')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "Approved") {
+                        window.location.href = '@Url.Action("Index", "Company")';
+                    }
+                })
+                .catch(err => console.error(err));
+        }, 5000); // check every 5 seconds
+    </script>
+</body>
+</html>

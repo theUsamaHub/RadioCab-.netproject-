@@ -1,0 +1,116 @@
+﻿@model RadioCab.Models.CompanyVacancy;
+@{
+    ViewData["Title"] = "ViewVacancy";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+<link rel="stylesheet" href="~/Company/css/ViewVacancy.css" asp-append-version="true" />
+<div class="vacancy-wrapper">
+    <div class="modern-vacancy-card">
+        <!-- Modern Header with Back Button -->
+        <div class="modern-card-header">
+            <div class="header-top-row">
+                <div class="header-left-section">
+                    <!-- Back Button -->
+                    <a href="#" class="back-button" onclick="history.back()">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+
+                    <!-- Header Icon -->
+                    <div class="header-icon-circle">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                </div>
+
+                <!-- Status Pill -->
+                <div class="status-pill">
+                    <i class="fas fa-check-circle"></i>
+                    <span>@Model.ApprovalStatus</span>
+                </div>
+            </div>
+
+            <div class="header-main">
+                <h1>@Model.JobTitle</h1>
+
+
+                <div class="company-tag">
+                    <i class="fas fa-building"></i>
+                    <span>@Model.Company.CompanyName</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body-modern">
+            <!-- Info Cards Grid - Fixed Layout -->
+            <div class="info-grid">
+                <!-- Job Type -->
+                <div class="info-card regular-card">
+                    <div class="info-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="info-label">Job Type</div>
+                    <div class="info-value">@Model.JobType</div>
+                    <div class="text-muted mt-1" style="font-size: 0.9rem;">40 hours per week</div>
+                </div>
+
+                <!-- Required Experience -->
+                <div class="info-card regular-card">
+                    <div class="info-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="info-label">Required Experience</div>
+                    <div class="info-value">@Model.RequiredExperience</div>
+                    <div class="text-muted mt-1" style="font-size: 0.9rem;">In @Model.JobTitle</div>
+                </div>
+
+                <!-- Salary Range - Fixed Layout -->
+                <div class="info-card salary-card">
+                    <div class="info-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="info-label">Salary Range</div>
+                    <div class="salary-display-modern">
+                        <span class="salary-amount">$@Model.Salary</span>
+
+                    </div>
+                    <div class="salary-details">Per annum + comprehensive benefits package</div>
+                </div>
+
+
+
+                <!-- Location -->
+                <div class="info-card location-card">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-label">Location</div>
+                    <div class="info-value">@Model.Location</div>
+                    <div class="text-muted mt-1" style="font-size: 0.9rem;">Flexible work options</div>
+                </div>
+            </div>
+
+            <!-- Job Description Section -->
+            <div class="job-description-section">
+                <div class="section-title">
+                    <i class="fas fa-file-alt"></i>
+                    Job Description & Responsibilities
+                </div>
+
+                <div class="job-description-content">
+                    <p>@Model.JobDescription</p>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Minimal Footer -->
+        <div class="card-footer-minimal">
+            <div class="footer-text">
+                All information shared above is secure and confidential.
+            </div>
+        </div>
+    </div>
+</div>
+

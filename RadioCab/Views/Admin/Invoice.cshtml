@@ -1,0 +1,574 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<style>
+    :root {
+        --bs-primary: #2c3e50;
+        --bs-secondary: #6c757d;
+        --bs-success: #27ae60;
+        --bs-warning: #f39c12;
+        --bs-danger: #e74c3c;
+        --bs-info: #3498db;
+    }
+
+    body {
+        background-color: #f8f9fa;
+        font-size: 0.875rem;
+    }
+
+    .status-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .transaction-id {
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        font-size: 0.8rem;
+        background: #f8f9fa;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.375rem;
+        border: 1px solid #dee2e6;
+        word-break: break-all;
+        max-height: 60px;
+        overflow-y: auto;
+    }
+
+    .screenshot-container {
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        background: #f8f9fa;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .screenshot-container img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            transition: transform 0.2s;
+        }
+
+            .screenshot-container img:hover {
+                transform: scale(1.02);
+            }
+
+    .amount-card {
+        background: linear-gradient(135deg, var(--bs-info), #2980b9);
+        color: white;
+        border-radius: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .amount-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 100px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+        }
+
+    .membership-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-weight: 600;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        font-weight: 500;
+        color: var(--bs-primary);
+        font-size: 0.875rem;
+        word-break: break-word;
+    }
+
+    .section-divider {
+        border-top: 2px solid #dee2e6;
+        margin: 1.5rem 0;
+        position: relative;
+    }
+
+        .section-divider::before {
+            content: attr(data-title);
+            position: absolute;
+            top: -0.75rem;
+            left: 0;
+            background: white;
+            padding: 0 1rem;
+            font-weight: 600;
+            color: var(--bs-primary);
+        }
+
+    .note-alert {
+        border-left: 3px solid;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-action {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.375rem;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--bs-primary), #1a252f);
+    }
+
+    .text-mono {
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    }
+
+    .compact-card {
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+        .compact-card .card-body {
+            padding: 1rem;
+        }
+
+    .hover-lift {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1) !important;
+        }
+
+    /* Custom scrollbar for transaction ID */
+    .transaction-id::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .transaction-id::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    .transaction-id::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+    }
+
+        .transaction-id::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+</style>
+
+<div class="container-fluid py-3">
+    <!-- Header with Back Button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-outline-secondary btn-sm" onclick="window.history.back()">
+            <i class="bi bi-arrow-left me-1"></i> Back to Payments
+        </button>
+        <div>
+            <button class="btn btn-outline-dark btn-sm me-2" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i> Print
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card border-0 shadow-sm">
+        <!-- Header -->
+        <div class="card-header bg-gradient-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title mb-0">Payment Details</h5>
+                    <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+                        @if (Model.Single_Payment.PaymentStatus == "Paid")
+                        {
+                            <span class="status-badge bg-success">
+                                <i class="bi bi-check-circle-fill me-1"></i>Paid
+                            </span>
+                        }
+                        else if (Model.Single_Payment.PaymentStatus == "Pending")
+                        {
+                            <span class="status-badge bg-warning">
+                                <i class="bi bi-clock-fill me-1"></i>Pending
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-badge bg-danger">
+                                <i class="bi bi-x-circle-fill me-1"></i>Failed
+                            </span>
+                        }
+                        <span class="text-white-50">
+                            <i class="bi bi-receipt me-1"></i>ID: @Model.Single_Payment.PaymentId
+                        </span>
+                        <span class="text-white-50">
+                            <i class="bi bi-calendar me-1"></i>Date: @Model.Single_Payment.PaymentDate
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <!-- Payment Overview -->
+            <div class="row g-3 mb-4">
+                <div class="col-lg-6">
+                    <div class="amount-card p-4 hover-lift">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="text-white-50 mb-1">Payment Amount</div>
+                                <h2 class="text-white mb-3">$@Model.Single_Payment.PaymentAmount.Amount</h2>
+                                <div class="text-white-75 mb-3">
+                                    @Model.Single_Payment.PaymentAmount.PaymentType @Model.Single_Payment.PaymentMethod.MethodName Subscription
+                                </div>
+                                @if (Model.Single_Payment.PaymentMethod.MethodName == "Premium")
+                                {
+                                    <span class="membership-badge bg-warning">
+                                        <i class="bi bi-star-fill me-1"></i>Premium
+                                    </span>
+                                }
+                                else if (Model.Single_Payment.PaymentMethod.MethodName == "Basic")
+                                {
+                                    <span class="membership-badge bg-success">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Basic
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="membership-badge bg-purple" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                                        <i class="bi bi-gift-fill me-1"></i>@Model.Single_Payment.PaymentMethod.MethodName
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="compact-card hover-lift h-100">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="info-label">
+                                        <i class="bi bi-credit-card me-1"></i>Payment Method
+                                    </div>
+                                    <div class="info-value">Credit Card</div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="info-label">
+                                        <i class="bi bi-receipt me-1"></i>Transaction ID
+                                    </div>
+                                    <div class="transaction-id mt-1">
+                                        @Model.Single_Payment.TransactionId
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Information -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <h6 class="fw-bold mb-3 d-flex align-items-center">
+                        <i class="bi bi-person-lines-fill me-2 text-primary"></i>User Information
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="compact-card hover-lift h-100">
+                                <div class="card-body">
+                                    <div class="info-label">
+                                        <i class="bi bi-person-badge me-1"></i>User ID
+                                    </div>
+                                    <div class="info-value">@Model.Single_Payment.UserId</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="compact-card hover-lift h-100">
+                                <div class="card-body">
+                                    <div class="info-label">
+                                        <i class="bi bi-person me-1"></i>User Name
+                                    </div>
+                                    <div class="info-value">@Model.Single_Payment.User.FullName</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="compact-card hover-lift h-100">
+                                <div class="card-body">
+                                    <div class="info-label">
+                                        <i class="bi bi-envelope me-1"></i>Email Address
+                                    </div>
+                                    <div class="info-value">@Model.Single_Payment.User.Email</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Alert -->
+            @if (Model.Single_Payment.PaymentStatus == "Pending")
+            {
+                <div class="alert alert-warning note-alert d-flex align-items-start mb-4">
+                    <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+                    <div>
+                        <div class="fw-bold mb-1">Payment Pending</div>
+                        <div class="small">This payment is currently pending. Please verify the transaction and update the status once confirmed.</div>
+                    </div>
+                </div>
+            }
+            else if (Model.Single_Payment.PaymentStatus == "Paid")
+            {
+                <div class="alert alert-success note-alert d-flex align-items-start mb-4">
+                    <i class="bi bi-check-circle-fill me-2 mt-1"></i>
+                    <div>
+                        <div class="fw-bold mb-1">Payment Confirmed</div>
+                        <div class="small">Payment successfully processed and confirmed. User's membership has been activated.</div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger note-alert d-flex align-items-start mb-4">
+                    <i class="bi bi-x-circle-fill me-2 mt-1"></i>
+                    <div>
+                        <div class="fw-bold mb-1">Payment Failed</div>
+                        <div class="small">This payment has failed. User's membership has not been activated.</div>
+                    </div>
+                </div>
+            }
+
+            <!-- Technical Details -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <h6 class="fw-bold mb-3 d-flex align-items-center">
+                        <i class="bi bi-gear me-2 text-primary"></i>Technical Details
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="compact-card hover-lift h-100">
+                                <div class="card-body">
+                                    <div class="info-label">Payment ID</div>
+                                    <div class="info-value text-mono">@Model.Single_Payment.PaymentId</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="compact-card hover-lift h-100">
+                                <div class="card-body">
+                                    <div class="info-label">Amount</div>
+                                    <div class="info-value">$@Model.Single_Payment.PaymentAmount.Amount</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="compact-card hover-lift h-100">
+                                <div class="card-body">
+                                    <div class="info-label">Method</div>
+                                    <div class="info-value">@Model.Single_Payment.PaymentMethod.MethodName</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="compact-card hover-lift h-100">
+                                <div class="card-body">
+                                    <div class="info-label">Created Date</div>
+                                    <div class="info-value">@Model.Single_Payment.PaymentDate</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Screenshot Section -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-divider mb-4" data-title="Payment Screenshot"></div>
+
+                    <div class="row g-3">
+                        <div class="col-lg-8">
+                            <div class="screenshot-container p-3">
+                                @if (!string.IsNullOrEmpty(Model.Single_Payment.PaymentScreenshot))
+                                {
+                                    <img src="@Model.Single_Payment.PaymentScreenshot"
+                                         alt="Payment Screenshot"
+                                         class="img-fluid rounded"
+                                         id="screenshotImage"
+                                         onerror="this.style.display='none'; document.getElementById('noScreenshot').classList.remove('d-none');">
+                                    <div id="noScreenshot" class="d-none text-center">
+                                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                        <p class="text-muted mt-2 mb-1">Unable to load screenshot</p>
+                                        <small class="text-muted">URL: @Model.Single_Payment.PaymentScreenshot</small>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-center">
+                                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                        <p class="text-muted mt-2">No screenshot uploaded</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="compact-card h-100">
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-3">Screenshot Actions</h6>
+
+                                    @if (!string.IsNullOrEmpty(Model.Single_Payment.PaymentScreenshot))
+                                    {
+                                        <div class="d-grid gap-2">
+                                            <a href="@Model.Single_Payment.PaymentScreenshot"
+                                               download="payment-screenshot-@Model.Single_Payment.PaymentScreenshot"
+                                               class="btn btn-outline-primary btn-action">
+                                                <i class="bi bi-download me-1"></i> Download
+                                            </a>
+                                        </div>
+                                        <div class="mt-3 pt-3 border-top">
+                                            <small class="text-muted d-block mb-1">Screenshot Information</small>
+                                            <div class="d-flex justify-content-between">
+                                                <span class="text-muted small">Format:</span>
+                                                <span class="small">Image</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span class="text-muted small">Status:</span>
+                                                <span class="small text-success">Available</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center py-4">
+                                            <i class="bi bi-image text-muted mb-3" style="font-size: 2rem;"></i>
+                                            <p class="text-muted small mb-0">No screenshot available for this payment</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Set active navigation
+        const paymentsNav = document.querySelector('[data-page="payments"]');
+        if (paymentsNav) {
+            paymentsNav.classList.add('active');
+        }
+
+        // Format transaction ID for better display
+        const transactionIdElement = document.querySelector('.transaction-id');
+        if (transactionIdElement) {
+            const originalId = transactionIdElement.textContent.trim();
+            if (originalId.length > 35) {
+                const formattedId = originalId.substring(0, 16) + '...' + originalId.substring(originalId.length - 16);
+                transactionIdElement.textContent = formattedId;
+                transactionIdElement.title = 'Click to view full ID\n' + originalId;
+                transactionIdElement.classList.add('cursor-pointer');
+
+                transactionIdElement.addEventListener('click', function() {
+                    if (this.textContent === formattedId) {
+                        this.textContent = originalId;
+                    } else {
+                        this.textContent = formattedId;
+                    }
+                });
+            }
+        }
+
+        // Handle image loading
+        const screenshotImage = document.getElementById('screenshotImage');
+        if (screenshotImage) {
+            screenshotImage.addEventListener('load', function() {
+                this.classList.remove('d-none');
+                const noScreenshot = document.getElementById('noScreenshot');
+                if (noScreenshot) {
+                    noScreenshot.classList.add('d-none');
+                }
+            });
+        }
+    });
+
+    function copyScreenshotUrl() {
+        const screenshotUrl = '@Model.Single_Payment.PaymentScreenshot';
+        if (!screenshotUrl) {
+            showToast('No screenshot URL available', 'warning');
+            return;
+        }
+
+        navigator.clipboard.writeText(screenshotUrl).then(() => {
+            showToast('URL copied to clipboard!', 'success');
+        }).catch(err => {
+            showToast('Failed to copy URL', 'error');
+            console.error('Copy failed:', err);
+        });
+    }
+
+    function showToast(message, type = 'success') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+
+        Toast.fire({
+            icon: type,
+            title: message
+        });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+P or Cmd+P for print
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+            e.preventDefault();
+            window.print();
+        }
+
+        // Escape key to go back
+        if (e.key === 'Escape') {
+            window.history.back();
+        }
+    });
+</script>

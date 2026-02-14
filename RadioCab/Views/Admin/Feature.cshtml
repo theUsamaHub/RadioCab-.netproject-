@@ -1,0 +1,355 @@
+﻿@model RadioCab.Models.FeatureVM
+@{
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link href="~/css/feature.css" rel="stylesheet" />
+
+<div class="feature-management">
+    <div class="page-header">
+        <h2><i class="fas fa-sliders-h me-2"></i>Feature Management</h2>
+        <button class="btn-add-feature">
+            <i class="fas fa-plus-circle"></i> Add New Feature
+        </button>
+    </div>
+
+    <!-- Feature Form -->
+    <div class="feature-form-container @(Model.ShowForm ? "show" : "")">
+        <div class="form-header">
+            <h3>Add New Feature</h3>
+            <button class="btn-close-form">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form class="feature-form" asp-action="Feature" asp-controller="Admin" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-row">
+                @* <div asp-validation-summary="All" class="text-danger mb-3"></div> *@
+                <input type="hidden" asp-for="FeatureForm.FeatureId" />
+
+                <div class="form-group">
+                    <label for="featureKey" asp-for="FeatureForm.FeatureKey">Feature Key *</label>
+                    <input type="text" id="featureKey" asp-for="FeatureForm.FeatureKey"
+                           class="@(ViewData.ModelState["FeatureForm.FeatureKey"]?.Errors.Any() == true ? "is-invalid" : "")"
+                           placeholder="e.g., USER_REGISTRATION"
+                           maxlength="50">
+                    <span asp-validation-for="FeatureForm.FeatureKey" class="text-danger"></span>
+                    <small class="text-muted">Unique identifier for the feature (max 50 characters)</small>
+                </div>
+                <div class="form-group">
+                    <label for="featureName" asp-for="FeatureForm.FeatureName">Feature Name *</label>
+                    <input type="text" id="featureName" asp-for="FeatureForm.FeatureName"
+                           class="@(ViewData.ModelState["FeatureForm.FeatureName"]?.Errors.Any() == true ? "is-invalid" : "")"
+                           placeholder="e.g., User Registration"
+                           maxlength="100">
+                    <span asp-validation-for="FeatureForm.FeatureName" class="text-danger"></span>
+                    <small class="text-muted">Display name of the feature (max 100 characters)</small>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="reset" class="btn-cancel">Cancel</button>
+                <button type="submit" class="btn-submit">Save Feature</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Controls -->
+    @if (TempData["FeatureAddMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            @TempData["FeatureAddMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Features Table with Dummy Data -->
+    <div class="features-table-container">
+        <div class="table-responsive">
+            <table class="features-table">
+                <thead>
+                    <tr>
+                        <th>Feature Key</th>
+                        <th>Feature Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    @foreach(var f in Model.Feature_list)
+                    {
+
+                    <tr>
+                        <td><strong>@f.FeatureKey</strong></td>
+                        <td>@f.FeatureName</td>
+                        <td>
+                            <div class="action-buttons">
+                                    <a href="javascript:void(0);" class="btn-action btn-edit js-edit"
+                                       data-id="@f.FeatureId"
+                                       data-key="@f.FeatureKey"
+                                       data-name="@f.FeatureName">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                 <a  data-id="@f.FeatureId" class="btn-action btn-delete js-delete" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+     $(document).ready(function() {
+         const formContainer = $(".feature-form-container");
+         const addBtn = $(".btn-add-feature");
+         const cancelBtn = $(".btn-cancel");
+         const closeBtn = $(".btn-close-form");
+         const form = $(".feature-form");
+
+         const idField = $('[name="FeatureForm.FeatureId"]');
+         const keyField = $('[name="FeatureForm.FeatureKey"]');
+         const nameField = $('[name="FeatureForm.FeatureName"]');
+         const submitBtn = $(".btn-submit");
+         const formTitle = $(".form-header h3");
+
+         // Check if form should be shown (from server-side)
+         const shouldShowForm = formContainer.hasClass("show");
+
+         if (shouldShowForm) {
+             // Server returned with validation errors - DO NOT clear them
+             formContainer.show();
+             setTimeout(() => {
+                 formContainer.addClass("show");
+             }, 10);
+
+             // If we have validation errors from server, keep them visible
+             // Determine if we're in add or edit mode based on FeatureId value
+             const currentId = idField.val();
+             if (currentId && currentId !== "0") {
+                 submitBtn.text("Update Feature");
+                 formTitle.text("Edit Feature");
+             }
+         }
+
+         // ADD NEW - Show fresh form
+         addBtn.on("click", function() {
+             resetFormToAddMode();
+             showForm();
+         });
+
+         // CANCEL BUTTON - Hide form
+         cancelBtn.on("click", function(e) {
+             e.preventDefault();
+             hideForm();
+         });
+
+         // CLOSE (X) BUTTON - Hide form
+         closeBtn.on("click", function(e) {
+             e.preventDefault();
+             hideForm();
+         });
+
+         // EDIT BUTTON - Load data into form
+         $(document).on("click", ".js-edit", function() {
+             // Clear only validation messages, keep form values
+             clearValidationMessages();
+
+             // Load data for editing
+             const id = $(this).data("id");
+             const key = $(this).data("key");
+             const name = $(this).data("name");
+
+             idField.val(id);
+             keyField.val(key);
+             nameField.val(name);
+
+             submitBtn.text("Update Feature");
+             formTitle.text("Edit Feature");
+
+             showForm();
+         });
+
+         // DELETE WITH CONFIRMATION
+         $(document).on("click", ".js-delete", function() {
+             const id = $(this).data("id");
+             const token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+
+             Swal.fire({
+                 title: 'Are you sure?',
+                 text: "This feature will be deleted!",
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#e74c3c',
+                 confirmButtonText: 'Yes delete'
+             }).then(result => {
+                 if (!result.isConfirmed) return;
+
+                 $.ajax({
+                     url: '/Admin/DeleteFeatureAjax',
+                     type: 'POST',
+                     headers: {
+                         'RequestVerificationToken': token
+                     },
+                     data: { id: id },
+                     success: function(d) {
+                         if (d.success) {
+                             Swal.fire('Deleted!', '', 'success');
+                             $('[data-id="' + id + '"]').closest("tr").remove();
+                         } else {
+                             Swal.fire('Error', 'Delete failed', 'error');
+                         }
+                     },
+                     error: function() {
+                         Swal.fire('Error', 'Sorry Can not Delete this It is associtaed with membership plan', 'error');
+                     }
+                 });
+             });
+         });
+
+         // Clear only client-side validation messages (not server-side)
+         function clearValidationMessages() {
+             // Only clear messages that are NOT from server-side model state
+             $('.text-danger').not('.text-muted').each(function() {
+                 const $this = $(this);
+                 // Check if this is a server-side validation message
+                 const isServerValidation = $this.attr('data-valmsg-for') ||
+                                          $this.hasClass('field-validation-error') ||
+                                          $this.parent().hasClass('validation-summary-errors');
+
+                 // Only clear if it's NOT from server-side
+                 if (!isServerValidation) {
+                     $(this).text('').hide();
+                 }
+             });
+
+             // Remove error classes only from inputs that don't have server-side errors
+             $('.is-invalid').each(function() {
+                 const $input = $(this);
+                 const fieldName = $input.attr('name');
+
+                 // Check if server returned an error for this field
+                 const serverErrorExists = $(`[data-valmsg-for="${fieldName}"]`).text().trim() !== '' ||
+                                          $(`[asp-validation-for="${fieldName}"]`).text().trim() !== '';
+
+                 // Only remove class if no server error exists
+                 if (!serverErrorExists) {
+                     $input.removeClass('is-invalid');
+                 }
+             });
+
+             $('input, select, textarea').each(function() {
+                 const $input = $(this);
+                 const fieldName = $input.attr('name');
+
+                 // Check if server returned an error for this field
+                 const serverErrorExists = $(`[data-valmsg-for="${fieldName}"]`).text().trim() !== '' ||
+                                          $(`[asp-validation-for="${fieldName}"]`).text().trim() !== '';
+
+                 // Only remove class if no server error exists
+                 if (!serverErrorExists) {
+                     $input.removeClass('input-validation-error');
+                 }
+             });
+
+             // Don't clear server-side validation summary
+             // Only clear client-side generated summaries
+             $('.validation-summary-errors').each(function() {
+                 const $summary = $(this);
+                 if (!$summary.find('[asp-validation-summary]').length) {
+                     $summary.html('').hide();
+                 }
+             });
+
+             // Clear jQuery Validation plugin state (client-side only)
+             if ($.validator && form.data('validator')) {
+                 form.validate().resetForm();
+             }
+
+             // Clear unobtrusive validation (but preserve server-side)
+             $('[data-valmsg-for]').each(function() {
+                 const $msg = $(this);
+                 // Only clear if it's empty (client-side generated)
+                 if (!$msg.attr('asp-validation-for')) {
+                     $msg.text('').hide();
+                 }
+             });
+         }
+
+         // Reset form to add mode (fresh form)
+         function resetFormToAddMode() {
+             // Reset form values
+             form[0].reset();
+
+             // Reset hidden ID field to 0 (indicates add mode)
+             idField.val("0");
+
+             // Reset UI text
+             submitBtn.text("Save Feature");
+             formTitle.text("Add New Feature");
+
+             // Clear all validation messages including server-side
+             // This is OK because we're starting fresh
+             clearAllValidationMessages();
+         }
+
+         // Clear ALL validation messages (including server-side)
+         function clearAllValidationMessages() {
+             $('.text-danger').not('.text-muted').text('').hide();
+             $('.is-invalid').removeClass('is-invalid');
+             $('input, select, textarea').removeClass('input-validation-error');
+             $('.validation-summary-errors').html('').hide();
+             $('[asp-validation-summary]').html('').hide();
+
+             if ($.validator && form.data('validator')) {
+                 form.validate().resetForm();
+             }
+
+             $('[data-valmsg-for]').text('').hide();
+         }
+
+         // Show form
+         function showForm() {
+             formContainer.show();
+             setTimeout(() => formContainer.addClass("show"), 10);
+         }
+
+         // Hide form
+         function hideForm() {
+             formContainer.removeClass("show");
+             setTimeout(() => {
+                 formContainer.hide();
+                 resetFormToAddMode(); // Reset to add mode when hiding
+             }, 250);
+         }
+
+         // Don't reset on page load if we have validation errors from server
+         // Only reset if form is not showing validation errors
+         $(window).on('load', function() {
+             const hasServerErrors = $('.validation-summary-errors:visible').length > 0 ||
+                                   $('.text-danger:visible').not('.text-muted').length > 0;
+
+             if (!hasServerErrors) {
+                 resetFormToAddMode();
+             }
+         });
+     });
+</script>
+
+
+
+

@@ -1,0 +1,185 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    ViewData["Title"] = "Update Vacancy Status";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+<style>
+    /* Simple Styles */
+    .card {
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        font-weight: 600;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+    .form-control {
+        border: 1px solid #ced4da;
+        padding: 0.5rem 0.75rem;
+    }
+
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+    .badge {
+        font-size: 0.9em;
+        padding: 0.4em 0.8em;
+    }
+</style>
+
+<div class="container-fluid ">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3">Update Vacancy Status</h2>
+            <a asp-controller="Admin" asp-action="JobVacancyManagement" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    @if (Model.Single_vacancy == null)
+    {
+        <div class="alert alert-danger">
+            Vacancy not found!
+        </div>
+        return;
+    }
+
+    @{
+        var vacancy = Model.Single_vacancy;
+    }
+
+    <!-- Vacancy Details -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Vacancy Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label><strong>Job Title:</strong></label>
+                    <div class="p-2 border rounded bg-light">@vacancy.JobTitle</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label><strong>Company:</strong></label>
+                    <div class="p-2 border rounded bg-light">@vacancy.Company?.CompanyName   (@vacancy.Company?.Email)  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label><strong>Job Type:</strong></label>
+                    <div class="p-2 border rounded bg-light">@vacancy.JobType</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label><strong>Location:</strong></label>
+                    <div class="p-2 border rounded bg-light">@(vacancy.Location ?? "Not specified")</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label><strong>Current Status:</strong></label>
+                    <div class="p-2 border rounded bg-light">
+                        @if (vacancy.ApprovalStatus == "Approved")
+                        {
+                            <span class="badge bg-success">Approved</span>
+                        }
+                        else if (vacancy.ApprovalStatus == "Pending")
+                        {
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        }
+                        else if (vacancy.ApprovalStatus == "Rejected")
+                        {
+                            <span class="badge bg-danger">Rejected</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@vacancy.ApprovalStatus</span>
+                        }
+                    </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <label><strong>Job Description:</strong></label>
+                    <div class="p-3 border rounded bg-light" style="min-height: 100px;">
+                        @vacancy.JobDescription
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Form -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Update Status</h5>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Admin" asp-action="UpdateVacancy" method="post">
+                @Html.AntiForgeryToken()
+                <!-- Hidden field for Vacancy ID -->
+                <input type="hidden" asp-for="Single_vacancy.VacancyId" />
+
+                <!-- Status Selection -->
+                <div class="mb-3">
+                    <label asp-for="Single_vacancy.ApprovalStatus" class="form-label"><strong>Select New Status *</strong></label>
+                    <select asp-for="Single_vacancy.ApprovalStatus" class="form-control" required>
+                        <option value="">-- Select Status --</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+
+                <!-- Admin Remarks -->
+                <div class="mb-3">
+                    <label asp-for="Single_vacancy.AdminRemarks" class="form-label"><strong>Admin Remarks (Optional)</strong></label>
+                    <textarea asp-for="Single_vacancy.AdminRemarks" class="form-control" rows="3"></textarea>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Update Status
+                    </button>
+                    <a asp-controller="Admin" asp-action="JobVacancyManagement" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    // Simple script to set current status in dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // Set active navigation
+        document.querySelector('[data-page="job"]').classList.add('active');
+
+        // Get current status from hidden field or model
+        var currentStatus = "@vacancy.ApprovalStatus";
+        var selectElement = document.querySelector('select[asp-for="Single_vacancy.ApprovalStatus"]');
+
+        if (selectElement) {
+            // Find and select the option matching current status
+            for (var i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === currentStatus) {
+                    selectElement.options[i].selected = true;
+                    break;
+                }
+            }
+        }
+    });
+</script>

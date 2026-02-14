@@ -1,0 +1,322 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    ViewData["Title"] = "Edit Driver Status";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<style>
+    .card {
+        border: 1px solid #e3e6f0;
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-bottom: 1px solid #e3e6f0;
+    }
+
+    .form-control-plaintext {
+        background-color: #f8f9fa;
+        border: 1px solid #e3e6f0;
+        border-radius: 0.375rem;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+    }
+
+    .form-select {
+        border: 1px solid #ced4da;
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+    }
+
+        .form-select:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+    .btn-primary {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2653d4;
+        }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.9em;
+    }
+</style>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-1">Edit Driver Status</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="DriverManage">Drivers</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Status</li>
+                </ol>
+            </nav>
+        </div>
+        <a asp-controller="Admin" asp-action="DriverManage" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Back to List
+        </a>
+    </div>
+
+    @if (Model.Single_Driver == null)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i> Driver not found!
+        </div>
+        return;
+    }
+
+    <div class="row">
+        <!-- Driver Information Card -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0 text-primary">
+                        <i class="fas fa-id-card me-2"></i> Driver Information
+                    </h6>
+                </div>
+                <div class="card-body">
+
+                    @if (!string.IsNullOrEmpty(Model.Single_Driver.DriverPhoto))
+                    {
+                        <div class="text-center mb-4">
+                            <div class="mx-auto rounded-circle overflow-hidden" style="width: 120px; height: 120px;">
+                                <img src="@Model.Single_Driver.DriverPhoto"
+                                     alt="Driver Photo"
+                                     class="img-fluid h-100 w-100 object-fit-cover"
+                                     style="cursor:pointer"
+                                     onclick="openImage(this.src)">
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center mb-4">
+                            <div class="mx-auto rounded-circle overflow-hidden bg-light d-flex align-items-center justify-content-center"
+                                 style="width: 120px; height: 120px;">
+                                <i class="fas fa-user fa-3x text-muted"></i>
+                            </div>
+                        </div>
+                    }
+
+
+                    <div class="row">
+                        <!-- Basic Information -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Driver Name</label>
+                            <div class="form-control-plaintext bg-light p-3 border rounded">
+                                <strong>@Model.Single_Driver.DriverName</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Email</label>
+                            <div class="form-control-plaintext bg-light p-3 border rounded">
+                                @Model.Single_Driver.DriverEmail
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Membership</label>
+                            <div class="form-control-plaintext bg-light p-3 border rounded">
+                                <span class="badge bg-info">@Model.Single_Driver.MembershipName</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Current Status</label>
+                            <div class="form-control-plaintext bg-light p-3 border rounded">
+                                @{
+                                    var currentStatus = Model.Single_Driver.RegisterationStatus;
+                                    var badgeClass = currentStatus == "Approved" ? "badge bg-success" :
+                                    currentStatus == "Pending" ? "badge bg-warning" :
+                                    currentStatus == "Rejected" ? "badge bg-danger" :
+                                    "badge bg-secondary";
+                                }
+                                <span class="@badgeClass">@currentStatus</span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label text-muted small">Address</label>
+                            <div class="form-control-plaintext bg-light p-3 border rounded">
+                                @Model.Single_Driver.Address
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label text-muted small">Description</label>
+                            <div class="form-control-plaintext bg-light p-3 border rounded" style="min-height: 100px;">
+                                @(string.IsNullOrEmpty(Model.Single_Driver.Description) ? "No description provided" : Model.Single_Driver.Description)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Update Card -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0 text-primary">
+                        <i class="fas fa-edit me-2"></i> Update Registration Status
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" asp-action="EditDriver" id="statusForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Single_Driver.DriverId" />
+
+                        <div class="mb-4">
+                            <label for="RegisterationStatus" class="form-label fw-bold">Select New Status *</label>
+                            <select asp-for="Single_Driver.RegisterationStatus"
+                                    class="form-select"
+                                    id="RegisterationStatus"
+                                    required>
+                                <option value="">-- Select Status --</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle text-primary me-1"></i>
+                                Changing status will affect driver's access and permissions.
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <strong>Note:</strong> Only registration status can be modified. All other details are read-only.
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-save me-1"></i> Update Status
+                            </button>
+                            <a asp-controller="Admin" asp-action="DriverManage" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Status Legend -->
+                    <div class="mt-4 pt-3 border-top">
+                        <h6 class="mb-3">Status Meaning:</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-warning me-2" style="width: 12px; height: 12px;"></span>
+                                <small class="text-muted">Pending - Registration under review</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-success me-2" style="width: 12px; height: 12px;"></span>
+                                <small class="text-muted">Approved - Active driver with full access</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-danger me-2" style="width: 12px; height: 12px;"></span>
+                                <small class="text-muted">Rejected - Registration denied</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set current status in dropdown
+        const currentStatus = '@Model.Single_Driver.RegisterationStatus';
+        const statusSelect = document.getElementById('RegisterationStatus');
+
+        if (statusSelect) {
+            for (let option of statusSelect.options) {
+                if (option.value === currentStatus) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        }
+
+        // Update button text based on selected status
+        statusSelect?.addEventListener('change', function() {
+            const newStatus = this.value;
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (newStatus && newStatus !== currentStatus) {
+                submitBtn.innerHTML = `<i class="fas fa-exchange-alt me-1"></i> Update to ${newStatus}`;
+            } else {
+                submitBtn.innerHTML = `<i class="fas fa-save me-1"></i> Update Status`;
+            }
+        });
+
+        // Form submission with confirmation
+        document.getElementById('statusForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newStatus = document.getElementById('RegisterationStatus').value;
+
+            if (!newStatus) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Status',
+                    text: 'Please select a new status',
+                    confirmButtonColor: '#4e73df'
+                });
+                return;
+            }
+
+            if (newStatus === currentStatus) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Change',
+                    text: 'The selected status is the same as current status',
+                    confirmButtonColor: '#4e73df'
+                });
+                return;
+            }
+
+            // Show confirmation
+            Swal.fire({
+                title: 'Confirm Status Update',
+                html: `Change driver status to <strong>${newStatus}</strong>?<br>
+                       <small class="text-muted">Driver: @Model.Single_Driver.DriverName</small>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#4e73df',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Update',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit form
+                    this.submit();
+                }
+            });
+        });
+
+        // Set active navigation
+        document.querySelector('[data-page="drivers"]')?.classList.add('active');
+    });
+
+        function openImage(src) {
+        Swal.fire({
+            imageUrl: src,
+            showCloseButton: true,
+            showConfirmButton: false
+        });
+    }
+</script>

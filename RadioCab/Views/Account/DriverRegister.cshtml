@@ -1,0 +1,92 @@
+﻿@model RadioCab.Models.UserValidate
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadioCab - Driver Registration</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="~/css/Drive_reg.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="registration-container">
+        <div class="left-panel">
+            <div class="taxi-icon">🚕</div>
+            <a asp-controller="User" asp-action="Index" style="text-decoration:none; color:black;"> <h1>RadioCab</h1></a>
+         
+            <p>Join our network of professional drivers and start earning today</p>
+        </div>
+
+        <div class="right-panel">
+            <div id="formSection">
+                <h2 class="form-title">Driver Registration</h2>
+                <p class="form-subtitle">Create your account to get started</p>
+
+                <form asp-action="DriverRegister" asp-controller="Account" id="registrationForm">
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" id="fullname" asp-for="FullName">
+                            <label for="fullname" asp-for="FullName">Full Name</label>
+                            <span asp-validation-for="FullName"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="email" asp-for="Email">
+                            <label asp-for="Email">Email Address</label>
+                            <span asp-validation-for="Email"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone input-icon"></i>
+                            <input type="tel" id="phone" asp-for="Phone">
+                            <label asp-for="Phone">Phone Number</label>
+                            <span asp-validation-for="Phone"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" asp-for="Password">
+                            <label asp-for="Password">Password</label>
+                            <span asp-validation-for="Password"></span>
+                            <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        <i class="fas fa-user-plus"></i> Register Now
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Password toggle functionality
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+    </script>
+</body>
+</html>

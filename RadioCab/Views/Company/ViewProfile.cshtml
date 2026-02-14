@@ -1,0 +1,160 @@
+﻿@model RadioCab.Models.Company
+@{
+    ViewData["Title"] = "ViewProfile";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+
+
+<link href="~/Company/css/ViewProfile.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <div class="card-header">
+            <div class="back-button">
+                <a href="#" class="back-btn" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </a>
+            </div>
+            <div class="company-logo-container pulse-animation">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmvaRwBoZA_jrZ06p4j3xrku0wzqSK5a_4Cw&s" alt="Company Logo" class="company-logo">
+            </div>
+            <div class="company-info">
+                <h1 class="company-name">@Model.CompanyName</h1>
+                <p class="company-tagline">Innovating the Future of Technology</p>
+                <div>
+                    <h2 class="contact-person">@Model.ContactPerson <span class="badge">@Model.Membership.MembershipName</span></h2>
+                    <p class="designation">@Model.Designation</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="contact-info">
+                <div class="info-section">
+                    <h3><i class="fas fa-address-card"></i> Contact Information</h3>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div class="info-text">
+                            <div class="info-label">Email</div>
+                            <div class="info-value contact-email">@Model.Email</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div class="info-text">
+                            <div class="info-label">Telephone</div>
+                            <div class="info-value">+@Model.Telephone</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-fax"></i>
+                        <div class="info-text">
+                            <div class="info-label">Fax</div>
+                            <div class="info-value">@Model.FaxNumber</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3><i class="fas fa-map-marked-alt"></i> Company Location</h3>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="info-text">
+                            <div class="info-label">Address</div>
+                            <div class="info-value">@Model.Address</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-city"></i>
+                        <div class="info-text">
+                            <div class="info-label">City</div>
+                            <div class="info-value">@Model.City.CityName</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="company-details">
+                <div class="info-section">
+                    <h3><i class="fas fa-building"></i> About Our Company</h3>
+                    <p class="company-description">
+                        @Model.Description
+                    </p>
+                </div>
+
+                <div class="info-section">
+                    <h3><i class="far fa-clock"></i> Business Hours</h3>
+                    <div class="info-item">
+                        <i class="far fa-calendar-alt"></i>
+                        <div class="info-text">
+                            <div class="info-label">Monday - Friday</div>
+                            <div class="info-value">9:00 AM - 6:00 PM PST</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="far fa-calendar-alt"></i>
+                        <div class="info-text">
+                            <div class="info-label">Saturday - Sunday</div>
+                            <div class="info-value">Closed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="documents-section">
+                <div class="info-section">
+                    <h3><i class="fas fa-file-download"></i> Company Documents</h3>
+                    <div class="documents-container">
+                        <a href="@Model.CompanyLogo" target="_blank" class="document-link">
+                            <div class="document-icon">
+                                <i class="far fa-image"></i>
+                            </div>
+                            <div class="document-info">
+                                <div class="document-name">Company Logo</div>
+                                <div class="document-size">PNG • 2.4 MB</div>
+                            </div>
+                            <div class="download-indicator">
+                                <i class="fas fa-download"></i>
+                            </div>
+                        </a>
+
+                        <a href="@Model.FbrCertificate" target="_blank" class="document-link">
+                            <div class="document-icon">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <div class="document-info">
+                                <div class="document-name">FBR Certificate</div>
+                                <div class="document-size">PDF • 1.8 MB</div>
+                            </div>
+                            <div class="download-indicator">
+                                <i class="fas fa-download"></i>
+                            </div>
+                        </a>
+
+                        <a href="@Model.BusinessLicense" target="_blank" class="document-link">
+                            <div class="document-icon">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                            <div class="document-info">
+                                <div class="document-name">Business License</div>
+                                <div class="document-size">PDF • 3.2 MB</div>
+                            </div>
+                            <div class="download-indicator">
+                                <i class="fas fa-download"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            View profile | Information is confidential and proprietary
+        </div>
+    </div>
+</div>
+
+<script src="~/Company/js/ViewProfile.js">
+
+</script>

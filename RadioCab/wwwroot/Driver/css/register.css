@@ -1,0 +1,567 @@
+﻿
+:root {
+    --off-white: #F9FAFB;
+    --white: #FFFFFF;
+    --light-gray-border: #E5E7EB;
+    --muted-navy: #1F2A37;
+    --dark-navy: #1F2937;
+    --near-black: #111827;
+    --soft-gray: #9CA3AF;
+    --light-gray: #D1D5DB;
+    --soft-gold: #E3B23C;
+    --dark-gold: #D1A32F;
+    --navy-outline: #1F2A37;
+    --gold-shadow: rgba(227,178,60,0.15);
+}
+
+body {
+    background-color: var(--off-white);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+    color: var(--dark-navy);
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+/* Animated Background with Cab/Driver Theme - More Visible */
+#animated-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #eef1f5 0%, #e0e5ec 100%);
+}
+
+/* Taxi/Cab Shape - More Visible */
+.taxi-shape {
+    position: absolute;
+    width: 120px;
+    height: 50px;
+    background-color: #FFC107;
+    border-radius: 10px 10px 0 0;
+    opacity: 0.15; /* Increased from 0.08 */
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+    .taxi-shape:before {
+        content: '';
+        position: absolute;
+        width: 140px;
+        height: 25px;
+        background-color: #FFC107;
+        bottom: -12px;
+        left: -10px;
+        border-radius: 5px;
+        opacity: 0.9; /* Increased from 0.8 */
+    }
+
+    .taxi-shape:after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: var(--dark-navy);
+        border-radius: 50%;
+        bottom: -17px;
+        left: 20px;
+        box-shadow: 70px 0 0 var(--dark-navy);
+        opacity: 0.5; /* Increased from 0.3 */
+    }
+
+/* Taxi Sign Shape - More Visible */
+.taxi-sign {
+    position: absolute;
+    width: 80px;
+    height: 30px;
+    background-color: #FFC107;
+    opacity: 0.12; /* Increased from 0.07 */
+    border-radius: 4px;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+    .taxi-sign:before {
+        content: 'TAXI';
+        position: absolute;
+        color: var(--dark-navy);
+        font-weight: bold;
+        font-size: 14px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.9; /* Increased from 0.7 */
+    }
+
+/* Road Lines - More Visible */
+.road-line {
+    position: absolute;
+    width: 200px;
+    height: 8px;
+    background-color: #FFFFFF;
+    opacity: 0.2; /* Increased from 0.1 */
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+/* Traffic Light - More Visible */
+.traffic-light {
+    position: absolute;
+    width: 25px;
+    height: 60px;
+    background-color: var(--dark-navy);
+    border-radius: 5px;
+    opacity: 0.1; /* Increased from 0.06 */
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+    .traffic-light:before {
+        content: '';
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background-color: #4CAF50;
+        border-radius: 50%;
+        top: 8px;
+        left: 5px;
+        opacity: 0.5; /* Increased from 0.3 */
+    }
+
+    .traffic-light:after {
+        content: '';
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background-color: #FFC107;
+        border-radius: 50%;
+        top: 28px;
+        left: 5px;
+        opacity: 0.5; /* Increased from 0.3 */
+    }
+
+/* Steering Wheel - More Visible */
+.steering-wheel {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 6px solid var(--soft-gold);
+    border-radius: 50%;
+    opacity: 0.12; /* Increased from 0.06 */
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+    .steering-wheel:before {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: var(--soft-gold);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+    }
+
+/* Map Pin - New shape for address theme */
+.map-pin {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: #FF5252;
+    border-radius: 50% 50% 50% 0;
+    opacity: 0.15;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    transform: rotate(-45deg);
+}
+
+    .map-pin:before {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background-color: white;
+        border-radius: 50%;
+        top: 8px;
+        left: 8px;
+    }
+
+/* Road Sign - New shape */
+.road-sign {
+    position: absolute;
+    width: 60px;
+    height: 70px;
+    background-color: var(--soft-gold);
+    opacity: 0.1;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    border-radius: 5px;
+}
+
+    .road-sign:before {
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 30px;
+        background-color: var(--soft-gold);
+        bottom: -25px;
+        left: 26px;
+        border-radius: 2px;
+    }
+
+/* Speedometer - New shape */
+.speedometer {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 5px solid var(--soft-gold);
+    border-radius: 50%;
+    opacity: 0.1;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+    .speedometer:before {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 5px;
+        background-color: var(--soft-gold);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        border-radius: 2px;
+    }
+
+/* Animations */
+@keyframes driveRight {
+    0% {
+        transform: translateX(-150px) rotate(0deg);
+    }
+
+    100% {
+        transform: translateX(calc(100vw + 150px)) rotate(0deg);
+    }
+}
+
+@keyframes driveLeft {
+    0% {
+        transform: translateX(calc(100vw + 150px)) rotate(0deg);
+    }
+
+    100% {
+        transform: translateX(-150px) rotate(0deg);
+    }
+}
+
+@keyframes floatUpDown {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-25px) rotate(2deg);
+    }
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 0.1;
+    }
+
+    50% {
+        opacity: 0.2;
+    }
+}
+
+@keyframes rotateSlow {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Form Styles */
+.form-container {
+    background-color: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--light-gray-border);
+    padding: 30px;
+    margin: 30px auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-title {
+    color: var(--muted-navy);
+    font-weight: 700;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--soft-gold);
+    position: relative;
+}
+
+    .form-title:after {
+        content: '';
+        position: absolute;
+        width: 60px;
+        height: 4px;
+        background-color: var(--soft-gold);
+        bottom: -2px;
+        left: 0;
+    }
+
+.form-label {
+    color: var(--dark-navy);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-control, .form-select, .form-textarea {
+    color: var(--near-black);
+    border: 1px solid var(--light-gray);
+    border-radius: 6px;
+    padding: 10px 15px;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+    .form-control:focus, .form-select:focus, .form-textarea:focus {
+        border-color: var(--soft-gold);
+        box-shadow: 0 0 0 0.25rem var(--gold-shadow);
+    }
+
+    .form-control::placeholder, .form-textarea::placeholder {
+        color: var(--soft-gray);
+    }
+
+.btn-primary-custom {
+    background-color: var(--soft-gold);
+    border-color: var(--soft-gold);
+    color: var(--dark-navy);
+    font-weight: 600;
+    padding: 12px 30px;
+    transition: all 0.3s;
+    font-size: 16px;
+    width: 100%;
+}
+
+    .btn-primary-custom:hover {
+        background-color: var(--dark-gold);
+        border-color: var(--dark-gold);
+        color: var(--dark-navy);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+.btn-secondary-custom {
+    background-color: transparent;
+    border: 2px solid var(--navy-outline);
+    color: var(--navy-outline);
+    font-weight: 600;
+    padding: 12px 30px;
+    transition: all 0.3s;
+    font-size: 16px;
+    width: 100%;
+}
+
+    .btn-secondary-custom:hover {
+        background-color: var(--navy-outline);
+        border-color: var(--navy-outline);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+.form-section {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--light-gray-border);
+}
+
+    .form-section:last-of-type {
+        border-bottom: none;
+    }
+
+.section-title {
+    color: var(--muted-navy);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+    .section-title i {
+        margin-right: 10px;
+        color: var(--soft-gold);
+    }
+
+.file-upload-container {
+    border: 2px dashed var(--light-gray);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+    .file-upload-container:hover {
+        border-color: var(--soft-gold);
+        background-color: rgba(227, 178, 60, 0.05);
+    }
+
+.file-upload-icon {
+    font-size: 40px;
+    color: var(--soft-gray);
+    margin-bottom: 10px;
+}
+
+.file-upload-text {
+    color: var(--soft-gray);
+    font-size: 14px;
+}
+
+.form-text {
+    color: var(--soft-gray);
+    font-size: 13px;
+}
+
+.preview-image {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 8px;
+    border: 1px solid var(--light-gray-border);
+    margin-top: 10px;
+    display: none;
+}
+
+.file-name {
+    color: var(--dark-navy);
+    font-size: 14px;
+    margin-top: 8px;
+    display: none;
+}
+
+/* Experience Input Styles */
+.experience-input {
+    display: flex;
+    align-items: center;
+}
+
+    .experience-input .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: none;
+    }
+
+.experience-unit {
+    background-color: #f8f9fa;
+    border: 1px solid var(--light-gray);
+    border-left: none;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding: 10px 15px;
+    color: var(--dark-navy);
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    color: var(--soft-gray);
+    font-size: 14px;
+    padding: 20px 0;
+    margin-top: 20px;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-header-icon {
+    color: var(--soft-gold);
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+}
+
+.submit-section {
+    padding-top: 20px;
+    text-align: center;
+}
+
+.required-field {
+    color: #dc3545;
+}
+
+.form-note {
+    background-color: rgba(227, 178, 60, 0.1);
+    border-left: 4px solid var(--soft-gold);
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+    .form-note i {
+        color: var(--soft-gold);
+        margin-right: 8px;
+    }
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+@media (max-width: 576px) {
+    .button-group {
+        flex-direction: column;
+    }
+}
+

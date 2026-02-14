@@ -1,0 +1,342 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    ViewData["Title"] = "Driver Details";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<style>
+    :root {
+        --dark-blue: #14213d;
+        --orange: #fca311;
+        --light-gray: #f8f9fa;
+        --medium-gray: #e9ecef;
+    }
+
+    .compact-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid var(--medium-gray);
+    }
+
+    .driver-header {
+        background: linear-gradient(135deg, var(--dark-blue), #1e2a4a);
+        color: white;
+        border-radius: 8px 8px 0 0;
+        padding: 15px;
+    }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background-color: #ffd166;
+        color: #856404;
+    }
+
+    .status-approved {
+        background-color: #06d6a0;
+        color: #0f5132;
+    }
+
+    .status-rejected {
+        background-color: #ef476f;
+        color: white;
+    }
+
+    .driver-photo {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 2px solid white;
+    }
+
+    .info-label {
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 2px;
+    }
+
+    .info-value {
+        color: var(--dark-blue);
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .section-title {
+        color: var(--dark-blue);
+        font-size: 1rem;
+        font-weight: 700;
+        border-bottom: 2px solid var(--orange);
+        padding-bottom: 6px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .document-link {
+        color: var(--orange);
+        text-decoration: none;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .document-link:hover {
+            color: #e3940f;
+            text-decoration: underline;
+        }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    .back-btn {
+        background-color: var(--medium-gray);
+        color: var(--dark-blue);
+        border: 1px solid #dee2e6;
+        font-size: 0.85rem;
+    }
+
+    .btn-primary {
+        background-color: var(--dark-blue);
+        border-color: var(--dark-blue);
+    }
+
+        .btn-primary:hover {
+            background-color: #1e2a4a;
+            border-color: #1e2a4a;
+        }
+
+    .btn-outline-primary {
+        color: var(--dark-blue);
+        border-color: var(--dark-blue);
+    }
+
+        .btn-outline-primary:hover {
+            background-color: var(--dark-blue);
+            border-color: var(--dark-blue);
+        }
+
+    .list-group-item {
+        padding: 10px 15px;
+        font-size: 0.85rem;
+        border-color: var(--medium-gray);
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+        font-size: 0.8rem;
+    }
+
+    .small {
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="container-fluid py-3">
+    <!-- Back Navigation -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <button onclick="window.history.back()" class="btn btn-sm back-btn">
+                <i class="bi bi-arrow-left"></i> Back
+            </button>
+        </div>
+    </div>
+
+    <!-- Driver Details Card -->
+    <div class="compact-card mb-3">
+        <!-- Header -->
+        <div class="driver-header">
+            <div class="row align-items-center g-2">
+                <div class="col-auto">
+                    @if (!string.IsNullOrEmpty(Model.Single_Driver.DriverPhoto))
+                    {
+                        <img src="@Model.Single_Driver.DriverPhoto"
+                             alt="Driver Photo"
+                             class="driver-photo">
+                    }
+                    else
+                    {
+                        <div class="driver-photo bg-light d-flex align-items-center justify-content-center">
+                            <i class="bi bi-person text-muted fs-4"></i>
+                        </div>
+                    }
+                </div>
+                <div class="col">
+                    <div class="d-flex flex-column">
+                        <h5 class="mb-1">@Model.Single_Driver.DriverName</h5>
+                        <div class="d-flex align-items-center flex-wrap gap-2">
+                            <small class="opacity-75">
+                                <i class="bi bi-person-badge"></i>
+                                ID: DRV_@Model.Single_Driver.DriverId
+                            </small>
+                            <span class="status-badge @Model.Single_Driver.RegisterationStatus.ToLower()">
+                                @Model.Single_Driver.RegisterationStatus
+                            </span>
+                            <span class="badge bg-light text-dark">
+                                <i class="bi bi-car-front"></i>
+                                @Model.Single_Driver.MembershipName
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <a asp-controller="Admin" asp-action="SinglePayment" asp-route-id="@Model.Single_Driver.UserId"
+                       class="btn btn-sm btn-primary">
+                        <i class="bi bi-credit-card"></i> Payments
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="p-3">
+            <div class="row g-3">
+                <!-- Left Column -->
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <h6 class="section-title">
+                            <i class="bi bi-person"></i> Personal Info
+                        </h6>
+                        <div class="row g-2 mb-2">
+                            <div class="col-4 info-label">Email</div>
+                            <div class="col-8 info-value small">@Model.Single_Driver.DriverEmail</div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-4 info-label">Phone</div>
+                            <div class="col-8 info-value small">@Model.Single_Driver.Telephone</div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-4 info-label">Address</div>
+                            <div class="col-8 info-value small">@Model.Single_Driver.Address</div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-4 info-label">City</div>
+                            <div class="col-8 info-value small">@Model.Single_Driver.CityName</div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-4 info-label">Experience</div>
+                            <div class="col-8 info-value small">@Model.Single_Driver.Experience</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="section-title">
+                            <i class="bi bi-car-front"></i> Vehicle Info
+                        </h6>
+                        <div class="info-value small">@Model.Single_Driver.VehicleInfo</div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <h6 class="section-title">
+                            <i class="bi bi-file-text"></i> Documents
+                        </h6>
+                        <div class="row g-2 mb-2">
+                            <div class="col-5 info-label">License No.</div>
+                            <div class="col-7 info-value small">@Model.Single_Driver.DrivingLicenseNumber</div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-5 info-label">License File</div>
+                            <div class="col-7">
+                                @if (!string.IsNullOrEmpty(Model.Single_Driver.DrivingLicenseFile))
+                                {
+                                    <a href="@Model.Single_Driver.DrivingLicenseFile"
+                                       class="document-link" target="_blank">
+                                        <i class="bi bi-file-pdf"></i> View
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">No document</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h6 class="section-title">
+                            <i class="bi bi-card-text"></i> Description
+                        </h6>
+                        <div class="p-3 bg-light rounded small">
+                            @Model.Single_Driver.Description
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row g-3">
+        <!-- Recent Payments -->
+        <div class="col-lg-6">
+            <div class="compact-card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="section-title mb-0">
+                        <i class="bi bi-credit-card"></i> Recent Payments
+                    </h6>
+                    <a asp-controller="Admin" asp-action="SinglePayment" asp-route-id="@Model.Single_Driver.UserId"
+                       class="btn btn-sm btn-outline-primary">
+                        View All
+                    </a>
+                </div>
+
+                <div class="list-group list-group-flush">
+                    @if (!Model.Payment_list.Any())
+                    {
+                        <div class="list-group-item text-center text-muted py-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            No payment history found.
+                        </div>
+                    }else
+                    {
+                        @foreach (var p in Model.Payment_list)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                <div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                        <span>@p.PaymentAmount.PaymentType</span>
+                                    </div>
+                                    <small class="text-muted">@p.PaymentDate.ToString("dd MMM yyyy")</small>
+                                </div>
+                                <span class="badge bg-success">$@p.PaymentAmount.Amount</span>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set active navigation
+        const navItem = document.querySelector('[data-page="drivers"]');
+        if (navItem) {
+            navItem.classList.add('active');
+        }
+    });
+</script>

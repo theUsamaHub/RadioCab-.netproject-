@@ -1,0 +1,111 @@
+﻿@model RadioCab.Models.CompanyFeedbackandPayment;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+
+
+<!-- Dashboard Content -->
+<div>
+    <div class="dashboard-cards">
+        <div class="card">
+            <div class="card-title">Total Vacancies</div>
+            <div class="card-value">@ViewBag.vacancy</div>
+            <div class="card-change positive">+12.5% from last month</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Total Applications</div>
+            <div class="card-value">@ViewBag.application</div>
+            <div class="card-change positive">+8.2% from last month</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Services</div>
+            <div class="card-value">@ViewBag.Service</div>
+            <div class="card-change negative">-3.1% from last month</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Feedback</div>
+            <div class="card-value">@ViewBag.FeedBack</div>
+            <div class="card-change positive">+0.2 from last month</div>
+        </div>
+    </div>
+
+    <div class="tables-container">
+        <!-- First Table: Payment Transactions -->
+        <div class="table-wrapper">
+            <div class="table-title">
+                <i class="fas fa-credit-card"></i>
+                Payment Transactions
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Payment Purpose</th>
+                        <th>Transaction ID</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Payment)
+                    {
+                        <tr>
+                            <td>@p.PaymentPurpose</td>
+                            <td>@p.TransactionId</td>
+                            @if(p.PaymentStatus == "Paid")
+                            {
+                                <td><span class="status-badge status-completed">Paid</span></td>
+                            }
+                            else if(p.PaymentStatus == "Pending")
+                            {
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                            }
+                            else
+                            {
+                                <td><span class="status-badge status-failed">Rejected</span></td>
+                            }
+
+                        </tr>
+                    }
+                   
+                   
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Second Table: User Feedback -->
+        <div class="table-wrapper">
+            <div class="table-title">
+                <i class="fas fa-star"></i>
+                User Feedback
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rating</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var f in Model.CompanyFeedback)
+                    {
+                        <tr>
+                            <td>
+                                @f.Rating
+                            </td>
+                            <td class="comments-cell expandable">@f.Comment</td>
+                        </tr>
+                    }
+                  
+                    
+                   
+                    
+                   
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty space to demonstrate scrolling in main area only -->
+    <div style="height: 100px;"></div>
+</div>

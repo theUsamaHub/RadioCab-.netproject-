@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "DriverProfile";
+    Layout = "~/Views/Shared/driverlayout.cshtml";
+}
+<div class="action-cards">
+    <a asp-action="ViewProfileDriver" asp-controller="Driver" class="action-card">
+        <div class="action-card-icon">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="action-card-content">
+            <h3 class="action-card-title">View Profile</h3>
+            <p class="action-card-description">See your public profile details</p>
+        </div>
+        <div class="action-card-arrow">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </a>
+
+    <a asp-action="EditProfileDriver" asp-controller="Driver" class="action-card">
+        <div class="action-card-icon">
+            <i class="fas fa-edit"></i>
+        </div>
+        <div class="action-card-content">
+            <h3 class="action-card-title">Edit Profile</h3>
+            <p class="action-card-description">Update your company information</p>
+        </div>
+        <div class="action-card-arrow">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </a>
+
+    <a asp-action="Logout" asp-controller="Account" class="action-card logout-action">
+        <div class="action-card-icon">
+            <i class="fas fa-sign-out-alt"></i>
+        </div>
+        <div class="action-card-content">
+            <h3 class="action-card-title">Logout</h3>
+            <p class="action-card-description">Sign out of your account</p>
+        </div>
+        <div class="action-card-arrow">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </a>
+</div>

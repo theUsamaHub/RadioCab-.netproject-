@@ -1,0 +1,195 @@
+﻿@model RadioCab.Models.Payment
+@{
+    ViewData["Title"] = "ViewPaymentDriver";
+    Layout = "~/Views/Shared/driverlayout.cshtml";
+}
+<link rel="stylesheet" href="~/Company/css/ViewPayment.css" asp-append-version="true">
+
+<div class="payment-wrapper">
+    <!-- Premium Payment Details Card -->
+    <div class="premium-card">
+        <div class="card-header-premium">
+            <div class="back-button">
+                <a href="#" class="back-btn" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </a>
+            </div>
+            <div>
+                <h3><i class="fas fa-credit-card" style="color:#F6A90F; opacity:0.8;"></i>Payment Transaction Details</h3>
+                <p>Complete transaction information and documentation</p>
+            </div>
+
+        </div>
+
+        <div class="card-body-premium">
+            <!-- Timeline-style Payment Details -->
+            <div class="payment-timeline">
+                <div class="timeline-line"></div>
+
+                <!-- Company Information -->
+                <div class="timeline-item">
+                    <div class="timeline-marker">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-label">
+                            <i class="fas fa-building"></i> Personal Information
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <div class="timeline-label">Driver Name</div>
+                                <div class="timeline-value">@Model.User.FullName</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="timeline-label">Email Address</div>
+                                <div class="timeline-value">@Model.User.Email</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="timeline-label">Phone Number</div>
+                                <div class="timeline-value">@Model.User.Phone</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Information in two columns for larger screens -->
+                <div class="timeline-columns">
+                    <!-- Left Column -->
+                    <div>
+                        <!-- Membership & Payment Type -->
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-label">Membership Plan</div>
+                                <div class="timeline-value">
+                                    <span class="badge-premium badge-membership-premium">@Model.PaymentAmount.Membership.MembershipName</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-label">Payment Method</div>
+                                <div class="timeline-value">
+                                    <span class="badge-premium badge-payment-method-premium">@Model.PaymentMethod.MethodName</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Purpose -->
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-label">Payment Purpose</div>
+                                <div class="timeline-value">For @Model.PaymentPurpose</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <!-- Amount -->
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-label">Amount</div>
+                                <div class="timeline-value">
+                                    <div class="amount-display-premium"><span class="amount-currency-premium">$</span>@Model.PaymentAmount.Amount</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction ID -->
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-label">Transaction ID</div>
+                                <div class="timeline-value">
+                                    <span class="transaction-id-premium">@Model.TransactionId</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Type -->
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-label">Payment Type</div>
+                                <div class="timeline-value">
+                                    <span class="badge-premium badge-payment-type-premium">@Model.PaymentAmount.PaymentType</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="timeline-item">
+                    <div class="timeline-marker">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-label">Payment Period</div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="timeline-label">Start Date</div>
+                                <div class="timeline-value">
+                                    <span class="date-display-premium"><i class="fas fa-play-circle"></i> @Model.PaymentDate</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="timeline-label">End Date</div>
+                                <div class="timeline-value">
+                                    <span class="date-display-premium"><i class="fas fa-check-circle"></i> @Model.ExpiryDate</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Copy -->
+                <div class="timeline-item">
+                    <div class="timeline-marker">
+                        <i class="fas fa-paperclip"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-label">Transaction Documentation</div>
+                        <div class="timeline-value">
+                            <a href="@Model.PaymentScreenshot" target="_blank" class="transaction-copy-premium" id="viewTransactionPremium">
+                                <i class="fas fa-file-invoice-dollar"></i> View Full Transaction Document
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Footer with Status -->
+        <div class="card-footer-premium">
+            <div class="status-indicator-premium">
+                <div class="status-dot-premium"></div>
+                <span>Payment Status: <strong>@Model.PaymentStatus</strong></span>
+            </div>
+            <div class="text-muted">
+                <small><i class="fas fa-info-circle me-1"></i> Transaction ID: @Model.TransactionId | Processed on @Model.PaymentDate</small>
+            </div>
+        </div>
+    </div>
+
+</div>

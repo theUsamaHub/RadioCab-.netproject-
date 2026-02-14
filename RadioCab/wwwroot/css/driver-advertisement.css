@@ -1,0 +1,507 @@
+/**
+ * Driver Advertisement Management Styles
+ * Styles for advertisement creation, editing, and management interface
+ */
+
+/* ===============================
+   ADVERTISEMENT FORM STYLES
+   =============================== */
+
+.advertisement-form {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.advertisement-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.advertisement-card .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 1.5rem;
+}
+
+.advertisement-card .card-body {
+    padding: 2rem;
+}
+
+/* Form Section Headers */
+.form-section-header {
+    color: #6c757d;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-label {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Image Preview */
+.image-preview {
+    margin-top: 1rem;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #e9ecef;
+    background: #f8f9fa;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.image-preview .placeholder {
+    color: #6c757d;
+    text-align: center;
+    padding: 2rem;
+}
+
+/* File Input Styling */
+.form-control[type="file"] {
+    padding: 0.5rem;
+    background: #f8f9fa;
+}
+
+.form-control[type="file"]:focus {
+    background: #fff;
+}
+
+/* ===============================
+   ADVERTISEMENT LIST STYLES
+   =============================== */
+
+.advertisement-list {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.advertisement-table {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.advertisement-table .table {
+    margin-bottom: 0;
+}
+
+.advertisement-table .table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.advertisement-table .table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-color: #f1f3f5;
+}
+
+.advertisement-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.advertisement-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 3px solid #e9ecef;
+    transition: transform 0.3s ease;
+}
+
+.advertisement-image:hover {
+    transform: scale(1.05);
+}
+
+.advertisement-details h6 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.advertisement-details p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.advertisement-meta {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-approved {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.status-pending {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    color: white;
+}
+
+.status-rejected {
+    background: linear-gradient(135deg, #dc3545, #e83e8c);
+    color: white;
+}
+
+.status-inactive {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+}
+
+/* Payment Status */
+.payment-status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.payment-paid {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.payment-pending {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    color: white;
+}
+
+.payment-unpaid {
+    background: linear-gradient(135deg, #dc3545, #e83e8c);
+    color: white;
+}
+
+/* Action Buttons */
+.btn-action {
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-edit {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+/* Toggle Switch */
+.form-switch {
+    padding-left: 3rem;
+}
+
+.form-switch .form-check-input {
+    width: 3rem;
+    height: 1.5rem;
+    background-color: #ccc;
+    border: none;
+    cursor: pointer;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.form-switch .form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* ===============================
+   STATISTICS CARDS
+   =============================== */
+
+.stats-card {
+    border: none;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.stats-card .card-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stats-label {
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+}
+
+/* ===============================
+   TOAST NOTIFICATIONS
+   =============================== */
+
+.custom-toast {
+    min-width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+.custom-toast .toast-body {
+    padding: 1rem;
+    font-weight: 500;
+}
+
+/* ===============================
+   VALIDATION STYLES
+   =============================== */
+
+.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+/* ===============================
+   LOADING STATES
+   =============================== */
+
+.loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ===============================
+   RESPONSIVE DESIGN
+   =============================== */
+
+@media (max-width: 768px) {
+    .advertisement-card .card-body {
+        padding: 1rem;
+    }
+    
+    .advertisement-table .table th,
+    .advertisement-table .table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .advertisement-image {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .advertisement-details h6 {
+        font-size: 0.9rem;
+    }
+    
+    .advertisement-details p {
+        font-size: 0.8rem;
+    }
+    
+    .stats-number {
+        font-size: 2rem;
+    }
+    
+    .btn-action {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .advertisement-form {
+        padding: 1rem 0;
+    }
+    
+    .advertisement-list {
+        padding: 1rem 0;
+    }
+    
+    .advertisement-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .advertisement-image {
+        margin-bottom: 1rem;
+    }
+    
+    .stats-card {
+        margin-bottom: 1rem;
+    }
+    
+    .stats-number {
+        font-size: 1.5rem;
+    }
+}
+
+/* ===============================
+   ANIMATIONS
+   =============================== */
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ===============================
+   EMPTY STATE STYLES
+   =============================== */
+
+.empty-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+.empty-state h4 {
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+/* ===============================
+   SPECIAL EFFECTS
+   =============================== */
+
+.glow-effect {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.card-hover-effect {
+    transition: all 0.3s ease;
+}
+
+.card-hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}

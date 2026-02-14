@@ -1,0 +1,429 @@
+﻿
+        :root {
+            --primary: #212A27;
+            --secondary: #F6A90F;
+            --accent1: #FECA5A;
+            --accent2: #EE6E13;
+            --neutral-dark: #736664;
+            --neutral-light: #706A74;
+            --background: #F9FAFB;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+      .payment-wrapper {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            background-color: var(--background);
+        }
+        
+        /* Premium Glass Card */
+        .premium-card {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            box-shadow: 
+                0 15px 35px rgba(33, 42, 39, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            animation: cardReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        
+        @keyframes cardReveal {
+            from { 
+                opacity: 0; 
+                transform: translateY(40px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+        
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(246, 169, 15, 0.4), 
+                transparent);
+        }
+.back-button {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    z-index: 2;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+    .back-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateX(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .back-btn i {
+        font-size: 0.9rem;
+    }
+        
+        .card-header-premium {
+            background: linear-gradient(135deg, var(--primary), #1a211e);
+            color: white;
+            padding: 2rem 2.5rem;
+            border-bottom: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header-premium::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(246, 169, 15, 0.1) 50%, 
+                transparent 100%);
+        }
+        
+        .card-header-premium h3 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-header-premium p {
+            opacity: 0.9;
+            margin-bottom: 0;
+            font-weight: 400;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header-icon-premium {
+            position: absolute;
+            right: 2.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            color: var(--secondary);
+            opacity: 0.8;
+            z-index: 1;
+        }
+        
+        .card-body-premium {
+            padding: 2.5rem;
+        }
+        
+        /* Timeline-style layout */
+        .payment-timeline {
+            position: relative;
+            margin: 2rem 0;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, 
+                var(--secondary), 
+                var(--accent2));
+            z-index: 0;
+        }
+        
+        .timeline-item {
+            display: flex;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .timeline-marker {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(246, 169, 15, 0.2);
+        }
+        
+        .timeline-marker i {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(33, 42, 39, 0.05);
+            border: 1px solid rgba(33, 42, 39, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(33, 42, 39, 0.1);
+        }
+        
+        .timeline-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--neutral-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .timeline-label i {
+            margin-right: 8px;
+            color: var(--neutral-light);
+        }
+        
+        .timeline-value {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+        
+        /* Badge styles */
+        .badge-premium {
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+            display: inline-block;
+        }
+        
+        .badge-membership-premium {
+            background: linear-gradient(135deg, rgba(33, 42, 39, 0.1), rgba(115, 102, 100, 0.1));
+            color: var(--primary);
+            border: 1px solid rgba(33, 42, 39, 0.15);
+        }
+        
+        .badge-payment-type-premium {
+            background: linear-gradient(135deg, rgba(238, 110, 19, 0.1), rgba(254, 202, 90, 0.1));
+            color: var(--accent2);
+            border: 1px solid rgba(238, 110, 19, 0.2);
+        }
+        
+        .badge-payment-method-premium {
+            background: linear-gradient(135deg, rgba(246, 169, 15, 0.1), rgba(254, 202, 90, 0.1));
+            color: var(--secondary);
+            border: 1px solid rgba(246, 169, 15, 0.2);
+        }
+        
+        /* Transaction copy button */
+        .transaction-copy-premium {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--secondary), var(--accent1));
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 5px 15px rgba(246, 169, 15, 0.3);
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .transaction-copy-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .transaction-copy-premium:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(246, 169, 15, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .transaction-copy-premium:hover::before {
+            opacity: 1;
+        }
+        
+        .transaction-copy-premium i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* Amount display */
+        .amount-display-premium {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            background: linear-gradient(135deg, var(--primary), #2a352f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .amount-currency-premium {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin-right: 5px;
+        }
+        
+        /* Transaction ID */
+        .transaction-id-premium {
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+            letter-spacing: 1px;
+            background: rgba(33, 42, 39, 0.05);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            display: inline-block;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        /* Date display */
+        .date-display-premium {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--primary);
+            border: 1px solid rgba(33, 42, 39, 0.1);
+            box-shadow: 0 3px 8px rgba(33, 42, 39, 0.05);
+        }
+        
+        .date-display-premium i {
+            margin-right: 8px;
+            color: var(--secondary);
+        }
+        
+        /* Status indicator */
+        .status-indicator-premium {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            background: rgba(6, 214, 160, 0.1);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            border-left: 4px solid #06d6a0;
+        }
+        
+        .status-dot-premium {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #06d6a0;
+            margin-right: 10px;
+        }
+        
+        /* Card footer */
+        .card-footer-premium {
+            background: linear-gradient(to right, rgba(249, 250, 251, 0.8), rgba(255, 255, 255, 0.9));
+            padding: 1.75rem 2.5rem;
+            border-top: 1px solid rgba(33, 42, 39, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Two-column layout for larger screens */
+        @media (min-width: 992px) {
+            .timeline-columns {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .card-header-premium h3 {
+                font-size: 1.5rem;
+            }
+            
+            .header-icon-premium {
+                position: relative;
+                right: 0;
+                top: 0;
+                transform: none;
+                margin-top: 1rem;
+                font-size: 2rem;
+            }
+            
+            .amount-display-premium {
+                font-size: 2rem;
+            }
+            
+            .card-footer-premium {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .timeline-line {
+                left: 16px;
+            }
+        }

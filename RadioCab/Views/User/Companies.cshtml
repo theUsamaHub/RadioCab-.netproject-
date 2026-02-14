@@ -1,0 +1,569 @@
+@model IEnumerable<RadioCab.Models.ViewModels.CompanyVM>
+@{
+    ViewData["Title"] = "Companies";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+@section PageStyles {
+    <link href="~/css/user/companies.css" rel="stylesheet" />
+}
+
+<!-- Page Header -->
+<section class="page-header bg-black text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Companies</h1>
+                <p class="lead mb-0">
+                    Discover trusted transportation companies in your area
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="text-lg-end">
+                    <span class="badge bg-warning text-black fs-6">
+                        <i class="fas fa-building me-2"></i>@Model.Count() Companies
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search and Filter -->
+<section class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-black text-warning">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" id="searchInput"
+                           placeholder="Search companies by name, city, or services...">
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <select class="form-select" id="cityFilter">
+                    <option value="">All Cities</option>
+                    @foreach (var city in Model.Select(c => c.Company.City).Where(c => c != null).Distinct().OrderBy(c => c.CityName))
+                    {
+                        <option value="@city.CityName.ToLower()">@city.CityName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-lg-3">
+                <select class="form-select" id="membershipFilter">
+                    <option value="">All Memberships</option>
+                    @foreach (var membership in Model.Select(c => c.Company.Membership).Where(m => m != null).Distinct().OrderBy(m => m.MembershipId))
+                    {
+                        <option value="@membership.MembershipName.ToLower()">@membership.MembershipName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-lg-2">
+                <select class="form-select" id="ratingFilter">
+                    <option value="">All Ratings</option>
+                    <option value="5">5 Stars</option>
+                    <option value="4">4+ Stars</option>
+                    <option value="3">3+ Stars</option>
+                    <option value="2">2+ Stars</option>
+                    <option value="1">1+ Stars</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Companies List -->
+<section class="py-5 bg-light">
+    <div class="container">
+        @if (Model != null && Model.Any())
+        {
+            <div class="row g-4" id="companiesContainer">
+                @foreach (var companyVM in Model)
+                {
+                    var company = companyVM.Company;
+                    <div class="col-md-6 col-lg-4 company-item"
+                         data-name="@company.CompanyName.ToLower()"
+                         data-city="@company.City?.CityName?.ToLower()"
+                         data-membership="@company.Membership?.MembershipName?.ToLower()"
+                         data-rating="@companyVM.AverageRating.ToString("F1")">
+                        <div class="company-card h-100">
+                            <div class="company-header">
+                                <div class="company-logo-container">
+                                    @if (!string.IsNullOrEmpty(company.CompanyLogo))
+                                    {
+                                        <img src="@company.CompanyLogo" alt="@company.CompanyName"
+                                             class="company-logo" />
+                                    }
+                                    else
+                                    {
+                                        <div class="company-logo-placeholder">
+                                            <i class="fas fa-building"></i>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="company-info">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="fw-bold text-black mb-1">@company.CompanyName</h5>
+                                        <span class="badge bg-warning text-black">
+                                            @(company.Membership?.MembershipName ?? "Basic")
+                                        </span>
+                                    </div>
+
+                                    <p class="text-muted small mb-2">
+                                        <i class="fas fa-map-marker-alt me-1"></i>@company.City?.CityName
+                                    </p>
+
+                                    <!-- Rating -->
+                                    @if (companyVM.AverageRating > 0)
+                                    {
+                                        <div class="company-rating mb-2">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="fas fa-star @(i <= Math.Round(companyVM.AverageRating) ? "text-warning" : "text-muted")"></i>
+                                            }
+                                            <span class="text-muted small ms-1">@companyVM.AverageRating.ToString("F1")</span>
+                                        </div>
+                                    }
+
+                                    <!-- Services Count -->
+                                    <div class="company-services mb-2">
+                                        <span class="badge bg-light text-dark">
+                                            <i class="fas fa-cogs me-1"></i>@companyVM.ServicesCount Services
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="company-body">
+                                <p class="text-muted small mb-3">
+                                    @(company.Description?.Length > 120 ? company.Description.Substring(0, 120) + "..." : company.Description ?? "No description available.")
+                                </p>
+
+                                <div class="company-contact mb-3">
+                                    @if (!string.IsNullOrEmpty(company.Telephone))
+                                    {
+                                        <div class="mb-1">
+                                            <small class="text-muted">
+                                                <i class="fas fa-phone me-1 text-warning"></i>@company.Telephone
+                                            </small>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(company.Email))
+                                    {
+                                        <div>
+                                            <small class="text-muted">
+                                                <i class="fas fa-envelope me-1 text-warning"></i>@company.Email
+                                            </small>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="company-footer">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle me-1"></i>Verified
+                                        </span>
+                                        <a href="@Url.Action("CompanyDetails", "User", new { id = company.CompanyId })"
+                                           class="btn btn-warning btn-sm">
+                                            <i class="fas fa-eye me-1"></i>View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResults" class="text-center py-5 d-none">
+                <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                <h4 class="text-black mb-3">No Companies Found</h4>
+                <p class="text-muted mb-4">Try adjusting your search criteria</p>
+                <button class="btn btn-warning" onclick="resetFilters()">
+                    <i class="fas fa-times me-2"></i>Reset Filters
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-building fa-4x text-muted mb-3"></i>
+                <h4 class="text-black mb-3">No Companies Available</h4>
+                <p class="text-muted">There are currently no approved companies available.</p>
+                <a href="@Url.Action("Register", "Account")" class="btn btn-warning">
+                    <i class="fas fa-user-plus me-2"></i>Register as Company
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Stats Section -->
+@if (Model != null && Model.Any())
+{
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-building fa-3x text-warning mb-3"></i>
+                        <h3 class="text-black fw-bold">@ViewBag.TotalCompanies</h3>
+                        <p class="text-muted">Total Companies</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-map-marker-alt fa-3x text-warning mb-3"></i>
+                        <h3 class="text-black fw-bold">@ViewBag.TotalCities</h3>
+                        <p class="text-muted">Cities Covered</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-star fa-3x text-warning mb-3"></i>
+                        <h3 class="text-black fw-bold">@ViewBag.AverageRating.ToString("F1")</h3>
+                        <p class="text-muted">Average Rating</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-check-circle fa-3x text-warning mb-3"></i>
+                        <h3 class="text-black fw-bold">@Model.Count()</h3>
+                        <p class="text-muted">Verified Companies</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+
+@section Scripts {
+    <script>
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const cityFilter = document.getElementById('cityFilter');
+            const membershipFilter = document.getElementById('membershipFilter');
+            const ratingFilter = document.getElementById('ratingFilter');
+
+            // Add event listeners
+            searchInput.addEventListener('keyup', filterCompanies);
+            cityFilter.addEventListener('change', filterCompanies);
+            membershipFilter.addEventListener('change', filterCompanies);
+            ratingFilter.addEventListener('change', filterCompanies);
+        });
+
+        function filterCompanies() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cityValue = document.getElementById('cityFilter').value.toLowerCase();
+            const membershipValue = document.getElementById('membershipFilter').value.toLowerCase();
+            const ratingValue = document.getElementById('ratingFilter').value;
+
+            const companies = document.querySelectorAll('.company-item');
+            let visibleCount = 0;
+
+            companies.forEach(company => {
+                const companyName = company.dataset.name?.toLowerCase() || '';
+                const companyCity = company.dataset.city?.toLowerCase() || '';
+                const companyMembership = company.dataset.membership?.toLowerCase() || '';
+                const companyRating = parseFloat(company.dataset.rating || '0');
+
+                let isVisible = true;
+
+                // Search filter
+                if (searchTerm) {
+                    const searchableText = `${companyName} ${companyCity} ${companyMembership}`.toLowerCase();
+                    if (!searchableText.includes(searchTerm)) {
+                        isVisible = false;
+                    }
+                }
+
+                // City filter
+                if (isVisible && cityValue) {
+                    if (companyCity !== cityValue) {
+                        isVisible = false;
+                    }
+                }
+
+                // Membership filter
+                if (isVisible && membershipValue) {
+                    if (companyMembership !== membershipValue) {
+                        isVisible = false;
+                    }
+                }
+
+                // Rating filter
+                if (isVisible && ratingValue) {
+                    const minRating = parseInt(ratingValue);
+                    if (companyRating < minRating) {
+                        isVisible = false;
+                    }
+                }
+
+                // Show/hide company
+                if (isVisible) {
+                    company.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    company.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            const noResults = document.getElementById('noResults');
+            const companiesContainer = document.getElementById('companiesContainer');
+
+            if (visibleCount === 0) {
+                if (noResults) {
+                    noResults.classList.remove('d-none');
+                }
+                if (companiesContainer) {
+                    companiesContainer.classList.add('d-none');
+                }
+            } else {
+                if (noResults) {
+                    noResults.classList.add('d-none');
+                }
+                if (companiesContainer) {
+                    companiesContainer.classList.remove('d-none');
+                }
+            }
+
+            // Update companies count in badge
+            updateCompaniesCount(visibleCount);
+        }
+
+        function updateCompaniesCount(count) {
+            const badge = document.querySelector('.badge.bg-warning');
+            if (badge) {
+                badge.innerHTML = `<i class="fas fa-building me-2"></i>${count} Companies`;
+            }
+        }
+
+        function resetFilters() {
+            // Reset input fields
+            document.getElementById('searchInput').value = '';
+            document.getElementById('cityFilter').value = '';
+            document.getElementById('membershipFilter').value = '';
+            document.getElementById('ratingFilter').value = '';
+
+            // Re-run filter to show all companies
+            filterCompanies();
+        }
+
+        // Get CSRF token function
+        function getCSRFToken() {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]');
+            return token ? token.value : '';
+        }
+
+        // Contact form submission - FIXED: Check if element exists first
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('Contact form submission started');
+
+                if (!this.checkValidity()) {
+                    e.stopPropagation();
+                    this.classList.add('was-validated');
+                    return;
+                }
+
+                const formData = new FormData(this);
+                const csrfToken = getCSRFToken();
+
+                // Add loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = 'Sending...';
+                submitBtn.disabled = true;
+
+                fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': csrfToken
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('contactModal'));
+                        if (modal) {
+                            modal.hide();
+                        }
+
+                        // Reset form
+                        this.reset();
+                        this.classList.remove('was-validated');
+                    } else {
+                        const errorMessages = data.errors ?
+                            (Array.isArray(data.errors) ? data.errors.join(', ') : data.errors) :
+                            (data.message || 'Something went wrong!');
+                        alert('Error: ' + errorMessages);
+                    }
+                })
+                .catch(error => {
+                    console.error('Contact form error:', error);
+                    alert('An error occurred. Please try again.');
+                })
+                .finally(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+            });
+        }
+
+        // Feedback form submission - FIXED: Check if element exists first
+        const feedbackForm = document.getElementById('feedbackForm');
+        if (feedbackForm) {
+            feedbackForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('Feedback form submission started');
+
+                if (!this.checkValidity()) {
+                    e.stopPropagation();
+                    this.classList.add('was-validated');
+                    return;
+                }
+
+                // Validate that at least one star is selected
+                const ratingSelected = document.querySelector('input[name="Rating"]:checked');
+                if (!ratingSelected) {
+                    alert('Please select a rating.');
+                    return;
+                }
+
+                const formData = new FormData(this);
+                const csrfToken = getCSRFToken();
+
+                // Add loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = 'Submitting...';
+                submitBtn.disabled = true;
+
+                fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': csrfToken
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
+                        if (modal) {
+                            modal.hide();
+                        }
+
+                        // Reset form
+                        this.reset();
+                        this.classList.remove('was-validated');
+
+                        // Reset star rating display
+                        document.querySelectorAll('.rating-input .star-label').forEach(label => {
+                            label.classList.remove('active');
+                        });
+
+                        // Uncheck all radio buttons
+                        document.querySelectorAll('input[name="Rating"]').forEach(radio => {
+                            radio.checked = false;
+                        });
+
+                        // Refresh to show new feedback
+                        setTimeout(() => {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        const errorMessages = data.errors ?
+                            (Array.isArray(data.errors) ? data.errors.join(', ') : data.errors) :
+                            (data.message || 'Failed to submit feedback!');
+                        alert('Error: ' + errorMessages);
+                    }
+                })
+                .catch(error => {
+                    console.error('Feedback form error:', error);
+                    alert('An error occurred. Please try again.');
+                })
+                .finally(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+            });
+        }
+
+        // Star rating interaction - FIXED: Check if elements exist first
+        const ratingInputs = document.querySelectorAll('.rating-input input');
+        if (ratingInputs.length > 0) {
+            ratingInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const rating = parseInt(this.value);
+                    document.querySelectorAll('.rating-input .star-label').forEach((label, index) => {
+                        if (index < rating) {
+                            label.classList.add('active');
+                        } else {
+                            label.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        }
+
+        // Modal reset events - FIXED: Check if modals exist
+        const contactModal = document.getElementById('contactModal');
+        if (contactModal) {
+            contactModal.addEventListener('hidden.bs.modal', function () {
+                const form = document.getElementById('contactForm');
+                if (form) {
+                    form.reset();
+                    form.classList.remove('was-validated');
+                }
+            });
+        }
+
+        const feedbackModal = document.getElementById('feedbackModal');
+        if (feedbackModal) {
+            feedbackModal.addEventListener('hidden.bs.modal', function () {
+                const form = document.getElementById('feedbackForm');
+                if (form) {
+                    form.reset();
+                    form.classList.remove('was-validated');
+
+                    // Reset star rating display
+                    document.querySelectorAll('.rating-input .star-label').forEach(label => {
+                        label.classList.remove('active');
+                    });
+
+                    // Uncheck all radio buttons
+                    document.querySelectorAll('input[name="Rating"]').forEach(radio => {
+                        radio.checked = false;
+                    });
+                }
+            });
+        }
+    </script>
+}

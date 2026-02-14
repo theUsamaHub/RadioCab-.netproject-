@@ -1,0 +1,717 @@
+﻿@model RadioCab.Models.MembershipVM
+@{
+    ViewData["Title"] = "Membership Management";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<style>
+    :root {
+        --white: #FFFFFF;
+        --light-gray: #f8f9fa;
+        --medium-gray: #e9ecef;
+        --orange: #fca311;
+        --orange-hover: #e3940f;
+        --dark-blue: #14213d;
+        --dark-blue-light: #1e2a4a;
+        --black: #000000;
+    }
+
+    .membership-management {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        background: var(--light-gray);
+        min-height: calc(100vh - 60px);
+    }
+
+    /* Compact Header */
+    .page-header {
+        background: var(--dark-blue);
+        color: var(--white);
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .page-header h2 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    /* Compact Cards */
+    .card {
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        border: none;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: var(--dark-blue-light);
+        color: var(--white);
+        padding: 12px 20px;
+        font-weight: 600;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    /* Compact Forms */
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-blue);
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    .form-control {
+        border: 1px solid var(--medium-gray);
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 14px;
+        height: 38px;
+    }
+
+        .form-control:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 0.2rem rgba(252, 163, 17, 0.25);
+        }
+
+    textarea.form-control {
+        min-height: 80px;
+        resize: vertical;
+    }
+
+    /* Compact Buttons */
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: var(--orange);
+        color: var(--white);
+    }
+
+        .btn-primary:hover {
+            background: var(--orange-hover);
+            color: var(--white);
+        }
+
+    .btn-outline-secondary {
+        background: var(--white);
+        color: var(--dark-blue);
+        border: 1px solid var(--medium-gray);
+    }
+
+        .btn-outline-secondary:hover {
+            background: var(--light-gray);
+            border-color: var(--dark-blue);
+        }
+
+    /* Compact Table */
+    .table-responsive {
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid var(--medium-gray);
+    }
+
+    .table {
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+
+        .table thead {
+            background: var(--dark-blue);
+            color: var(--white);
+        }
+
+        .table th {
+            font-weight: 600;
+            padding: 10px 12px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .table td {
+            padding: 10px 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--light-gray);
+        }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 6px;
+    }
+
+    .action-btn {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        font-size: 12px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-edit {
+        background: var(--white);
+        color: var(--orange);
+        border: 1px solid var(--orange);
+    }
+
+        .btn-edit:hover {
+            background: var(--orange);
+            color: var(--white);
+        }
+
+    .btn-delete {
+        background: var(--white);
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+        .btn-delete:hover {
+            background: #dc3545;
+            color: var(--white);
+        }
+
+    /* Validation */
+    .text-danger {
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .validation-summary-errors {
+        background-color: #ffebee;
+        border: 1px solid #ffcdd2;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 16px;
+        font-size: 13px;
+    }
+
+        .validation-summary-errors ul {
+            margin-bottom: 0;
+            padding-left: 16px;
+        }
+
+        .validation-summary-errors li {
+            color: #d32f2f;
+            margin-bottom: 4px;
+        }
+
+    /* Compact Modal */
+    .modal-content {
+        border-radius: 8px;
+        border: none;
+    }
+
+    .modal-header {
+        background: var(--dark-blue);
+        color: var(--white);
+        padding: 12px 16px;
+    }
+
+    .modal-title {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .modal-body {
+        padding: 16px;
+    }
+
+    .modal-footer {
+        padding: 12px 16px;
+        border-top: 1px solid var(--medium-gray);
+    }
+
+    /* Status Badges */
+    .badge {
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+
+    /* Loading Spinner */
+    .spinner-border-sm {
+        width: 14px;
+        height: 14px;
+        border-width: 0.15em;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .membership-management {
+            padding: 15px;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .btn {
+            padding: 7px 14px;
+            font-size: 13px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .action-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Form Card -->
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-plus-circle"></i>
+            Add / Edit Membership
+        </div>
+        <div class="card-body">
+            <form asp-action="Member" asp-controller="Admin" method="post" id="membershipForm">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <input type="hidden" asp-for="Membership_form.MembershipId" id="MembershipId" />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label" asp-for="Membership_form.MembershipName">Membership Name *</label>
+                        <input type="text"
+                               class="form-control"
+                               asp-for="Membership_form.MembershipName"
+                               id="MembershipName"
+                               placeholder="e.g., Premium, Basic, Free"
+                               required>
+                        <span asp-validation-for="Membership_form.MembershipName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" asp-for="Membership_form.Description">Description *</label>
+                    <textarea class="form-control"
+                              rows="3"
+                              asp-for="Membership_form.Description"
+                              id="Description"
+                              placeholder="Describe the membership features and benefits"
+                              required></textarea>
+                    <span asp-validation-for="Membership_form.Description" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="bi bi-save me-1"></i>Save Membership
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="clearBtn">
+                        <i class="bi bi-x-circle me-1"></i>Clear Form
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Memberships List Card -->
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-list-check"></i>
+            Existing Memberships
+        </div>
+        <div class="card-body">
+            @if (!Model.Membership_list.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-people display-4 text-muted mb-3"></i>
+                    <h4 class="text-muted">No Memberships Found</h4>
+                    <p class="text-muted">Create your first membership using the form above.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Membership Name</th>
+                                <th>Description</th>
+                                <th>IsActive</th>
+                                <th style="width: 100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in Model.Membership_list)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong class="text-dark-blue">@m.MembershipName</strong>
+                                    </td>
+                                    <td>
+                                        <div class="description-text" style="max-height: 60px; overflow: hidden; text-overflow: ellipsis;">
+                                            @m.Description
+                                        </div>
+                                    </td>
+                                    @if (m.IsActive == true)
+                                    {
+                                        <td>Active</td>
+                                    }
+                                    else
+                                    {
+                                        <td>DeActive</td>
+                                    }
+
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-edit action-btn js-edit-membership"
+                                                    data-id="@m.MembershipId"
+                                                    data-name="@m.MembershipName"
+                                                    data-description="@m.Description"
+                                                    data-status="@m.IsActive"
+                                                    title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            @* <button class="btn-delete action-btn js-delete-membership"
+                                                    data-id="@m.MembershipId"
+                                                    data-name="@m.MembershipName"
+                                                    title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button> *@
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Membership</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editMembershipForm">
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editMembershipId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Membership Name *</label>
+                        <input type="text" class="form-control" id="editMembershipName" required>
+                        <div class="invalid-feedback" id="editNameError"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description *</label>
+                        <textarea class="form-control" id="editDescription" rows="3" required></textarea>
+                        <div class="invalid-feedback" id="editDescriptionError"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label  class="form-label fw-medium">
+                            <i class="fas fa-toggle-on me-2 text-primary"></i>Service Status
+                        </label>
+                        <select id="editstatus" class="form-select">
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveChangesBtn">
+                        <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Anti-forgery token -->
+<form id="antiForgeryForm" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize modal
+        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+
+        // Clear button functionality
+        document.getElementById('clearBtn').addEventListener('click', function () {
+            document.getElementById('MembershipId').value = '';
+            document.getElementById('MembershipName').value = '';
+            document.getElementById('Description').value = '';
+            document.getElementById('submitBtn').innerHTML = '<i class="bi bi-save me-1"></i>Save Membership';
+
+            // Clear validation errors
+            document.querySelectorAll('.text-danger').forEach(span => span.textContent = '');
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.classList.remove('is-invalid', 'is-valid');
+            });
+
+            const validationSummary = document.querySelector('.validation-summary-errors');
+            if (validationSummary) validationSummary.style.display = 'none';
+
+            document.getElementById('MembershipName').focus();
+        });
+
+        // Edit button click handler
+        document.querySelectorAll('.js-edit-membership').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+                const name = this.getAttribute('data-name');
+                const description = this.getAttribute('data-description');
+                const status = this.getAttribute('data-status'); // This should be "true" or "false"
+
+                console.log('Editing membership:', { id, name, description, status });
+
+                document.getElementById('editMembershipId').value = id;
+                document.getElementById('editMembershipName').value = name;
+                document.getElementById('editDescription').value = description;
+                document.getElementById('editstatus').value = status;
+
+                editModal.show();
+            });
+        });
+
+        // Delete button click handler
+        document.querySelectorAll('.js-delete-membership').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const membershipId = this.getAttribute('data-id');
+                const membershipName = this.getAttribute('data-name');
+
+                // Get anti-forgery token from hidden form
+                const tokenElement = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]');
+                const token = tokenElement ? tokenElement.value : '';
+
+                console.log('Deleting membership:', membershipId, membershipName);
+
+                Swal.fire({
+                    title: 'Delete Membership?',
+                    text: `Are you sure you want to delete "${membershipName}"?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (!result.isConfirmed) return;
+
+                    Swal.fire({
+                        title: 'Deleting...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    // Send DELETE request
+                    fetch('/Admin/DeleteMemberAjax', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: `id=${membershipId}&__RequestVerificationToken=${encodeURIComponent(token)}`
+                    })
+                    .then(response => {
+                        console.log('Delete response status:', response.status);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Delete response data:', data);
+                        Swal.close();
+
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: 'Membership has been deleted.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire('Error', data.message || 'Failed to delete membership', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Delete error:', error);
+                        Swal.close();
+                        Swal.fire('Error', 'Network error. Please try again.', 'error');
+                    });
+                });
+            });
+        });
+
+        // Edit form submission
+        document.getElementById('editMembershipForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const membershipId = document.getElementById('editMembershipId').value;
+            const membershipName = document.getElementById('editMembershipName').value.trim();
+            const description = document.getElementById('editDescription').value.trim();
+            const isActive = document.getElementById('editstatus').value === 'true';
+
+            // Get anti-forgery token
+            const tokenElement = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]');
+            const token = tokenElement ? tokenElement.value : '';
+
+            console.log('Updating membership:', {
+                membershipId,
+                membershipName,
+                description,
+                isActive
+            });
+
+            const saveBtn = document.getElementById('saveChangesBtn');
+            const spinner = saveBtn.querySelector('.spinner-border');
+
+            // Clear errors
+            document.getElementById('editMembershipName').classList.remove('is-invalid');
+            document.getElementById('editDescription').classList.remove('is-invalid');
+            document.getElementById('editNameError').textContent = '';
+            document.getElementById('editDescriptionError').textContent = '';
+
+            // Validate
+            let isValid = true;
+
+            if (!membershipName) {
+                document.getElementById('editMembershipName').classList.add('is-invalid');
+                document.getElementById('editNameError').textContent = 'Membership name is required';
+                isValid = false;
+            }
+
+            if (!description) {
+                document.getElementById('editDescription').classList.add('is-invalid');
+                document.getElementById('editDescriptionError').textContent = 'Description is required';
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Show loading
+            saveBtn.disabled = true;
+            spinner.classList.remove('d-none');
+
+            // Send update request
+            fetch('/Admin/EditMemberAjax', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({
+                    MembershipId: parseInt(membershipId),
+                    MembershipName: membershipName,
+                    Description: description,
+                    IsActive: isActive,
+                    __RequestVerificationToken: token
+                })
+            })
+            .then(response => {
+                console.log('Edit response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Edit response data:', data);
+
+                saveBtn.disabled = false;
+                spinner.classList.add('d-none');
+
+                if (data.success) {
+                    editModal.hide();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: 'Membership updated successfully.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    if (data.errors) {
+                        if (data.errors.MembershipName) {
+                            document.getElementById('editMembershipName').classList.add('is-invalid');
+                            document.getElementById('editNameError').textContent = data.errors.MembershipName[0];
+                        }
+                        if (data.errors.Description) {
+                            document.getElementById('editDescription').classList.add('is-invalid');
+                            document.getElementById('editDescriptionError').textContent = data.errors.Description[0];
+                        }
+                    } else if (data.message) {
+                        Swal.fire('Error', data.message, 'error');
+                    } else {
+                        Swal.fire('Error', 'An unknown error occurred.', 'error');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Edit error:', error);
+                saveBtn.disabled = false;
+                spinner.classList.add('d-none');
+                Swal.fire('Error', 'An error occurred while updating. Please try again.', 'error');
+            });
+        });
+
+        // Debug: Log all edit buttons data
+        console.log('Edit buttons found:', document.querySelectorAll('.js-edit-membership').length);
+        document.querySelectorAll('.js-edit-membership').forEach(btn => {
+            console.log('Button data:', {
+                id: btn.getAttribute('data-id'),
+                name: btn.getAttribute('data-name'),
+                status: btn.getAttribute('data-status')
+            });
+        });
+    });
+</script>

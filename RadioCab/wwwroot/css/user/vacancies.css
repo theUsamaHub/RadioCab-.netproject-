@@ -1,0 +1,783 @@
+/**
+ * Vacancies Page Styles - Compact Professional Design with Bootstrap
+ */
+
+/* ===============================
+   VARIABLES
+   =============================== */
+:root {
+    --primary-black: #000000;
+    --primary-yellow: #ffc107;
+    --secondary-yellow: #ffdb70;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --medium-gray: #6c757d;
+    --dark-gray: #343a40;
+    --success: #198754;
+    --info: #0dcaf0;
+    --danger: #dc3545;
+    --gradient-yellow: linear-gradient(135deg, #ffc107 0%, #ffdb70 100%);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.08);
+    --shadow-yellow: 0 4px 12px rgba(255, 193, 7, 0.15);
+    --border-radius-sm: 6px;
+    --border-radius-md: 10px;
+    --border-radius-lg: 14px;
+    --transition-fast: all 0.15s ease;
+    --transition-normal: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===============================
+   PAGE HEADER - COMPACT
+   =============================== */
+.page-header {
+    padding: 1.75rem 0 !important;
+}
+
+    .page-header h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .page-header .lead {
+        font-size: 0.9rem;
+        margin-bottom: 0 !important;
+    }
+
+    .page-header .badge {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+/* ===============================
+   FILTER SECTION - COMPACT
+   =============================== */
+.filter-section {
+    padding: 1rem 0 !important;
+}
+
+.input-group-text {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+}
+
+.form-control, .form-select {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+    height: auto;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-yellow);
+        box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.15);
+    }
+
+.btn-filter {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+    background: linear-gradient(135deg, #ffc107, #ffdb70);
+    border: none;
+    color: var(--primary-black);
+    font-weight: 600;
+    transition: var(--transition-normal);
+}
+
+    .btn-filter:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-yellow);
+        color: var(--primary-black);
+    }
+
+/* ===============================
+   SECTION HEADER - COMPACT
+   =============================== */
+.section-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(255, 193, 7, 0.15);
+    position: relative;
+}
+
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: var(--gradient-yellow);
+        border-radius: 2px;
+    }
+
+    .section-header h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        font-weight: 700;
+    }
+
+    .section-header p {
+        font-size: 0.85rem;
+        margin-bottom: 0;
+    }
+
+/* ===============================
+   COMPACT VACANCY CARD - BOOTSTRAP ENHANCED
+   =============================== */
+.vacancy-card {
+    background: var(--white);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-md);
+    padding: 1.25rem;
+    transition: var(--transition-normal);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+}
+
+    .vacancy-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-yellow);
+    }
+
+    /* Left accent bar */
+    .vacancy-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background: var(--gradient-yellow);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .vacancy-card:hover::before {
+        opacity: 1;
+    }
+
+    /* Featured badge */
+    .vacancy-card.featured {
+        border-color: var(--primary-yellow);
+        background: linear-gradient(to right, white, rgba(255, 193, 7, 0.02));
+    }
+
+        .vacancy-card.featured .featured-badge {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: var(--gradient-yellow);
+            color: var(--primary-black);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-yellow);
+            z-index: 1;
+        }
+
+    /* ===============================
+   CARD HEADER - COMPACT
+   =============================== */
+    .vacancy-card .card-header-custom {
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .vacancy-card .job-title {
+        color: var(--primary-black);
+        font-weight: 700;
+        font-size: 1.1rem;
+        line-height: 1.3;
+        margin-bottom: 0.35rem;
+        transition: var(--transition-fast);
+    }
+
+    .vacancy-card:hover .job-title {
+        color: #000;
+        text-decoration: none;
+    }
+
+    /* Company badge */
+    .vacancy-card .company-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 193, 7, 0.08);
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 193, 7, 0.1);
+        font-size: 0.7rem;
+    }
+
+        .vacancy-card .company-badge i {
+            font-size: 0.65rem;
+        }
+
+        .vacancy-card .company-badge span {
+            font-size: 0.7rem;
+            color: var(--medium-gray);
+        }
+
+    /* Location */
+    .vacancy-card .location {
+        font-size: 0.7rem;
+        margin-top: 0.25rem;
+        color: var(--medium-gray);
+    }
+
+        .vacancy-card .location i {
+            font-size: 0.65rem;
+            color: var(--primary-yellow);
+        }
+
+    /* ===============================
+   JOB TYPE BADGE - COMPACT
+   =============================== */
+    .vacancy-card .job-type-badge {
+        display: inline-block;
+        padding: 0.2rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border: 1px solid transparent;
+        transition: var(--transition-fast);
+    }
+
+        /* Job type variations */
+        .vacancy-card .job-type-badge.full-time {
+            background: rgba(25, 135, 84, 0.1);
+            color: #0a4b33;
+            border-color: rgba(25, 135, 84, 0.2);
+        }
+
+        .vacancy-card .job-type-badge.part-time {
+            background: rgba(13, 202, 240, 0.1);
+            color: #0a4b8c;
+            border-color: rgba(13, 202, 240, 0.2);
+        }
+
+        .vacancy-card .job-type-badge.contract {
+            background: rgba(255, 193, 7, 0.1);
+            color: #856404;
+            border-color: rgba(255, 193, 7, 0.2);
+        }
+
+        .vacancy-card .job-type-badge.internship {
+            background: rgba(220, 53, 69, 0.1);
+            color: #731c24;
+            border-color: rgba(220, 53, 69, 0.2);
+        }
+
+    .vacancy-card:hover .job-type-badge {
+        background: var(--gradient-yellow);
+        color: var(--primary-black);
+        border-color: transparent;
+    }
+
+    /* Date */
+    .vacancy-card .posted-date {
+        font-size: 0.6rem;
+        color: var(--medium-gray);
+        margin-top: 0.25rem;
+    }
+
+        .vacancy-card .posted-date i {
+            font-size: 0.6rem;
+            margin-right: 0.2rem;
+        }
+
+    /* ===============================
+   JOB DESCRIPTION - COMPACT
+   =============================== */
+    .vacancy-card .job-description {
+        margin-bottom: 0.75rem;
+    }
+
+        .vacancy-card .job-description h6 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary-black);
+            margin-bottom: 0.25rem;
+        }
+
+        .vacancy-card .job-description p {
+            font-size: 0.7rem;
+            line-height: 1.4;
+            color: var(--medium-gray);
+            margin-bottom: 0;
+        }
+
+    /* ===============================
+   JOB DETAILS GRID - COMPACT
+   =============================== */
+    .vacancy-card .job-details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .vacancy-card .job-detail-item {
+        background: var(--light-gray);
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        border-radius: var(--border-radius-sm);
+        padding: 0.4rem 0.6rem;
+        transition: var(--transition-fast);
+    }
+
+    .vacancy-card:hover .job-detail-item {
+        background: white;
+        border-color: rgba(255, 193, 7, 0.2);
+        box-shadow: 0 2px 4px rgba(255, 193, 7, 0.05);
+    }
+
+    .vacancy-card .job-detail-item small {
+        color: var(--medium-gray);
+        font-size: 0.55rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        display: block;
+        margin-bottom: 0.1rem;
+    }
+
+    .vacancy-card .job-detail-item span {
+        color: var(--primary-black);
+        font-weight: 600;
+        font-size: 0.75rem;
+        display: block;
+        line-height: 1.2;
+    }
+
+    /* ===============================
+   COMPANY INFO - COMPACT
+   =============================== */
+    .vacancy-card .company-info {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.03), rgba(255, 219, 112, 0.03));
+        border-radius: var(--border-radius-sm);
+        padding: 0.6rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        border: 1px solid rgba(255, 193, 7, 0.08);
+    }
+
+    .vacancy-card .company-logo {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--border-radius-sm);
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.3rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .vacancy-card:hover .company-logo {
+        box-shadow: var(--shadow-yellow);
+        border-color: var(--primary-yellow);
+    }
+
+    .vacancy-card .company-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .vacancy-card .company-logo i {
+        font-size: 1.1rem;
+        color: var(--primary-yellow);
+    }
+
+    .vacancy-card .company-details {
+        flex: 1;
+    }
+
+        .vacancy-card .company-details small {
+            color: var(--medium-gray);
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            display: block;
+            margin-bottom: 0.1rem;
+        }
+
+        .vacancy-card .company-details strong {
+            color: var(--primary-black);
+            font-size: 0.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+    /* ===============================
+   APPLICATION STATS - COMPACT
+   =============================== */
+    .vacancy-card .application-stats {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        padding: 0.4rem 0.6rem;
+        background: rgba(255, 193, 7, 0.02);
+        border-radius: 20px;
+        border: 1px dashed rgba(255, 193, 7, 0.2);
+    }
+
+    .vacancy-card .application-count {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: var(--medium-gray);
+        font-size: 0.65rem;
+    }
+
+        .vacancy-card .application-count i {
+            color: var(--primary-yellow);
+            font-size: 0.65rem;
+        }
+
+        .vacancy-card .application-count span {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+    .vacancy-card .application-progress {
+        flex: 1;
+        height: 4px;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .vacancy-card .progress-bar {
+        height: 100%;
+        background: var(--gradient-yellow);
+        border-radius: 2px;
+    }
+
+    /* ===============================
+   ACTION BUTTONS - COMPACT
+   =============================== */
+    .vacancy-card .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .vacancy-card .btn-sm-custom {
+        padding: 0.35rem 1rem;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        transition: var(--transition-normal);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        border: none;
+        text-decoration: none;
+    }
+
+        .vacancy-card .btn-sm-custom i {
+            font-size: 0.65rem;
+        }
+
+    .vacancy-card .btn-outline-custom {
+        background: transparent;
+        border: 1.5px solid var(--primary-yellow);
+        color: var(--primary-black);
+    }
+
+        .vacancy-card .btn-outline-custom:hover {
+            background: var(--primary-yellow);
+            color: var(--primary-black);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-yellow);
+        }
+
+    .vacancy-card .btn-gradient-custom {
+        background: var(--gradient-yellow);
+        color: var(--primary-black);
+        box-shadow: 0 2px 6px rgba(255, 193, 7, 0.2);
+    }
+
+        .vacancy-card .btn-gradient-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.25);
+            color: var(--primary-black);
+        }
+
+/* ===============================
+   EMPTY STATE - COMPACT
+   =============================== */
+.empty-state {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: var(--white);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px dashed rgba(255, 193, 7, 0.2);
+}
+
+.empty-state-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.08), rgba(255, 219, 112, 0.08));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--primary-yellow);
+}
+
+    .empty-state-icon i {
+        font-size: 1.75rem;
+        color: var(--primary-yellow);
+    }
+
+.empty-state h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state .btn-reset {
+    margin-top: 0.5rem;
+    padding: 0.4rem 1.25rem;
+    font-size: 0.75rem;
+}
+
+/* ===============================
+   STAT CARDS - COMPACT
+   =============================== */
+.stat-card {
+    background: var(--white);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-md);
+    padding: 1rem 0.75rem;
+    text-align: center;
+    transition: var(--transition-normal);
+    height: 100%;
+}
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-yellow);
+    }
+
+    .stat-card i {
+        color: var(--primary-yellow);
+        margin-bottom: 0.5rem;
+        font-size: 1.75rem;
+    }
+
+    .stat-card h3 {
+        color: var(--primary-black);
+        font-weight: 800;
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        line-height: 1;
+    }
+
+    .stat-card p {
+        color: var(--medium-gray);
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0;
+    }
+
+/* ===============================
+   STEP CARDS - COMPACT
+   =============================== */
+.step-card {
+    background: var(--white);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-md);
+    padding: 1rem 0.75rem;
+    text-align: center;
+    transition: var(--transition-normal);
+    height: 100%;
+}
+
+    .step-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-yellow);
+    }
+
+.step-number {
+    width: 28px;
+    height: 28px;
+    background: var(--primary-yellow);
+    color: var(--primary-black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin: 0 auto 0.5rem;
+}
+
+.step-card i {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-yellow);
+}
+
+.step-card h5 {
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+}
+
+.step-card p {
+    font-size: 0.7rem;
+    margin-bottom: 0;
+    line-height: 1.4;
+    color: var(--medium-gray);
+}
+
+/* ===============================
+   ANIMATIONS
+   =============================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.vacancy-item {
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+@media (max-width: 768px) {
+    .vacancy-card {
+        padding: 1rem;
+    }
+
+        .vacancy-card .job-title {
+            font-size: 1rem;
+        }
+
+        .vacancy-card .job-details-grid {
+            grid-template-columns: 1fr;
+            gap: 0.4rem;
+        }
+
+        .vacancy-card .action-buttons {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .vacancy-card .btn-sm-custom {
+            width: 100%;
+            justify-content: center;
+        }
+
+    .stat-card h3 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .vacancy-card .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .vacancy-card .text-end {
+        text-align: left !important;
+        margin-top: 0.5rem;
+    }
+
+    .vacancy-card .application-stats {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .vacancy-card .application-progress {
+        width: 100%;
+    }
+}
+
+/* ===============================
+   BOOTSTRAP OVERRIDES
+   =============================== */
+.bg-black {
+    background-color: var(--primary-black) !important;
+}
+
+.bg-warning {
+    background-color: var(--primary-yellow) !important;
+}
+
+.text-warning {
+    color: var(--primary-yellow) !important;
+}
+
+.border-warning {
+    border-color: var(--primary-yellow) !important;
+}
+
+.btn-warning {
+    background-color: var(--primary-yellow);
+    border-color: var(--primary-yellow);
+    color: var(--primary-black);
+    font-weight: 600;
+}
+
+    .btn-warning:hover {
+        background-color: var(--secondary-yellow);
+        border-color: var(--secondary-yellow);
+        color: var(--primary-black);
+    }
+
+.btn-outline-warning {
+    color: var(--primary-yellow);
+    border-color: var(--primary-yellow);
+}
+
+    .btn-outline-warning:hover {
+        background-color: var(--primary-yellow);
+        border-color: var(--primary-yellow);
+        color: var(--primary-black);
+    }
+
+.badge.bg-warning {
+    background-color: var(--primary-yellow) !important;
+    color: var(--primary-black) !important;
+}

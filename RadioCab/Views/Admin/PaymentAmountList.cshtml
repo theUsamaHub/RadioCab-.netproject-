@@ -1,0 +1,744 @@
+﻿@model RadioCab.Models.PaymentAmountVM
+@{
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<style>
+    /* Payment Amounts List Styles */
+    .payment-amounts-list {
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--medium-gray);
+    }
+
+        .page-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .page-header h2 i {
+                color: var(--orange);
+            }
+
+        .page-header .btn-add-payment {
+            background: linear-gradient(135deg, var(--orange), #ff7b00);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(252, 163, 17, 0.2);
+            text-decoration: none;
+        }
+
+            .page-header .btn-add-payment:hover {
+                background: linear-gradient(135deg, var(--orange-hover), #e68a00);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(252, 163, 17, 0.3);
+                color: white;
+            }
+
+    /* Table Controls */
+    .table-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background: var(--white);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        box-shadow: var(--box-shadow);
+        border: 1px solid var(--medium-gray);
+        border-bottom: none;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+    }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+            .search-box input:focus {
+                border-color: var(--orange);
+                box-shadow: 0 0 0 0.2rem rgba(252, 163, 17, 0.15);
+                outline: none;
+            }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+        .filter-group select {
+            padding: 10px 15px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            background-color: white;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .filter-group .btn-export {
+            background-color: var(--light-gray);
+            color: var(--dark-blue);
+            border: 1px solid var(--medium-gray);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+            .filter-group .btn-export:hover {
+                background-color: #e9ecef;
+            }
+
+    /* Table Container */
+    .table-container {
+        background-color: var(--white);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        box-shadow: var(--box-shadow);
+        border: 1px solid var(--medium-gray);
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .payment-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+    }
+
+        .payment-table thead {
+            background: linear-gradient(135deg, var(--dark-blue), var(--dark-blue-light));
+        }
+
+        .payment-table th {
+            padding: 16px 20px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            border-bottom: none;
+        }
+
+            .payment-table th:first-child {
+                padding-left: 25px;
+            }
+
+            .payment-table th:last-child {
+                padding-right: 25px;
+            }
+
+        .payment-table tbody tr {
+            border-bottom: 1px solid var(--medium-gray);
+            transition: all 0.2s ease;
+        }
+
+            .payment-table tbody tr:hover {
+                background-color: rgba(252, 163, 17, 0.05);
+            }
+
+            .payment-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+        .payment-table td {
+            padding: 16px 20px;
+            color: var(--dark-blue);
+            font-size: 14px;
+            vertical-align: middle;
+            border-top: none;
+        }
+
+            .payment-table td:first-child {
+                padding-left: 25px;
+            }
+
+            .payment-table td:last-child {
+                padding-right: 25px;
+            }
+
+    /* Status badges */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+        .status-badge.active {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        .status-badge.inactive {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+    .membership-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+        .membership-badge.basic {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+
+        .membership-badge.free {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        .membership-badge.premium {
+            background-color: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+
+        .membership-badge.pro {
+            background-color: rgba(241, 196, 15, 0.1);
+            color: #f39c12;
+        }
+
+    .entity-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+    }
+
+    /* Amount display */
+    .amount-display {
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--dark-blue);
+    }
+
+        .amount-display .currency {
+            color: var(--orange);
+            font-weight: 700;
+        }
+
+    /* Duration display */
+    .duration-display {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 500;
+        color: var(--dark-blue);
+    }
+
+        .duration-display i {
+            color: var(--orange);
+            font-size: 12px;
+        }
+
+    /* Action buttons */
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+    .btn-view {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: #3498db;
+    }
+
+        .btn-view:hover {
+            background-color: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .btn-edit {
+        background-color: rgba(241, 196, 15, 0.1);
+        color: #f39c12;
+    }
+
+        .btn-edit:hover {
+            background-color: #f39c12;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .btn-delete {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+    }
+
+        .btn-delete:hover {
+            background-color: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #dee2e6;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+    /* Pagination */
+    .pagination-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-top: 1px solid var(--medium-gray);
+        background-color: var(--white);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .pagination-info {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 5px;
+        margin: 0;
+    }
+
+        .pagination .page-item .page-link {
+            border: 1px solid var(--medium-gray);
+            color: var(--dark-blue);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+            .pagination .page-item .page-link:hover {
+                background-color: rgba(252, 163, 17, 0.1);
+                border-color: var(--orange);
+                color: var(--orange);
+            }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--orange);
+            border-color: var(--orange);
+            color: white;
+        }
+
+    /* Responsive adjustments */
+    /* media (max-width: 991px) {
+        .page-header h2 {
+            font-size: 22px;
+        }
+    }
+
+   media (max-width: 767px) {
+        .payment-amounts-list {
+            padding: 0;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .page-header .btn-add-payment {
+                align-self: flex-start;
+            }
+
+        .table-controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            min-width: 100%;
+        }
+
+        .filter-group {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .payment-table th,
+        .payment-table td {
+            padding: 12px 15px;
+        }
+
+        .pagination-container {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+    }
+
+   media (max-width: 575px) {
+        .page-header h2 {
+            font-size: 20px;
+        }
+
+        .payment-table th,
+        .payment-table td {
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+
+        .status-badge,
+        .membership-badge,
+        .entity-badge {
+            padding: 4px 8px;
+            font-size: 11px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            font-size: 13px;
+        }
+
+        .filter-group select {
+            min-width: 120px;
+        }
+    }
+
+    media (max-width: 400px) {
+        .filter-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .filter-group select {
+                width: 100%;
+                min-width: auto;
+            } */
+    }
+</style>
+
+<div class="payment-amounts-list">
+    <div class="page-header">
+        <h2><i class="fas fa-money-check-alt"></i> Payment Amounts</h2>
+        <a asp-action ="PaymentAmountAdd" asp-controller="Admin" class="btn-add-payment">
+            <i class="fas fa-plus-circle"></i> Add New Payment
+        </a>
+    </div>
+
+    <!-- Table Controls -->
+    <div class="table-controls">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search payment amounts...">
+        </div>
+        <div class="filter-group">
+            <select id="membershipFilter">
+                <option value="all">All Memberships</option>
+                @foreach (var mem in Model.MembershipList)
+                {
+                    <option value="@mem.MembershipName.ToLower()">@mem.MembershipName</option>
+                }
+            </select>
+
+        </div>
+    </div>
+
+    <!-- Payment Amounts Table -->
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Membership</th>
+                        <th>Entity Type</th>
+                        <th>Payment Type</th>
+                        <th>Duration</th>
+                        <th>Amount</th>
+                        <th>IsActive</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentsTableBody">
+                     @foreach (var item in Model.paymentAmount_list)
+                    {
+
+                    <tr>
+                            <td><strong>#PA @item.PaymentAmountId</strong></td>
+                        <td>
+                            <span class="membership-badge basic">
+                                <i class="fas fa-user"></i>
+                                    @item.Membership.MembershipName
+                            </span>
+                        </td>
+                        <td>
+                            <span class="entity-badge">
+                                <i class="fas fa-user"></i>
+                                    @item.EntityType
+                            </span>
+                        </td>
+                            <td>@item.PaymentType</td>
+                        <td>
+                            <span class="duration-display">
+                                    <i class="far fa-calendar-alt"></i> @item.DurationInMonths
+                            </span>
+                        </td>
+                        <td class="amount-display">
+                                <span class="currency">$</span>@item.Amount
+                        </td>             
+                                @if(item.IsActive == true) {
+                                <td>Active</td>
+                                }
+                                else
+                                {
+                               <td> InActive</td>
+                                }
+                        <td>
+                            <div class="action-buttons">
+                                    <a asp-action="PaymentAmountEdit" asp-controller="Admin" asp-route-id="@item.PaymentAmountId" class="btn-action btn-edit" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                    <a href="javascript:void(0);" class="btn-action btn-delete js-delete-user" data-id="@item.PaymentAmountId" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                        }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set active navigation
+        document.querySelector('[data-page="paymentamount"]').classList.add('active');
+
+        document.querySelectorAll('.js-delete-user').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const paymentId = this.dataset.id;
+                const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This payment amount will be permanently deleted!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete'
+                }).then((result) => {
+                    if (!result.isConfirmed) return;
+
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Create form data properly
+                    const formData = new FormData();
+                    formData.append('id', paymentId);
+                    formData.append('__RequestVerificationToken', token);
+
+                    fetch('/Admin/DeletePyamountAjax', {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': token
+                        },
+                        body: new URLSearchParams({
+                            'id': paymentId,
+                            '__RequestVerificationToken': token
+                        })
+                    })
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: 'Payment amount has been deleted.'
+                            });
+                            // Remove row from table
+                            btn.closest('tr').remove();
+                        } else {
+                            Swal.fire('Error', data.message || 'Failed to delete', 'error');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        Swal.fire('Error', 'This payment amount is already in use by transactions. You can’t delete it. If you don’t want it to appear, please deactivate it.', 'error');
+                    });
+                });
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#paymentsTableBody tr');
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+        }
+
+        // Filter functionality
+        const membershipFilter = document.getElementById('membershipFilter');
+        if (membershipFilter) {
+            membershipFilter.addEventListener('change', filterTable);
+        }
+
+        function filterTable() {
+            const membershipFilterValue = document.getElementById('membershipFilter').value;
+            const rows = document.querySelectorAll('#paymentsTableBody tr');
+
+            rows.forEach(row => {
+                const membershipCell = row.cells[1];
+                if (membershipCell) {
+                    const membershipText = membershipCell.textContent.toLowerCase();
+                    const membershipBadge = membershipCell.querySelector('.membership-badge');
+                    let membershipValue = '';
+
+                    if (membershipBadge) {
+                        // Get the text content without the icon
+                        membershipValue = membershipBadge.textContent.trim().toLowerCase();
+                    } else {
+                        membershipValue = membershipText.toLowerCase();
+                    }
+
+                    const showByMembership = membershipFilterValue === 'all' ||
+                                           membershipValue.includes(membershipFilterValue.toLowerCase());
+
+                    row.style.display = showByMembership ? '' : 'none';
+                }
+            });
+        }
+    });
+</script>

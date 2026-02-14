@@ -1,0 +1,510 @@
+﻿
+:root {
+    --primary: #212A27;
+    --secondary: #F6A90F;
+    --accent1: #FECA5A;
+    --accent2: #EE6E13;
+    --neutral-dark: #736664;
+    --neutral-light: #706A74;
+    --background: #F9FAFB;
+    --glass-bg: rgba(255, 255, 255, 0.97);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.vacancy-wrapper {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+    background-color: var(--background);
+}
+
+/* Modern Card Design */
+.modern-vacancy-card {
+    background: var(--glass-bg);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(33, 42, 39, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    overflow: hidden;
+    max-width: 850px;
+    width: 100%;
+    animation: cardReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+@keyframes cardReveal {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Modern Header with Back Button */
+.modern-card-header {
+    background: linear-gradient(135deg, var(--primary), #151e1a);
+    color: white;
+    padding: 2rem 3rem;
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+}
+
+    .modern-card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 50%, rgba(246, 169, 15, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(238, 110, 19, 0.1) 0%, transparent 50%);
+    }
+
+.header-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.header-left-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.back-button {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    text-decoration: none;
+}
+
+    .back-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(-3px);
+    }
+
+    .back-button i {
+        font-size: 1.2rem;
+        color: var(--accent1);
+    }
+
+.header-icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+    .header-icon-circle i {
+        font-size: 1.8rem;
+        color: var(--secondary);
+    }
+
+.status-pill {
+    background: rgba(6, 214, 160, 0.2);
+    color: #06d6a0;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(6, 214, 160, 0.3);
+}
+
+.header-main {
+    position: relative;
+    z-index: 2;
+    margin-top: 1rem;
+}
+
+.modern-card-header h1 {
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    font-size: 2.2rem;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.modern-card-header p {
+    opacity: 0.9;
+    margin-bottom: 0;
+    font-weight: 400;
+    font-size: 1.1rem;
+    max-width: 700px;
+}
+
+.company-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+    .company-tag i {
+        color: var(--accent1);
+    }
+
+    .company-tag span {
+        font-weight: 600;
+    }
+
+.card-body-modern {
+    padding: 3rem;
+}
+
+/* Info Cards Grid - Fixed Layout */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.75rem;
+    border: 1px solid rgba(33, 42, 39, 0.1);
+    box-shadow: 0 5px 20px rgba(33, 42, 39, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(33, 42, 39, 0.1);
+        border-color: rgba(246, 169, 15, 0.2);
+    }
+
+    .info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--secondary), var(--accent2));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .info-card:hover::before {
+        opacity: 1;
+    }
+
+.info-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(246, 169, 15, 0.1), rgba(254, 202, 90, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+}
+
+    .info-icon i {
+        font-size: 1.5rem;
+        color: var(--secondary);
+    }
+
+.info-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--neutral-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.info-value {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.3rem;
+    line-height: 1.4;
+}
+
+/* Salary Card - Full Width */
+.salary-card {
+    grid-column: span 6;
+    background: linear-gradient(135deg, rgba(246, 169, 15, 0.05), rgba(254, 202, 90, 0.05));
+    border: 1px solid rgba(246, 169, 15, 0.2);
+    
+    padding: 2rem;
+}
+
+/* Regular Cards */
+.regular-card {
+    grid-column: span 6;
+}
+
+/* Location Card */
+.location-card {
+    grid-column: span 6;
+}
+
+/* Posted Date Card */
+.date-card {
+    grid-column: span 6;
+}
+
+.salary-display-modern {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.salary-amount {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+    background: linear-gradient(135deg, var(--primary), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.salary-separator {
+    color: var(--neutral-light);
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin: 0 0.5rem;
+}
+
+.salary-details {
+    color: var(--neutral-light);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* Job Description Section */
+.job-description-section {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    border: 1px solid rgba(33, 42, 39, 0.1);
+    box-shadow: 0 5px 20px rgba(33, 42, 39, 0.05);
+    margin-bottom: 2.5rem;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(33, 42, 39, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .section-title i {
+        color: var(--secondary);
+    }
+
+.job-description-content {
+    color: var(--primary);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+    .job-description-content h5 {
+        color: var(--primary);
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+    }
+
+    .job-description-content ul {
+        padding-left: 1.5rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .job-description-content li {
+        margin-bottom: 0.5rem;
+        position: relative;
+    }
+
+        .job-description-content li:before {
+            content: '•';
+            color: var(--secondary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+/* Action Section - Centered Apply Button Only */
+.action-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background: linear-gradient(to right, rgba(249, 250, 251, 0.9), rgba(255, 255, 255, 0.9));
+    border-radius: 16px;
+    border: 1px solid rgba(33, 42, 39, 0.08);
+}
+
+/* Apply Button */
+.apply-button-modern {
+    display: inline-flex;
+    align-items: center;
+    padding: 1.1rem 2.5rem;
+    background: linear-gradient(135deg, var(--secondary), var(--accent2));
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 8px 20px rgba(246, 169, 15, 0.3);
+    font-size: 1.05rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    gap: 12px;
+}
+
+    .apply-button-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .apply-button-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(246, 169, 15, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+        .apply-button-modern:hover::before {
+            opacity: 1;
+        }
+
+    .apply-button-modern i {
+        font-size: 1.2rem;
+    }
+
+/* Minimal Footer */
+.card-footer-minimal {
+    padding: 1.5rem 3rem;
+    border-top: 1px solid rgba(33, 42, 39, 0.08);
+    background: linear-gradient(to right, rgba(249, 250, 251, 0.9), rgba(255, 255, 255, 0.9));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-text {
+    color: var(--neutral-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .regular-card {
+        grid-column: span 6;
+    }
+
+    .location-card,
+    .date-card {
+        grid-column: span 12;
+    }
+}
+
+@media (max-width: 768px) {
+    .modern-card-header {
+        padding: 1.5rem;
+    }
+
+    .card-body-modern {
+        padding: 2rem 1.5rem;
+    }
+
+    .header-top-row {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .header-left-section {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .modern-card-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .salary-amount {
+        font-size: 2rem;
+    }
+
+    .regular-card,
+    .location-card,
+    .date-card {
+        grid-column: span 12;
+    }
+
+    .card-footer-minimal {
+        padding: 1.25rem 1.5rem;
+    }
+}
+
+

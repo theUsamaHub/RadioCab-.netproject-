@@ -1,0 +1,400 @@
+﻿@model RadioCab.Models.Dashboard
+@{
+    ViewData["Title"] = "Admin - Dashboard";
+    Layout = "/Views/Shared/admin.cshtml";
+}
+
+<link href="~/css/main.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- Header -->
+<div class="dashboard-header mb-3">
+    <h1 class="mb-1"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h1>
+    <p class="mb-0">Welcome back! Platform overview</p>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-3">
+    <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="stat-card orange compact-card compact-stat">
+            <div class="stat-icon orange">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <h2 class="stat-number">@ViewBag.TotalUsers</h2>
+            <p class="stat-label">Total Users</p>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="stat-card primary compact-card compact-stat">
+            <div class="stat-icon primary">
+                <i class="bi bi-building"></i>
+            </div>
+            <h2 class="stat-number">@ViewBag.TotalCompanies</h2>
+            <p class="stat-label">Total Companies</p>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="stat-card info compact-card compact-stat">
+            <div class="stat-icon info">
+                <i class="bi bi-car-front-fill"></i>
+            </div>
+            <h2 class="stat-number">@ViewBag.TotalDrivers</h2>
+            <p class="stat-label">Total Drivers</p>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="stat-card danger compact-card compact-stat">
+            <div class="stat-icon danger">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+            <h2 class="stat-number">@ViewBag.PendingPayments</h2>
+            <p class="stat-label">Pending Payments</p>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row g-3 mb-3">
+    <div class="col-xl-8">
+        <div class="chart-card compact-card compact-chart">
+            <h3 class="chart-title">
+                <i class="bi bi-graph-up"></i> Revenue Overview
+            </h3>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="chart-card compact-card compact-chart">
+            <h3 class="chart-title">
+                <i class="bi bi-pie-chart"></i> Payment Methods
+            </h3>
+            <div class="chart-container">
+                <canvas id="paymentMethodChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="row g-3">
+    <!-- Recent Payments -->
+    <div class="col-xl-6">
+        <div class="table-card compact-card compact-table">
+            <div class="table-title">
+                <span><i class="bi bi-credit-card me-2"></i>Recent Payments</span>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var payment in Model.Payment_list)
+                        {
+                            <tr>
+                                <td>@payment.User?.FullName</td>
+                                <td class="fw-bold">PKR @(payment.PaymentAmount?.Amount.ToString("N0") ?? "0")</td>
+                                <td>@payment.PaymentMethod?.MethodName</td>
+                                <td>
+                                    <span class="status-badge @payment.PaymentStatus.ToLower()">
+                                        @payment.PaymentStatus
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Approvals -->
+    <div class="col-xl-6">
+        <div class="table-card compact-card compact-table">
+            <div class="table-title">
+                <span><i class="bi bi-clock-history me-2"></i>Pending Approvals Registration</span>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var company in Model.company_list)
+                        {
+                            <tr>
+                                <td><span class="badge bg-primary"><i class="bi bi-building me-1"></i></span></td>
+                                <td>@company.CompanyName</td>
+                                <td>@company.Email</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                            </tr>
+                        }
+                        @foreach (var driver in Model.driver_list)
+                        {
+                            <tr>
+                                <td><span class="badge bg-info"><i class="bi bi-car-front me-1"></i></span></td>
+                                <td>@driver.DriverName</td>
+                                <td>@driver.Email</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Feedbacks -->
+    <div class="col-xl-6">
+        <div class="table-card compact-card compact-table">
+            <div class="table-title">
+                <span><i class="bi bi-chat-left-text me-2"></i>Recent Feedbacks</span>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var feedback in Model.feedback_list)
+                        {
+                            <tr>
+                                <td>@feedback.Name</td>
+                                <td>
+                                    @if (feedback.FeedbackType == "Complaint")
+                                    {
+                                        <span class="badge bg-danger">@feedback.FeedbackType</span>
+                                    }
+                                    else if (feedback.FeedbackType == "Suggestion")
+                                    {
+                                        <span class="badge bg-warning">@feedback.FeedbackType</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">@feedback.FeedbackType</span>
+                                    }
+                                </td>
+                                <td><span class="status-badge @feedback.Status.ToLower()">@feedback.Status</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Vacancy -->
+    <div class="col-xl-6">
+        <div class="table-card compact-card compact-table">
+            <div class="table-title">
+                <span><i class="bi bi-briefcase me-2"></i>Recent Vacancies</span>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model.CompanyVacancy_list)
+                        {
+                            <tr>
+                                <td>@c.JobTitle</td>
+                                <td>@c.Salary</td>
+                                <td><span class="status-badge @c.ApprovalStatus.ToLower()">@c.ApprovalStatus</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats Footer -->
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="table-card compact-card">
+            <div class="row g-2 text-center">
+                <div class="col-md-3 col-6">
+                    <div class="p-2">
+                        <!-- Change this line in Quick Stats Footer -->
+                        <div class="fs-5 fw-bold" style="color: var(--orange);">
+                            @((ViewBag.TotalRevenue ?? 0).ToString("N0"))
+                        </div>
+                        <div class="text-muted small">Total Revenue</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="p-2">
+                        <div class="fs-5 fw-bold" style="color: var(--orange);">@ViewBag.ActiveServices</div>
+                        <div class="text-muted small">Active Services</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="p-2">
+                        <div class="fs-5 fw-bold" style="color: var(--orange);">@ViewBag.NewFeedbacks</div>
+                        <div class="text-muted small">New Feedbacks</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="p-2">
+                        <div class="fs-5 fw-bold" style="color: var(--orange);">@Model.PaymentMethod_list.Count</div>
+                        <div class="text-muted small">Payment Methods</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart');
+        if (revenueCtx) {
+            const revenueLabels = @Html.Raw(Json.Serialize(ViewBag.RevenueChartLabels ?? new List<string>()));
+            const revenueData = @Html.Raw(Json.Serialize(ViewBag.RevenueChartData ?? new List<double>()));
+
+            if (revenueLabels && revenueLabels.length > 0 && revenueData && revenueData.length > 0) {
+                new Chart(revenueCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: revenueLabels,
+                        datasets: [{
+                            label: 'Revenue',
+                            data: revenueData,
+                            borderColor: '#fca311',
+                            backgroundColor: 'rgba(252, 163, 17, 0.05)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: '#14213d',
+                            pointBorderColor: '#fca311',
+                            pointBorderWidth: 2,
+                            pointRadius: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#14213d',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#fca311',
+                                callbacks: {
+                                    label: (ctx) => `PKR ${ctx.parsed.y.toLocaleString()}`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                ticks: {
+                                    callback: (value) => `PKR ${value.toLocaleString()}`,
+                                    color: '#666'
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#666' }
+                            }
+                        }
+                    }
+                });
+            } else {
+                revenueCtx.parentElement.innerHTML = '<div class="text-center py-4 text-muted small">No revenue data available</div>';
+            }
+        }
+
+        // Payment Method Chart
+        const paymentCtx = document.getElementById('paymentMethodChart');
+        if (paymentCtx) {
+            const paymentLabels = @Html.Raw(Json.Serialize(ViewBag.PaymentMethodLabels ?? new List<string>()));
+            const paymentData = @Html.Raw(Json.Serialize(ViewBag.PaymentMethodData ?? new List<int>()));
+
+            if (paymentLabels && paymentLabels.length > 0 && paymentData && paymentData.length > 0) {
+                new Chart(paymentCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: paymentLabels,
+                        datasets: [{
+                            data: paymentData,
+                            backgroundColor: [
+                                '#14213d', '#fca311', '#06d6a0',
+                                '#ef476f', '#118ab2', '#7209b7'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 10,
+                                    color: '#14213d',
+                                    font: { size: 11, weight: '500' }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: '#14213d',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#fca311',
+                                callbacks: {
+                                    label: (ctx) => {
+                                        const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percent = Math.round((ctx.parsed / total) * 100);
+                                        return `${ctx.label}: ${ctx.parsed} (${percent}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '70%'
+                    }
+                });
+            } else {
+                paymentCtx.parentElement.innerHTML = '<div class="text-center py-4 text-muted small">No payment data available</div>';
+            }
+        }
+
+        // Add hover effects to cards
+        const cards = document.querySelectorAll('.stat-card, .chart-card, .table-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = 'all 0.2s ease';
+            });
+        });
+    });
+</script>

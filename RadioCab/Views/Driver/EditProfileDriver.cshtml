@@ -1,0 +1,197 @@
+﻿@model RadioCab.Models.DriverValidate
+@{
+    ViewData["Title"] = "EditProfileDriver";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Profile Form</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="~/Driver/css/EditProfileDriver.css" rel="stylesheet" asp-append-version="true" />
+</head>
+<body>
+    <div class="split-container">
+        <!-- Left Panel: Contact Information -->
+        <div class="contact-panel">
+            <div class="contact-header">
+                <div class="contact-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 class="contact-name">@Model.DriverName</h2>
+            </div>
+
+            <div class="contact-info">
+                <div class="info-item" style="animation-delay: 0.1s">
+                    <div class="info-icon">
+                        <i class="fas fa-user-tag"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Contact Name</h5>
+                        <p>@Model.DriverName</p>
+                    </div>
+                </div>
+
+                <div class="info-item" style="animation-delay: 0.2s">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Email Address</h5>
+                        <p>@Model.Email</p>
+                    </div>
+                </div>
+
+                <div class="info-item" style="animation-delay: 0.3s">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Phone Number</h5>
+                        <p>@Model.Telephone</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decorative-line"></div>
+
+            <!-- Note moved to bottom using margin-top: auto -->
+            <div class="contact-note">
+                <p style="color: #666; font-size: 14px; line-height: 1.6;">
+                    <i class="fas fa-info-circle" style="color: var(--gold); margin-right: 8px;"></i>
+                    This contact information is displayed from your professional profile. Update your company details using the form.
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Panel: Form -->
+        <div class="form-panel">
+            <div class="form-header">
+                <h2>Company Details</h2>
+                <p>Complete your professional profile information</p>
+            </div>
+
+            <form asp-action="EditProfileDriver" method="post" id="companyForm">
+                <div class="text-danger mb-2" asp-validation-summary="All"></div>
+                <input type="hidden" asp-for="DriverId" />
+                <input type="hidden" asp-for="MembershipId" />
+
+                <div class="form-row">
+                    <div class="form-group" style="animation-delay: 0.1s">
+                        <label class="form-label" asp-for="DriverName">
+                            <i class="fas fa-building"></i> Driver Name
+                        </label>
+                        <input type="text" asp-for="DriverName" name="DriverName" class="form-control" id="companyName">
+                    </div>
+
+                    <div class="form-group" style="animation-delay: 0.2s">
+                        <label class="form-label" asp-for="Experience">
+                            <i class="fas fa-business-time"></i> Experience (Years)
+                        </label>
+                        <input type="text" asp-for="Experience" name="Experience" class="form-control" id="experience">
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 0.3s">
+                    <label class="form-label" asp-for="Address">
+                        <i class="fas fa-map-marker-alt"></i> Company Address
+                    </label>
+                    <input type="text" asp-for="Address" name="Address" class="form-control" id="companyAddress">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="animation-delay: 0.4s">
+                        <label class="form-label" for="city">
+                            <i class="fas fa-city"></i> City
+                        </label>
+                        <select asp-for="CityId" name="CityId" class="form-select" id="city" asp-items="@ViewBag.City">
+                            <option value="">Select your city</option>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="animation-delay: 0.5s">
+                        <label class="form-label" asp-for="Cnic">
+                            <i class="fas fa-id-card"></i> CNIC Number
+                        </label>
+                        <input type="text" asp-for="Cnic" name="CNIC" class="form-control" id="cnic">
+                    </div>
+                </div>
+
+                <!-- Vehicle Information Section -->
+                <div class="section-header">
+                    <h4><i class="fas fa-car"></i> Vehicle Information</h4>
+                    <hr style="margin: 10px 0;">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="animation-delay: 0.6s">
+                        <label class="form-label" asp-for="VehicleMake">
+                            <i class="fas fa-industry"></i> Vehicle Make
+                        </label>
+                        <input type="text" asp-for="VehicleMake" name="VehicleMake" class="form-control" id="vehicleMake">
+
+                    </div>
+
+                    <div class="form-group" style="animation-delay: 0.7s">
+                        <label class="form-label" asp-for="VehicleModel">
+                            <i class="fas fa-car-side"></i> Vehicle Model
+                        </label>
+                        <input type="text" asp-for="VehicleModel" name="VehicleModel" class="form-control" id="vehicleModel">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="animation-delay: 0.8s">
+                        <label class="form-label" asp-for="VehicleYear">
+                            <i class="fas fa-calendar-alt"></i> Vehicle Year
+                        </label>
+                        <input type="text" asp-for="VehicleYear" name="VehicleYear" class="form-control" id="vehicleYear">
+
+                    </div>
+
+                    <div class="form-group" style="animation-delay: 0.9s">
+                        <label class="form-label" asp-for="VehicleColor">
+                            <i class="fas fa-palette"></i> Vehicle Color
+                        </label>
+                        <input type="text" asp-for="VehicleColor" name="VehicleColor" class="form-control" id="vehicleColor">
+                    </div>
+                </div>
+
+                <div class="form-group" style="animation-delay: 1.0s">
+                    <label class="form-label" asp-for="VehiclePlate">
+                        <i class="fas fa-tag"></i> Plate Number
+                    </label>
+                    <input type="text" asp-for="VehiclePlate" name="VehiclePlate" class="form-control" id="plateNumber">
+                </div>
+
+                <div class="form-group" style="animation-delay: 1.1s">
+                    <label class="form-label" asp-for="Description">
+                        <i class="fas fa-file-alt"></i> Company Description
+                    </label>
+                    <textarea asp-for="Description" name="Description" class="form-control" id="companyDescription" rows="4"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="submit-btn" onclick="history.back()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-save"></i> Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/Driver/js/EditProfileDriver.js"></script>
+</body>
+</html>

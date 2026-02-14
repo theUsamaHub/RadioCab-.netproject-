@@ -1,0 +1,745 @@
+﻿@model IEnumerable<RadioCab.Models.ViewModels.AdvertisementVM>
+@{
+    ViewData["Title"] = "Advertisements";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var selectedSort = ViewBag.SelectedSort ?? "newest";
+}
+
+@section PageStyles {
+    <link href="~/css/user/advertisements.css" rel="stylesheet" />
+    <style>
+        /* Pinterest Masonry Grid */
+        .masonry-grid {
+            column-count: 4;
+            column-gap: 1rem;
+        }
+
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+        }
+
+      
+
+        /* Advertisement Card */
+        .ad-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .ad-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            }
+
+        .ad-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 300px;
+        }
+
+        .ad-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .ad-card:hover .ad-image {
+            transform: scale(1.05);
+        }
+
+        .ad-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            padding: 1.5rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ad-card:hover .ad-overlay {
+            opacity: 1;
+        }
+
+        .ad-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #ffc107;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .advertiser-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .advertiser-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffc107;
+        }
+
+        .advertiser-avatar-placeholder {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ffc107;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 18px;
+        }
+
+        .ad-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .ad-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .ad-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .ad-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .days-remaining {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        /* Sorting Controls */
+        .sorting-controls {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .advertiser-info:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px;
+            margin: -8px;
+        }
+
+        .sort-select {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
+            background: white url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") no-repeat right 0.75rem center/16px 12px;
+            appearance: none;
+            cursor: pointer;
+        }
+
+            .sort-select:focus {
+                border-color: #ffc107;
+                box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+                outline: none;
+            }
+
+        .sort-label {
+            color: #495057;
+            font-weight: 600;
+            margin-right: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+            .sort-label i {
+                color: #ffc107;
+                margin-right: 0.5rem;
+            }
+    </style>
+}
+
+<!-- Page Header -->
+<section class="page-header bg-black text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Advertisements</h1>
+                <p class="lead mb-0">
+                    Discover premium companies and drivers through their advertisements
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="text-lg-end">
+                    <span class="badge bg-warning text-black fs-6">
+                        <i class="fas fa-ad me-2"></i>@ViewBag.TotalAds Active Ads
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filter and Sort Controls -->
+<section class="filter-section py-4 bg-white border-bottom">
+    <div class="container">
+        <!-- Sorting Row -->
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="sort-label">
+                        <i class="fas fa-sort-amount-down"></i>Sort by:
+                    </div>
+                    <div style="width: 250px;">
+                        <select id="sortSelect" class="sort-select w-100">
+                            <option value="newest" selected="@(selectedSort == "newest")">Newest First</option>
+                            <option value="oldest" selected="@(selectedSort == "oldest")">Oldest First</option>
+                            <option value="rating" selected="@(selectedSort == "rating")">Highest Rating</option>
+                            <option value="expiring" selected="@(selectedSort == "expiring")">Expiring Soon</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Buttons Row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-th-large me-2"></i>All Ads (@ViewBag.TotalAds)
+                    </button>
+                    <button class="filter-btn" data-filter="company">
+                        <i class="fas fa-building me-2"></i>Companies (@ViewBag.CompanyAds)
+                    </button>
+                    <button class="filter-btn" data-filter="driver">
+                        <i class="fas fa-user-tie me-2"></i>Drivers (@ViewBag.DriverAds)
+                    </button>
+                    <button class="filter-btn" data-filter="active">
+                        <i class="fas fa-bolt me-2"></i>Active (@ViewBag.ActiveAds)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Advertisement Gallery -->
+<section class="py-5 bg-light">
+    <div class="container">
+        @if (Model != null && Model.Any())
+        {
+            <div class="masonry-grid" id="adsContainer">
+                @foreach (var ad in Model)
+                {
+                    <div class="masonry-item ad-item"
+                         data-type="@ad.AdvertiserType.ToLower()"
+                         data-active="@ad.IsActive.ToString().ToLower()"
+                         data-rating="@ad.Rating"
+                         data-days-remaining="@ad.DaysRemaining"
+                         data-date="@ad.StartDate.ToString("yyyy-MM-dd")">
+                        <div class="ad-card" data-bs-toggle="modal" data-bs-target="#adModal"
+                             data-ad-id="@ad.AdvertisementId"
+                             data-ad-type="@ad.AdvertiserType"
+                             data-ad-title="@ad.Title"
+                             data-ad-description="@ad.Description"
+                             data-ad-image="@ad.AdImage"
+                             data-advertiser-id="@ad.AdvertiserId"
+                             data-advertiser-name="@ad.AdvertiserName"
+                             data-city="@ad.CityName"
+                             data-rating="@ad.Rating"
+                             data-reviews="@ad.ReviewCount"
+                             data-profile-image="@ad.ProfileImage"
+                             data-days-remaining="@ad.DaysRemaining">
+
+                            <span class="ad-badge">@ad.AdvertiserType</span>
+
+                            @if (ad.DaysRemaining > 0)
+                            {
+                                <span class="days-remaining">
+                                    <i class="fas fa-clock me-1"></i>@ad.DaysRemaining days left
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="days-remaining bg-danger">
+                                    <i class="fas fa-exclamation-circle me-1"></i>Expired
+                                </span>
+                            }
+
+                            <div class="ad-image-container">
+                                <img src="@ad.AdImage" alt="@ad.Title" class="ad-image">
+                            </div>
+
+                            <div class="ad-overlay">
+                                <div class="advertiser-info"
+                                     onclick="event.stopPropagation(); window.location.href='@(ad.AdvertiserType == "Company" ? $"/User/CompanyDetails/{ad.AdvertiserId}" : $"/User/DriverDetails/{ad.AdvertiserId}")';"
+                                     style="cursor: pointer;">
+                                    @if (!string.IsNullOrEmpty(ad.ProfileImage))
+                                    {
+                                        <img src="@ad.ProfileImage" alt="@ad.AdvertiserName" class="advertiser-avatar">
+                                    }
+                                    else
+                                    {
+                                        <div class="advertiser-avatar-placeholder">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    }
+                                    <div>
+                                        <h6 class="mb-0">@ad.AdvertiserName</h6>
+                                        <small>@ad.CityName</small>
+                                    </div>
+                                </div>
+
+                                <h5 class="ad-title">@ad.Title</h5>
+                                <p class="ad-description">@ad.Description</p>
+
+                                <div class="ad-stats">
+                                    @if (ad.Rating > 0)
+                                    {
+                                        <div class="ad-stat-item">
+                                            <i class="fas fa-star"></i>
+                                            <span>@ad.Rating?.ToString("F1")</span>
+                                        </div>
+                                    }
+                                    @if (ad.ReviewCount > 0)
+                                    {
+                                        <div class="ad-stat-item">
+                                            <i class="fas fa-comment"></i>
+                                            <span>@ad.ReviewCount reviews</span>
+                                        </div>
+                                    }
+                                    <div class="ad-stat-item">
+                                        <i class="fas fa-eye"></i>
+                                        <span>Click to view</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResults" class="text-center py-5 d-none">
+                <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                <h4 class="text-black mb-3">No Advertisements Found</h4>
+                <p class="text-muted mb-4">Try selecting a different filter</p>
+                <button class="btn btn-warning" onclick="resetFilters()">
+                    <i class="fas fa-times me-2"></i>Reset Filters
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-ad fa-4x text-muted mb-3"></i>
+                <h4 class="text-black mb-3">No Advertisements Available</h4>
+                <p class="text-muted">There are currently no active advertisements.</p>
+                <p class="text-muted mb-4">Check back later for new promotions.</p>
+                <a href="@Url.Action("Companies", "User")" class="btn btn-warning me-2">
+                    <i class="fas fa-building me-2"></i>Browse Companies
+                </a>
+                <a href="@Url.Action("Drivers", "User")" class="btn btn-outline-warning">
+                    <i class="fas fa-user-tie me-2"></i>Browse Drivers
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Advertisement Modal (Same as before) -->
+<div class="modal fade" id="adModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal content remains the same -->
+            <div class="modal-header bg-black text-white">
+                <h5 class="modal-title" id="adModalTitle"></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <img id="modalAdImage" src="" alt="" class="img-fluid rounded mb-4">
+
+                        <h4 id="modalAdTitle" class="mb-3"></h4>
+                        <p id="modalAdDescription" class="text-muted"></p>
+
+                        <div class="advertiser-details mt-4">
+                            <h5 class="mb-3">Advertiser Information</h5>
+                            <div class="d-flex align-items-center mb-3">
+                                <img id="modalProfileImage" src="" alt=""
+                                     class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                <div>
+                                    <h6 id="modalAdvertiserName" class="mb-0"></h6>
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                        <span id="modalCity"></span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-warning mb-2">
+                                                <i class="fas fa-star fa-2x"></i>
+                                            </div>
+                                            <h4 id="modalRating" class="mb-0">0.0</h4>
+                                            <small class="text-muted">Rating</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="text-warning mb-2">
+                                                <i class="fas fa-comment fa-2x"></i>
+                                            </div>
+                                            <h4 id="modalReviews" class="mb-0">0</h4>
+                                            <small class="text-muted">Reviews</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="sticky-top" style="top: 20px;">
+                            <div class="card mb-4">
+                                <div class="card-header bg-black text-white">
+                                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Ad Details</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <small class="text-muted d-block">Ad Type</small>
+                                        <span id="modalAdType" class="badge bg-warning text-black"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <small class="text-muted d-block">Validity</small>
+                                        <span id="modalValidity" class="fw-semibold"></span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Status</small>
+                                        <span id="modalStatus" class="badge bg-success">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header bg-black text-white">
+                                    <h6 class="mb-0"><i class="fas fa-link me-2"></i>Quick Actions</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted small mb-3">
+                                        Interested in this advertiser? View their full profile for more details.
+                                    </p>
+                                    <div class="d-grid gap-2">
+                                        <a id="viewProfileBtn" href="#" class="btn btn-warning">
+                                            <i class="fas fa-user me-2"></i>View Full Profile
+                                        </a>
+                                        <button class="btn btn-outline-warning" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-2"></i>Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sort functionality
+            const sortSelect = document.getElementById('sortSelect');
+            const adItems = document.querySelectorAll('.ad-item');
+            const adsContainer = document.getElementById('adsContainer');
+
+            sortSelect.addEventListener('change', function() {
+                const sortBy = this.value;
+
+                // Store current filter state
+                const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+                // Apply sorting
+                sortAds(sortBy, activeFilter);
+
+                // Update URL with sort parameter (optional)
+                updateUrlParams({ sort: sortBy });
+            });
+
+            function sortAds(sortBy, filterType = 'all') {
+                const itemsArray = Array.from(adItems);
+
+                // First, apply filter
+                let filteredItems = itemsArray.filter(item => {
+                    const itemType = item.dataset.type;
+                    const itemActive = item.dataset.active;
+
+                    if (filterType === 'all') return true;
+                    if (filterType === 'company') return itemType === 'company';
+                    if (filterType === 'driver') return itemType === 'driver';
+                    if (filterType === 'active') return itemActive === 'true';
+                    return true;
+                });
+
+                // Then apply sorting
+                filteredItems.sort((a, b) => {
+                    switch(sortBy) {
+                        case 'newest':
+                            return new Date(b.dataset.date) - new Date(a.dataset.date);
+                        case 'oldest':
+                            return new Date(a.dataset.date) - new Date(b.dataset.date);
+                        case 'rating':
+                            return parseFloat(b.dataset.rating || 0) - parseFloat(a.dataset.rating || 0);
+                        case 'expiring':
+                            return parseInt(a.dataset.daysRemaining || 999) - parseInt(b.dataset.daysRemaining || 999);
+                        default:
+                            return 0;
+                    }
+                });
+
+                // Clear container
+                adsContainer.innerHTML = '';
+
+                // Append sorted items
+                filteredItems.forEach(item => {
+                    adsContainer.appendChild(item);
+                });
+
+                // Update visibility
+                updateVisibility(filteredItems);
+
+                // Reinitialize masonry and reattach modal events
+                initMasonry();
+                reattachModalEvents();
+            }
+
+            function updateVisibility(items) {
+                const noResults = document.getElementById('noResults');
+                if (items.length === 0) {
+                    noResults.classList.remove('d-none');
+                } else {
+                    noResults.classList.add('d-none');
+                }
+            }
+
+            // Filter functionality
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const noResults = document.getElementById('noResults');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Get current sort value
+                    const currentSort = sortSelect.value;
+                    const filter = this.dataset.filter;
+
+                    // Apply filter with current sort
+                    sortAds(currentSort, filter);
+                });
+            });
+
+            // Store the current ad data globally
+            let currentAdData = null;
+
+            // Modal functionality
+            function setupModalEvents() {
+                const adCards = document.querySelectorAll('.ad-card');
+
+                adCards.forEach(card => {
+                    card.addEventListener('click', function(e) {
+                        // Don't trigger if clicking on advertiser info (which has its own link)
+                        if (e.target.closest('.advertiser-info')) {
+                            return;
+                        }
+
+                        currentAdData = this.dataset;
+
+                        // Set modal content
+                        document.getElementById('modalAdImage').src = currentAdData.adImage;
+                        document.getElementById('modalAdImage').alt = currentAdData.adTitle;
+                        document.getElementById('adModalTitle').textContent = currentAdData.adTitle;
+                        document.getElementById('modalAdTitle').textContent = currentAdData.adTitle;
+                        document.getElementById('modalAdDescription').textContent = currentAdData.adDescription;
+                        document.getElementById('modalAdvertiserName').textContent = currentAdData.advertiserName;
+                        document.getElementById('modalCity').textContent = currentAdData.city;
+                        document.getElementById('modalRating').textContent = parseFloat(currentAdData.rating).toFixed(1);
+                        document.getElementById('modalReviews').textContent = currentAdData.reviews;
+                        document.getElementById('modalAdType').textContent = currentAdData.adType;
+
+                        // Set profile image or placeholder
+                        const profileImage = document.getElementById('modalProfileImage');
+                        if (currentAdData.profileImage && currentAdData.profileImage !== '') {
+                            profileImage.src = currentAdData.profileImage;
+                            profileImage.style.display = 'block';
+                        } else {
+                            profileImage.style.display = 'none';
+                        }
+
+                        // Calculate and show validity
+                        const daysLeft = parseInt(currentAdData.daysRemaining);
+                        const validitySpan = document.getElementById('modalValidity');
+                        const statusBadge = document.getElementById('modalStatus');
+                        if (daysLeft > 0) {
+                            validitySpan.textContent = `${daysLeft} days remaining`;
+                            statusBadge.className = 'badge bg-success';
+                            statusBadge.textContent = 'Active';
+                        } else {
+                            validitySpan.textContent = 'Expired';
+                            statusBadge.className = 'badge bg-danger';
+                            statusBadge.textContent = 'Expired';
+                        }
+                    });
+                });
+            }
+
+            // Handle View Profile button click
+            document.getElementById('viewProfileBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (currentAdData) {
+                    let profileUrl = '';
+                    if (currentAdData.adType === 'Company') {
+                        profileUrl = `/User/CompanyDetails/${currentAdData.advertiserId}`;
+                    } else {
+                        profileUrl = `/User/DriverDetails/${currentAdData.advertiserId}`;
+                    }
+                    
+                    // Close the modal first
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('adModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    
+                    // Then navigate to profile
+                    setTimeout(() => {
+                        window.location.href = profileUrl;
+                    }, 300);
+                }
+            });
+
+            // Function to reattach modal events after filtering/sorting
+            function reattachModalEvents() {
+                // Remove existing event listeners
+                const newCards = document.querySelectorAll('.ad-card');
+                newCards.forEach(card => {
+                    card.replaceWith(card.cloneNode(true));
+                });
+                
+                // Reattach events
+                setupModalEvents();
+            }
+
+            // Reset filters
+            window.resetFilters = function() {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                filterBtns[0].classList.add('active');
+
+                sortSelect.value = 'newest';
+                sortAds('newest', 'all');
+            };
+
+            // URL parameter handling (optional)
+            function updateUrlParams(params) {
+                const url = new URL(window.location);
+                Object.keys(params).forEach(key => {
+                    if (params[key]) {
+                        url.searchParams.set(key, params[key]);
+                    } else {
+                        url.searchParams.delete(key);
+                    }
+                });
+                window.history.pushState({}, '', url);
+            }
+
+            // Initialize masonry layout
+            function initMasonry() {
+                const grid = document.querySelector('.masonry-grid');
+                if (grid) {
+                    // Reset column count for recalculation
+                    grid.style.columnCount = 'auto';
+                    setTimeout(() => {
+                        // Reapply column count
+                        if (window.innerWidth >= 1200) {
+                            grid.style.columnCount = '4';
+                        } else if (window.innerWidth >= 768) {
+                            grid.style.columnCount = '3';
+                        } else if (window.innerWidth >= 576) {
+                            grid.style.columnCount = '2';
+                        } else {
+                            grid.style.columnCount = '1';
+                        }
+                    }, 100);
+                }
+            }
+
+            // Handle window resize
+            window.addEventListener('resize', initMasonry);
+
+            // Initial setup
+            initMasonry();
+            setupModalEvents();
+
+            // Set initial sort from URL or default
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlSort = urlParams.get('sort');
+            if (urlSort) {
+                sortSelect.value = urlSort;
+                sortAds(urlSort, 'all');
+            }
+        });
+    </script>
+}

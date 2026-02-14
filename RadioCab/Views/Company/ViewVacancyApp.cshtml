@@ -1,0 +1,358 @@
+﻿@model RadioCab.Models.VacancyApplication
+@{
+    ViewData["Title"] = "Application Details";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+
+<style>
+    .application-detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .detail-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .detail-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+    }
+
+    .detail-body {
+        padding: 2rem;
+    }
+
+    .info-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        color: #34495e;
+        font-size: 1.1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    .file-download-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .download-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        background: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+    }
+
+        .download-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            color: white;
+        }
+
+        .download-btn i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .download-btn.pdf {
+            background: #e74c3c;
+        }
+
+            .download-btn.pdf:hover {
+                background: #c0392b;
+            }
+
+        .download-btn.doc {
+            background: #3498db;
+        }
+
+            .download-btn.doc:hover {
+                background: #2980b9;
+            }
+
+    .status-form {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .status-badge-large {
+        display: inline-block;
+        padding: 0.5rem 1.25rem;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background: #7f8c8d;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .back-btn:hover {
+            background: #95a5a6;
+            color: white;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .message-box {
+        background: #f1f8ff;
+        border-left: 4px solid #3498db;
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 1rem;
+    }
+
+        .message-box p {
+            margin: 0;
+            font-style: italic;
+            color: #2c3e50;
+        }
+</style>
+
+<div class="application-detail-container">
+    <!-- Header -->
+    <div class="detail-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-1"><i class="fas fa-file-alt me-2"></i>Application Details</h1>
+                <p class="mb-0 opacity-75">Application ID: @Model.ApplicationId</p>
+            </div>
+            <a asp-action="VacancyAppPage" class="back-btn">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="detail-card">
+        <div class="detail-body">
+            <div class="row">
+                <!-- Left Column: Applicant Info -->
+                <div class="col-lg-6">
+                    <h4 class="mb-4"><i class="fas fa-user-circle me-2"></i>Applicant Information</h4>
+
+                    <div class="info-group">
+                        <div class="info-label">Full Name</div>
+                        <div class="info-value">@Model.ApplicantName</div>
+                    </div>
+
+                    <div class="info-group">
+                        <div class="info-label">Email Address</div>
+                        <div class="info-value">
+                            <a href="mailto:@Model.Email" class="text-decoration-none">@Model.Email</a>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <div class="info-label">Mobile Number</div>
+                        <div class="info-value">@Model.MobileNo</div>
+                    </div>
+
+               
+
+              
+
+                    <div class="info-group">
+                        <div class="info-label">Application Date</div>
+                        <div class="info-value">@Model.CreatedAt.ToString("dd MMMM yyyy hh:mm tt")</div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Job & Status Info -->
+                <div class="col-lg-6">
+                    <h4 class="mb-4"><i class="fas fa-briefcase me-2"></i>Job Information</h4>
+
+                    <div class="info-group">
+                        <div class="info-label">Job Title</div>
+                        <div class="info-value">@Model.Vacancy?.JobTitle</div>
+                    </div>
+
+                    <div class="info-group">
+                        <div class="info-label">Job Type</div>
+                        <div class="info-value">
+                            <span class="badge bg-info">@Model.Vacancy?.JobType</span>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <div class="info-label">Salary</div>
+                        <div class="info-value">@Model.Vacancy?.Salary</div>
+                    </div>
+
+                    <div class="info-group">
+                        <div class="info-label">Current Status</div>
+                        <div class="info-value">
+                            @{
+                                var statusClass = Model.Status switch
+                                {
+                                    "Applied" => "badge-pending",
+                                    "Reviewed" => "badge-reviewed",
+                                    "Shortlisted" => "badge-shortlisted",
+                                    "Hired" => "badge-hired",
+                                    "Rejected" => "badge-rejected",
+                                    _ => "badge-pending"
+                                };
+                            }
+                            <span class="status-badge-large @statusClass">@Model.Status</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- File Downloads Section -->
+            @if (!string.IsNullOrEmpty(Model.CvFile) || !string.IsNullOrEmpty(Model.CoverLetter))
+            {
+                <div class="file-download-section">
+                    <h5 class="mb-3"><i class="fas fa-download me-2"></i>Download Files</h5>
+
+                    <div class="d-flex flex-wrap">
+                        @if (!string.IsNullOrEmpty(Model.CvFile))
+                        {
+                            var cvFileName = System.IO.Path.GetFileName(Model.CvFile);
+                            var cvExtension = System.IO.Path.GetExtension(Model.CvFile)?.ToUpper()?.TrimStart('.') ?? "FILE";
+                            var isPdf = cvExtension == "PDF";
+
+                            <a href="@Url.Action("DownloadApplicationFile", "Company", new { filePath = Model.CvFile })"
+                               class="download-btn @(isPdf ? "pdf" : "doc")"
+                               download="@cvFileName">
+                                <i class="fas @(isPdf ? "fa-file-pdf" : "fa-file-word")"></i>
+                                Download CV (@cvExtension)
+                            </a>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.CoverLetter))
+                        {
+                            var clFileName = System.IO.Path.GetFileName(Model.CoverLetter);
+                            var clExtension = System.IO.Path.GetExtension(Model.CoverLetter)?.ToUpper()?.TrimStart('.') ?? "FILE";
+                            var isPdf = clExtension == "PDF";
+
+                            <a href="@Url.Action("DownloadApplicationFile", "Company", new { filePath = Model.CoverLetter })"
+                               class="download-btn @(isPdf ? "pdf" : "doc")"
+                               download="@clFileName">
+                                <i class="fas @(isPdf ? "fa-file-pdf" : "fa-file-word")"></i>
+                                Download Cover Letter (@clExtension)
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Status Update Form -->
+            <div class="status-form">
+                <h5 class="mb-3"><i class="fas fa-edit me-2"></i>Update Application Status</h5>
+
+                <form asp-action="ViewVacancyApp" method="post">
+                    <input type="hidden" name="id" value="@Model.ApplicationId" />
+
+                    <div class="row align-items-end">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="Status" class="form-label">Select New Status</label>
+                                <select asp-for="Status" asp-items="ViewBag.status" class="form-select">
+                                    <option value="">-- Select Status --</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-save me-2"></i>Update Status
+                            </button>
+                        </div>
+                    </div>
+
+                    @if (TempData["update"] != null)
+                    {
+                        <div class="alert alert-success mt-3">
+                            <i class="fas fa-check-circle me-2"></i>@TempData["update"]
+                        </div>
+                    }
+                </form>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                @if (!string.IsNullOrEmpty(Model.Email))
+                {
+                    <a href="mailto:@Model.Email?subject=Regarding Your Application for @Model.Vacancy?.JobTitle"
+                       class="btn btn-outline-primary">
+                        <i class="fas fa-envelope me-2"></i>Send Email
+                    </a>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.MobileNo))
+                {
+                    <a href="tel:@Model.MobileNo" class="btn btn-outline-success">
+                        <i class="fas fa-phone me-2"></i>Call Applicant
+                    </a>
+                }
+
+                <button type="button" class="btn btn-outline-info" onclick="printApplication()">
+                    <i class="fas fa-print me-2"></i>Print Details
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function printApplication() {
+            window.print();
+        }
+
+        // Auto-hide success message after 5 seconds
+        setTimeout(function() {
+            const alert = document.querySelector('.alert-success');
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 5000);
+    </script>
+}

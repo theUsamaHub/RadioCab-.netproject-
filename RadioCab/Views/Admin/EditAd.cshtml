@@ -1,0 +1,452 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    ViewData["Title"] = "Edit Advertisement";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<style>
+    :root {
+        --white: #FFFFFF;
+        --light-gray: #f8f9fa;
+        --medium-gray: #e9ecef;
+        --orange: #fca311;
+        --orange-hover: #e3940f;
+        --dark-blue: #14213d;
+        --dark-blue-light: #1e2a4a;
+        --black: #000000;
+    }
+
+    .edit-ads-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--light-gray);
+    }
+
+        .page-header h1 {
+            color: var(--dark-blue);
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--dark-blue);
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--medium-gray);
+        transition: all 0.2s ease;
+        font-size: 14px;
+    }
+
+        .back-button:hover {
+            background-color: var(--light-gray);
+            text-decoration: none;
+            color: var(--dark-blue);
+        }
+
+    .ad-details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .detail-group {
+        margin-bottom: 0;
+    }
+
+    .detail-label {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--dark-blue);
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .detail-value {
+        padding: 10px 12px;
+        background-color: var(--light-gray);
+        border-radius: 6px;
+        border: 1px solid var(--medium-gray);
+        color: #495057;
+        font-size: 14px;
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+    }
+
+    .ad-image-container {
+        grid-column: span 2;
+        margin-top: 10px;
+    }
+
+    .ad-image-preview {
+        max-width: 300px;
+        max-height: 200px;
+        border-radius: 6px;
+        border: 1px solid var(--medium-gray);
+        padding: 4px;
+        background-color: var(--white);
+    }
+
+    .status-form-container {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 25px;
+        border: 1px solid var(--medium-gray);
+        margin-top: 20px;
+    }
+
+    .form-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+        .form-header i {
+            color: var(--orange);
+            font-size: 18px;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(252, 163, 17, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-header h3 {
+            color: var(--dark-blue);
+            font-size: 18px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark-blue);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+    .form-select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--medium-gray);
+        border-radius: 6px;
+        font-size: 14px;
+        color: var(--dark-blue);
+        background-color: var(--white);
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(252, 163, 17, 0.15);
+        }
+
+        .form-select option {
+            padding: 8px;
+        }
+
+    .status-option-pending {
+        color: #f1c40f;
+    }
+
+    .status-option-approved {
+        color: #27ae60;
+    }
+
+    .status-option-rejected {
+        color: #e74c3c;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        padding-top: 20px;
+        border-top: 1px solid var(--medium-gray);
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 24px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 100px;
+    }
+
+    .btn-primary {
+        background-color: var(--orange);
+        color: var(--white);
+    }
+
+        .btn-primary:hover {
+            background-color: var(--orange-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(252, 163, 17, 0.2);
+        }
+
+    .btn-secondary {
+        background-color: var(--white);
+        color: var(--dark-blue);
+        border: 1px solid var(--medium-gray);
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--light-gray);
+        }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .badge-pending {
+        background-color: rgba(241, 196, 15, 0.1);
+        color: #f1c40f;
+        border: 1px solid rgba(241, 196, 15, 0.2);
+    }
+
+    .badge-approved {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: #27ae60;
+        border: 1px solid rgba(46, 204, 113, 0.2);
+    }
+
+    .badge-rejected {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+        border: 1px solid rgba(231, 76, 60, 0.2);
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .alert-success {
+        background-color: rgba(46, 204, 113, 0.1);
+        border: 1px solid rgba(46, 204, 113, 0.2);
+        color: #27ae60;
+    }
+
+    .alert-error {
+        background-color: rgba(231, 76, 60, 0.1);
+        border: 1px solid rgba(231, 76, 60, 0.2);
+        color: #e74c3c;
+    }
+
+    /* Responsive */
+    /* @@media (max-width: 768px) {
+        .ad-details-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .ad-image-container {
+            grid-column: span 1;
+        }
+
+        .edit-ads-container {
+            padding: 15px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    } */
+
+    /* Current status display */
+    .current-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        background-color: var(--white);
+        border-radius: 6px;
+        border: 1px solid var(--medium-gray);
+        margin-bottom: 20px;
+    }
+
+    .current-status-label {
+        font-weight: 500;
+        color: var(--dark-blue);
+        font-size: 14px;
+    }
+</style>
+
+<div class="edit-ads-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-edit me-2"></i>Edit Advertisement</h1>
+        <a asp-action="Ads" asp-controller="Admin" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Ads
+        </a>
+    </div>
+
+
+
+    <!-- Advertisement Details (Read-only) -->
+    <div class="ad-details-grid">
+        <!-- Current Status Display -->
+        <div class="detail-group">
+            <span class="detail-label">Current Status</span>
+            <div class="current-status">
+                @if (Model.single_ad.ApprovalStatus == "Pending")
+                {
+                    <span class="status-badge badge-pending">Pending</span>
+                }
+                else if (Model.single_ad.ApprovalStatus == "Approved")
+                {
+                    <span class="status-badge badge-approved">Approved</span>
+                }
+                else
+                {
+                    <span class="status-badge badge-rejected">Rejected</span>
+                }
+                <span class="current-status-label">@Model.single_ad.ApprovalStatus</span>
+            </div>
+        </div>
+
+        <!-- Advertiser Type -->
+        <div class="detail-group">
+            <span class="detail-label">Advertiser Type</span>
+            <div class="detail-value">@Model.single_ad.AdvertiserType</div>
+        </div>
+
+        <!-- Start Date -->
+        <div class="detail-group">
+            <span class="detail-label">Start Date</span>
+            <div class="detail-value">@Model.single_ad.StartDate.ToString("MMM dd, yyyy")</div>
+        </div>
+
+        <!-- End Date -->
+        <div class="detail-group">
+            <span class="detail-label">End Date</span>
+            <div class="detail-value">@Model.single_ad.EndDate.ToString("MMM dd, yyyy")</div>
+        </div>
+
+
+        <!-- User Email -->
+        <div class="detail-group">
+            <span class="detail-label">Advertiser Email</span>
+            <div class="detail-value">@Model.single_ad.Payment.User.Email</div>
+        </div>
+
+        <!-- Active Status -->
+        <div class="detail-group">
+            <span class="detail-label">Payment Status</span>
+            <div class="detail-value">
+                @if (Model.single_ad.Payment.PaymentStatus == "Approved")
+                {
+                    <span class="badge badge-approved">Approved</span>
+                }
+                else
+                {
+                    <span class="badge badge-rejected">@Model.single_ad.Payment.PaymentStatus</span>
+                }
+            </div>
+        </div>
+
+        <!-- Ad Image -->
+        @if (!string.IsNullOrEmpty(Model.single_ad.AdImage))
+        {
+            <div class="ad-image-container">
+                <span class="detail-label">Advertisement Image</span>
+                <div>
+                    <img src="@Model.single_ad.AdImage"
+                         alt="Ad Image"
+                         class="ad-image-preview"
+                         onerror="this.src='https://via.placeholder.com/300x200?text=Image+Not+Found'" />
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Status Update Form -->
+    <div class="status-form-container">
+        <div class="form-header">
+            <i class="fas fa-cog"></i>
+            <h3>Update Approval Status</h3>
+        </div>
+
+        <form asp-action="EditAd" asp-controller="Admin" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="single_ad.AdvertisementId" />
+
+
+            <div class="form-group">
+                <label for="ApprovalStatus">Select New Status *</label>
+                <select asp-for="single_ad.ApprovalStatus" class="form-select" required>
+                    <option value="">-- Select Status --</option>
+                    <option value="Pending" class="status-option-pending">Pending</option>
+                    <option value="Approved" class="status-option-approved">Approved</option>
+                    <option value="Rejected" class="status-option-rejected">Rejected</option>
+                </select>
+                <small class="text-muted">Changing status will send an email notification to the advertiser.</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Status
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

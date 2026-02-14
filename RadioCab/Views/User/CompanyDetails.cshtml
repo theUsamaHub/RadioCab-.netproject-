@@ -1,0 +1,465 @@
+﻿@model RadioCab.Models.Company
+@{
+    ViewData["Title"] = Model.CompanyName;
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+    <link href="~/css/user/company-details.css" rel="stylesheet" />
+    <style>
+
+        .rating-input {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+            .rating-input input {
+                display: none;
+            }
+
+        .star-label {
+            cursor: pointer;
+            color: #dee2e6;
+            font-size: 2rem;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+            .star-label i {
+                transition: all 0.2s ease;
+            }
+
+            .rating-input input:checked ~ .star-label,
+            .star-label:hover,
+            .star-label:hover ~ .star-label {
+                color: var(--primary-yellow);
+            }
+
+    </style>
+
+
+<!-- Company Header -->
+
+<section class="company-header bg-black text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-2">
+                @if (!string.IsNullOrEmpty(Model.CompanyLogo))
+                {
+                    <img src="@Model.CompanyLogo" alt="@Model.CompanyName"
+                         class="company-logo-detail img-fluid rounded">
+                }
+                else
+                {
+                    <div class="company-logo-detail-placeholder rounded">
+                        <i class="fas fa-building fa-3x"></i>
+                    </div>
+                }
+            </div>
+            <div class="col-lg-7">
+                <h1 class="display-5 fw-bold mb-2">@Model.CompanyName</h1>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="badge bg-warning text-black fs-6">
+                        @Model.Membership?.MembershipName
+                    </span>
+                    <span class="badge bg-success fs-6">
+                        <i class="fas fa-check-circle me-1"></i>Verified
+                    </span>
+                </div>
+                <div class="company-info">
+                    <p class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2 text-warning"></i>
+                        @Model.City?.CityName
+                    </p>
+                    @if (!string.IsNullOrEmpty(Model.Telephone))
+                    {
+                        <p class="mb-2">
+                            <i class="fas fa-phone me-2 text-warning"></i>
+                            @Model.Telephone
+                        </p>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Email))
+                    {
+                        <p class="mb-0">
+                            <i class="fas fa-envelope me-2 text-warning"></i>
+                            @Model.Email
+                        </p>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="text-center">
+                    <div class="rating-display mb-3">
+                        <h2 class="text-warning fw-bold">@ViewBag.AverageRating.ToString("F1")</h2>
+                        <div class="stars mb-2">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="fas fa-star @(i <= Math.Round(ViewBag.AverageRating) ? "text-warning" : "text-muted") fs-4"></i>
+                            }
+                        </div>
+                        <p class="text-light small">
+                            @Model.CompanyFeedbacks.Count() Reviews
+                        </p>
+                    </div>
+                    <button class="btn btn-warning w-100 mb-2" data-bs-toggle="modal" data-bs-target="#contactModal">
+                        <i class="fas fa-envelope me-2"></i>Contact
+                    </button>
+                    <button class="btn btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                        <i class="fas fa-star me-2"></i>Leave Feedback
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tabs Navigation -->
+<section class="tabs-navigation py-4 bg-white border-bottom">
+    <div class="container px-0">
+        <ul class="nav nav-tabs border-0" id="companyTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active text-black bg-white"
+                        id="details-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#details"
+                        type="button"
+                        role="tab"
+                        aria-controls="details"
+                        aria-selected="true">
+                    <i class="fas fa-info-circle me-2 text-warning"></i> <span style="color:black;">Details</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link text-black bg-white"
+                        id="services-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#services"
+                        type="button"
+                        role="tab"
+                        aria-controls="services"
+                        aria-selected="false">
+                    <i class="fas fa-cogs me-2 text-warning"></i> <span style="color:black;">Services (@Model.CompanyServices.Count())</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link text-black bg-white"
+                        id="reviews-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#reviews"
+                        type="button"
+                        role="tab"
+                        aria-controls="reviews"
+                        aria-selected="false">
+                    <i class="fas fa-star me-2 text-warning"></i><span style="color:black;">Reviews (@Model.CompanyFeedbacks.Count())</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<!-- Tab Content -->
+<section class="tab-content" id="companyTabsContent">
+    <!-- Details Tab - ONLY this one has show active -->
+    <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+        <div class="container px-0 py-4">
+            <div class="row g-4">
+                <div class="col-lg-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-black text-white py-3">
+                            <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>About Company</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            @if (!string.IsNullOrEmpty(Model.Description))
+                            {
+                                <p class="card-text mb-0">@Model.Description</p>
+                            }
+                            else
+                            {
+                                <p class="card-text text-muted mb-0">No description provided.</p>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mt-2">
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header bg-black text-white py-3">
+                                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Contact Person</h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <p class="mb-2"><strong>Name:</strong> @Model.ContactPerson</p>
+                                    <p class="mb-0"><strong>Designation:</strong> @Model.Designation</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header bg-black text-white py-3">
+                                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Location</h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <p class="mb-2"><strong>City:</strong> @Model.City?.CityName</p>
+                                    @if (!string.IsNullOrEmpty(Model.Address))
+                                    {
+                                        <p class="mb-0"><strong>Address:</strong> @Model.Address</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Tab - REMOVED show active -->
+    <div class="tab-pane fade" id="services" role="tabpanel" aria-labelledby="services-tab">
+        <div class="container px-0 py-4">
+            @if (Model.CompanyServices.Any(cs => cs.isActive == true))
+            {
+                <div class="row g-3">
+                    @foreach (var service in Model.CompanyServices.Where(cs => cs.isActive == true))
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="service-card">
+                                <div class="service-icon">
+                                    <i class="fas fa-cogs fa-lg"></i>
+                                </div>
+                                <h5 class="service-title">@service.Service.ServiceName</h5>
+                                <p class="service-description">
+                                    @(service.ServiceDescription?.Length > 100
+                                                                ? service.ServiceDescription.Substring(0, 100) + "..."
+                                                                : service.ServiceDescription ?? "Service provided by the company")
+                                </p>
+                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25">
+                                    Active
+                                </span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h4>No Services Available</h4>
+                    <p class="text-muted">This company hasn't listed any services yet.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Reviews Tab - REMOVED show active -->
+    <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+        <div class="container px-0 py-4">
+            @if (Model.CompanyFeedbacks.Any())
+            {
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="row g-3">
+                            @foreach (var feedback in Model.CompanyFeedbacks.OrderByDescending(f => f.CreatedAt))
+                            {
+                                <div class="col-12">
+                                    <div class="review-card">
+                                        <div class="review-header d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">@feedback.Name</h6>
+                                                @if (!string.IsNullOrEmpty(feedback.Email))
+                                                {
+                                                    <small class="text-muted">@feedback.Email</small>
+                                                }
+                                            </div>
+                                            <small class="text-muted">
+                                                @feedback.CreatedAt?.ToString("MMM dd, yyyy")
+                                            </small>
+                                        </div>
+                                        <div class="review-rating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="fas fa-star @(i <= feedback.Rating ? "text-warning" : "text-black-50")"></i>
+                                            }
+                                        </div>
+                                        <div class="review-body">
+                                            @if (!string.IsNullOrEmpty(feedback.Comment))
+                                            {
+                                                <p class="mb-0">@feedback.Comment</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="text-muted mb-0">No comment provided.</p>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="rating-summary-card">
+                            <h2>@ViewBag.AverageRating.ToString("F1")</h2>
+                            <div class="mb-2">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="fas fa-star @(i <= Math.Round(ViewBag.AverageRating) ? "text-warning" : "text-black-50")"></i>
+                                }
+                            </div>
+                            <p class="text-muted small mb-0">
+                                Based on @Model.CompanyFeedbacks.Count() reviews
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>No Reviews Yet</h4>
+                    <p class="text-muted mb-3">Be the first to review this company!</p>
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                        <i class="fas fa-star me-1"></i>Leave First Review
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h5 class="modal-title">Contact @Model.CompanyName</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-action="SubmitContactRequest" asp-controller="User">
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="TargetType" value="Company" />
+                    <input type="hidden" name="TargetId" value="@Model.CompanyId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Name *</label>
+                        <input type="text" class="form-control" name="Name" required>
+                        <div class="invalid-feedback">Please enter your name</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email *</label>
+                        <input type="email" class="form-control" name="Email" required>
+                        <div class="invalid-feedback">Please enter a valid email</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Phone *</label>
+                        <input type="tel" class="form-control" name="Phone" required>
+                        <div class="invalid-feedback">Please enter a valid phone number</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Message *</label>
+                        <textarea class="form-control" name="Message" rows="4" required></textarea>
+                        <div class="invalid-feedback">Please enter your message</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Send Message</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h5 class="modal-title">Review @Model.CompanyName</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-action="SubmitCompanyFeedback" asp-controller="User">
+
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="CompanyId" value="@Model.CompanyId" />
+
+                    <!-- Name Field -->
+                    <div class="mb-3">
+                        <label class="form-label">Your Name *</label>
+                        <input type="text" class="form-control" name="Name" required>
+                        <div class="invalid-feedback">Please enter your name</div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        <label class="form-label">Your Email *</label>
+                        <input type="email" class="form-control" name="Email" required>
+                        <div class="invalid-feedback">Please enter a valid email</div>
+                    </div>
+
+                    <!-- Rating Field -->
+                    <!-- Rating Field -->
+                    <div class="mb-4">
+                        <label class="form-label d-block">Rating *</label>
+                        <div class="rating-input">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <input type="radio" id="star@(i)" name="Rating" value="@i" required>
+                                <label for="star@(i)" class="star-label">
+                                    <i class="fas fa-star"></i>
+                                </label>
+                            }
+                        </div>
+                        <div class="invalid-feedback">Please select a rating</div>
+                    </div>
+
+                    <!-- Comment Field -->
+                    <div class="mb-3">
+                        <label class="form-label">Comment (Optional)</label>
+                        <textarea class="form-control" name="Comment" rows="4"
+                                  placeholder="Share your experience with this company..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    <script>
+
+        // Star raing interaction
+        document.querySelectorAll('.rating-input input').forEach(input => {
+            input.addEventListener('change', function() {
+                const rating = parseInt(this.value);
+                document.querySelectorAll('.rating-input .star-label').forEach((label, index) => {
+                    if (index < rating) {
+                        label.classList.add('active');
+                    } else {
+                        label.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+
+    </script>
+}

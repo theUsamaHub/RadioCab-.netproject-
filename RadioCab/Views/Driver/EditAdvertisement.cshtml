@@ -1,0 +1,158 @@
+@model RadioCab.Models.AdvertisementEditVM
+@{
+    ViewData["Title"] = "Edit Advertisement";
+    Layout = "~/Views/Shared/driverlayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>Edit Advertisement
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="EditAdvertisement" asp-controller="Driver" method="post" enctype="multipart/form-data" id="editAdvertisementForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="AdvertisementId" />
+                        
+                        <!-- Advertisement Details Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>Advertisement Details
+                                </h6>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Title" class="form-label fw-bold">
+                                    <i class="fas fa-heading me-1"></i>Advertisement Title
+                                </label>
+                                <input asp-for="Title" class="form-control" placeholder="Enter advertisement title" maxlength="100" />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StartDate" class="form-label fw-bold">
+                                    <i class="fas fa-calendar me-1"></i>Start Date
+                                </label>
+                                <input asp-for="StartDate" class="form-control" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="StartDate" class="text-danger small"></span>
+                                <div class="form-text text-warning">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    <strong>Note:</strong> You cannot edit advertisement after the start date
+                                </div>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label asp-for="Description" class="form-label fw-bold">
+                                    <i class="fas fa-align-left me-1"></i>Description
+                                </label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your advertisement..." maxlength="500"></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                                <div class="form-text">Maximum 500 characters</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-image me-1"></i>Current Advertisement Image
+                                </label>
+                                @if (!string.IsNullOrEmpty(Model.ExistingImage))
+                                {
+                                    <div class="mb-2">
+                                        <img src="@Model.ExistingImage" alt="Current advertisement image" 
+                                             class="rounded border" style="max-width: 200px; max-height: 150px; object-fit: cover;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="mb-2 p-3 bg-light rounded text-center">
+                                        <i class="fas fa-image fa-2x text-muted"></i>
+                                        <div class="small text-muted mt-2">No image uploaded</div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-camera me-1"></i>Upload New Image (Optional)
+                                </label>
+                                <input type="file" name="newImage" class="form-control" accept="image/*" id="newImageInput" />
+                                <div class="form-text small">Leave empty to keep current image. Allowed formats: JPG, PNG, GIF. Max size: 5MB</div>
+                                <div id="newImagePreview" class="mt-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="@Url.Action("AdvertisementList", "Driver")" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                                    </a>
+                                    <div>
+                                        <button type="reset" class="btn btn-outline-warning me-2" onclick="resetEditForm()">
+                                            <i class="fas fa-redo me-2"></i>Reset
+                                        </button>
+                                        <button type="submit" class="btn btn-warning" id="editSubmitBtn">
+                                            <i class="fas fa-save me-2"></i>Update Advertisement
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Validation Summary -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-3">
+        <h6><i class="fas fa-exclamation-triangle me-2"></i>Please fix the following errors:</h6>
+        <ul class="mb-0">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/js/driver-advertisement.js"></script>
+    <script>
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            const adManager = new DriverAdvertisementManager();
+            
+            // Setup form submission
+            const form = document.getElementById('editAdvertisementForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    adManager.handleEditFormSubmit(e);
+                });
+            }
+        });
+
+        // Reset form function
+        function resetEditForm() {
+            document.getElementById('editAdvertisementForm').reset();
+            document.getElementById('newImagePreview').innerHTML = '';
+        }
+    </script>
+}

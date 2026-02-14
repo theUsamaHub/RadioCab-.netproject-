@@ -1,0 +1,337 @@
+﻿@model RadioCab.Models.MembershipVM
+@{
+    ViewData["Title"] = "Membership Management";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="~/css/membership.css" rel="stylesheet" />
+@Html.AntiForgeryToken()
+
+<div class="dashboard-content">
+    <!-- Add Membership Form -->
+    <div class="form-container">
+        <div class="form-header">
+            <i class="fas fa-plus-circle"></i>
+            <h2>Add New Membership Plan</h2>
+        </div>
+        <form id="membershipForm" asp-controller="Admin" method="post" asp-action="Membership_list">
+            <div class="membership-form">
+                <div class="form-group">
+                    <label for="MembershipName" class="required">Membership Name</label>
+                    <input type="text" id="MembershipName"
+                           asp-for="Membership_form.MembershipName"
+                           class="form-control"
+                           placeholder="Enter membership plan name"
+                           maxlength="150" />
+                    <span class="error-message" asp-validation-for="Membership_form.MembershipName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="Description" class="required">Description</label>
+                    <textarea id="Description"
+                              asp-for="Membership_form.Description"
+                              class="form-control"
+                              rows="3"
+                              placeholder="Enter membership plan description"
+                              maxlength="500"></textarea>
+                    <span class="error-message" asp-validation-for="Membership_form.Description"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i>
+                        Save Membership
+                    </button>
+                    <button type="reset" class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i>
+                        Clear Form
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Membership List Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-header-left">
+                <i class="fas fa-id-card"></i>
+                <h2>Membership Plans</h2>
+                <span class="table-stats" id="membershipCount">
+                    @Model.Membership_list.Count membership plans
+                </span>
+            </div>
+        </div>
+
+        @if (!Model.Membership_list.Any())
+        {
+            <div id="emptyState" style="display: block;">
+                <i class="fas fa-id-card"></i>
+                <h3>No Membership Plans Found</h3>
+                <p>Add your first membership plan using the form above</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Membership Name</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var membership in Model.Membership_list)
+                        {
+                            <tr data-id="@membership.MembershipId">
+                                <td>@membership.MembershipName</td>
+                                <td>@membership.Description</td>
+                                <td>
+                                    <button class="btn btn-sm btn-edit" onclick="editMembership(@membership.MembershipId)">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <a href="javascript:void(0);" class="btn btn-sm btn-delete js-delete-membership"
+                                       data-id="@membership.MembershipId"
+                                       data-name="@membership.MembershipName">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+    <div style="background:white; width:400px; margin:100px auto; padding:20px; border-radius:10px;">
+        <h3>Edit Membership Plan</h3>
+
+        <input type="hidden" id="editMembershipId" />
+
+        <div class="form-group">
+            <label>Membership Name *</label>
+            <input type="text" id="editMembershipName" class="form-control"
+                   maxlength="150" />
+            <span id="editMembershipNameError" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Description *</label>
+            <textarea id="editDescription" class="form-control" rows="3"
+                      maxlength="500"></textarea>
+            <span id="editDescriptionError" class="text-danger"></span>
+        </div>
+
+        <div style="margin-top:20px;">
+            <button onclick="saveEdit()" class="btn btn-primary" id="saveEditBtn">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <button onclick="closeEditModal()" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Get anti-forgery token
+    function getToken() {
+        return $('input[name="__RequestVerificationToken"]').val();
+    }
+
+    $(document).ready(function () {
+        // Handle form submission
+        $('#membershipForm').submit(function (e) {
+            if (!$(this).valid()) {
+                return false;
+            }
+            $('#submitBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+        });
+
+        // Reset form
+        $('#resetBtn').click(function () {
+            $('#membershipForm')[0].reset();
+            $('.error-message').text('');
+        });
+
+        // Handle delete click
+        $(document).on('click', '.js-delete-membership', function (e) {
+            e.preventDefault();
+            var membershipId = $(this).data('id');
+            var membershipName = $(this).data('name');
+            
+            Swal.fire({
+                title: 'Delete Membership Plan',
+                text: 'Are you sure you want to delete "' + membershipName + '"?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteMembership(membershipId, membershipName);
+                }
+            });
+        });
+    });
+
+    // Edit membership function - FIXED
+    function editMembership(id) {
+        $.ajax({
+            url: '/Admin/GetMembership?id=' + id,
+            type: 'GET',
+            success: function (response) {
+                console.log('Edit response:', response); // Debug log
+                if (response.success !== false) {
+                    $('#editMembershipId').val(response.MembershipId);
+                    $('#editMembershipName').val(response.MembershipName);
+                    $('#editDescription').val(response.Description);
+                    $('#editModal').show();
+                } else {
+                    Swal.fire('Error', response.message || 'Membership plan not found', 'error');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log('Edit error:', error); // Debug log
+                Swal.fire('Error', 'Failed to load membership details: ' + error, 'error');
+            }
+        });
+    }
+
+    // Close edit modal
+    function closeEditModal() {
+        $('#editModal').hide();
+        $('#editMembershipNameError').text('');
+        $('#editDescriptionError').text('');
+        $('#saveEditBtn').prop('disabled', false).html('<i class="fas fa-save"></i> Save Changes');
+    }
+
+    // Save edit - FIXED
+    function saveEdit() {
+        var membershipId = $('#editMembershipId').val();
+        var membershipName = $('#editMembershipName').val().trim();
+        var description = $('#editDescription').val().trim();
+        
+        // Clear previous errors
+        $('#editMembershipNameError').text('');
+        $('#editDescriptionError').text('');
+        
+        // Validation
+        var isValid = true;
+        if (!membershipName) {
+            $('#editMembershipNameError').text('Membership name is required');
+            isValid = false;
+        } else if (membershipName.length > 150) {
+            $('#editMembershipNameError').text('Membership name cannot exceed 150 characters');
+            isValid = false;
+        }
+        
+        if (!description) {
+            $('#editDescriptionError').text('Description is required');
+            isValid = false;
+        } else if (description.length > 500) {
+            $('#editDescriptionError').text('Description cannot exceed 500 characters');
+            isValid = false;
+        }
+        
+        if (!isValid) return;
+        
+        // Disable save button and show loading
+        $('#saveEditBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+        
+        // Get anti-forgery token
+        var token = getToken();
+        
+        // Prepare data
+        var data = {
+            MembershipId: parseInt(membershipId),
+            MembershipName: membershipName,
+            Description: description
+        };
+        
+        console.log('Sending update:', data); // Debug log
+        
+        $.ajax({
+            url: '/Admin/UpdateMembership',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            headers: {
+                'RequestVerificationToken': token
+            },
+            success: function (response) {
+                console.log('Update response:', response); // Debug log
+                
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    $('#saveEditBtn').prop('disabled', false).html('<i class="fas fa-save"></i> Save Changes');
+                    Swal.fire('Error', response.message, 'error');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log('Update error:', error); // Debug log
+                $('#saveEditBtn').prop('disabled', false).html('<i class="fas fa-save"></i> Save Changes');
+                Swal.fire('Error', 'Failed to update membership plan: ' + error, 'error');
+            }
+        });
+    }
+
+    // Delete membership - FIXED
+    function deleteMembership(id, name) {
+        var token = getToken();
+        
+        $.ajax({
+            url: '/Admin/DeleteMembershipAjax/' + id,
+            type: 'POST',
+            headers: {
+                'RequestVerificationToken': token
+            },
+            success: function (response) {
+                console.log('Delete response:', response); // Debug log
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: response.message || 'Membership plan "' + name + '" has been deleted.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', response.message, 'error');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log('Delete error:', error); // Debug log
+                Swal.fire('Error', 'Failed to delete membership plan: ' + error, 'error');
+            }
+        });
+    }
+</script>

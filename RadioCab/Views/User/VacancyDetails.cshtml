@@ -1,0 +1,310 @@
+﻿@model RadioCab.Models.CompanyVacancy
+@{
+    ViewData["Title"] = Model.JobTitle;
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<!-- Vacancy Header -->
+<section class="vacancy-header bg-black text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-2">@Model.JobTitle</h1>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="badge bg-warning text-black fs-6">
+                        @Model.JobType
+                    </span>
+                    <span class="badge bg-success fs-6">
+                        <i class="fas fa-check-circle me-1"></i>Active
+                    </span>
+                </div>
+                <div class="vacancy-info">
+                    <p class="mb-2">
+                        <i class="fas fa-building me-2 text-warning"></i>
+                        @Model.Company.CompanyName
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2 text-warning"></i>
+                        @(Model.Location ?? Model.Company.City?.CityName)
+                    </p>
+                    @if (!string.IsNullOrEmpty(Model.Salary))
+                    {
+                        <p class="mb-2">
+                            <i class="fas fa-money-bill-wave me-2 text-warning"></i>
+                            @Model.Salary
+                        </p>
+                    }
+                    <p class="mb-0">
+                        <i class="fas fa-calendar me-2 text-warning"></i>
+                        Posted on @Model.CreatedAt.ToString("MMM dd, yyyy")
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="application-count mb-3">
+                        <h2 class="text-warning fw-bold">@ViewBag.ApplicationCount</h2>
+                        <p class="text-light small">
+                            Applications Received
+                        </p>
+                    </div>
+                    <a href="#applyForm" class="btn btn-warning w-100 mb-2">
+                        <i class="fas fa-paper-plane me-2"></i>Apply Now
+                    </a>
+                    <a href="@Url.Action("Vacancies", "User")" class="btn btn-outline-warning w-100">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Listings
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vacancy Details -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Job Description -->
+                <div class="card mb-4">
+                    <div class="card-header bg-black text-white">
+                        <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Job Description</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@Model.JobDescription</p>
+                    </div>
+                </div>
+
+                <!-- Requirements -->
+                <div class="card mb-4">
+                    <div class="card-header bg-black text-white">
+                        <h5 class="mb-0"><i class="fas fa-list-check me-2"></i>Requirements</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (!string.IsNullOrEmpty(Model.RequiredExperience))
+                        {
+                            <div class="mb-3">
+                                <small class="text-muted d-block">Experience Required</small>
+                                <span class="fw-semibold">@Model.RequiredExperience</span>
+                            </div>
+                        }
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Additional Requirements</small>
+                            <ul class="mb-0">
+                                <li>Valid identification documents</li>
+                                <li>Clean criminal record</li>
+                                <li>Professional attitude and communication skills</li>
+                                <li>Ability to work in a team environment</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Info Sidebar -->
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header bg-black text-white">
+                        <h5 class="mb-0"><i class="fas fa-building me-2"></i>Company Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            @if (!string.IsNullOrEmpty(Model.Company.CompanyLogo))
+                            {
+                                <img src="@Model.Company.CompanyLogo" alt="@Model.Company.CompanyName"
+                                     class="company-logo-detail img-fluid mb-3" style="max-height: 80px;">
+                            }
+                            <h6 class="fw-bold text-black mb-1">@Model.Company.CompanyName</h6>
+                            <p class="text-muted small mb-0">@Model.Company.City?.CityName</p>
+                        </div>
+                        <div class="company-contact">
+                            @if (!string.IsNullOrEmpty(Model.Company.Telephone))
+                            {
+                                <div class="mb-2">
+                                    <small class="text-muted d-block">Phone</small>
+                                    <span class="fw-semibold">@Model.Company.Telephone</span>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Company.Email))
+                            {
+                                <div class="mb-2">
+                                    <small class="text-muted d-block">Email</small>
+                                    <span class="fw-semibold">@Model.Company.Email</span>
+                                </div>
+                            }
+                        </div>
+                        <a href="@Url.Action("CompanyDetails", "User", new { id = Model.CompanyId })"
+                           class="btn btn-outline-warning w-100 mt-3">
+                            <i class="fas fa-eye me-1"></i>View Company Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Form -->
+        <div class="row mt-5" id="applyForm">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-black text-white">
+                        <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i>Application Form</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" asp-action="ApplyForVacancy" asp-controller="User" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="VacancyId" value="@Model.VacancyId" />
+
+                            @if (TempData["SuccessMessage"] != null)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    @TempData["SuccessMessage"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            }
+
+                            @if (TempData["ErrorMessage"] != null)
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    @TempData["ErrorMessage"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            }
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" name="ApplicantName" required>
+                                    <div class="invalid-feedback">Please enter your full name</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-control" name="Email" required>
+                                    <div class="invalid-feedback">Please enter a valid email</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Mobile Number *</label>
+                                    <input type="tel" class="form-control" name="MobileNo" required>
+                                    <div class="invalid-feedback">Please enter a valid mobile number</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">CV/Resume *</label>
+                                    <input type="file" class="form-control" name="CvFile" accept=".pdf,.doc,.docx" required>
+                                    <small class="text-muted">Accepted formats: PDF, DOC, DOCX (Max: 5MB)</small>
+                                    <div class="invalid-feedback">Please upload your CV/resume</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Cover Letter (Optional)</label>
+                                    <input type="file" class="form-control" name="CoverLetterFile" accept=".pdf,.doc,.docx,.txt">
+                                    <small class="text-muted">Accepted formats: PDF, DOC, DOCX, TXT (Max: 5MB)</small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Your application will be reviewed by the company
+                                    </small>
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="fas fa-paper-plane me-2"></i>Submit Application
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+@section Scripts {
+    <script>
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('applicationForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    if (!this.checkValidity()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.classList.add('was-validated');
+                        return;
+                    }
+
+                    // Additional file validation
+                    if (!validateFiles()) {
+                        e.preventDefault();
+                        return;
+                    }
+                });
+            }
+
+            function validateFiles() {
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                let isValid = true;
+
+                // CV file validation
+                const cvFileInput = document.querySelector('input[name="CvFile"]');
+                if (cvFileInput.files[0]) {
+                    const cvFile = cvFileInput.files[0];
+                    const cvExtension = cvFile.name.split('.').pop().toLowerCase();
+                    const allowedCvExtensions = ['pdf', 'doc', 'docx'];
+
+                    if (!allowedCvExtensions.includes(cvExtension)) {
+                        alert('CV file must be PDF, DOC, or DOCX format.');
+                        cvFileInput.value = '';
+                        isValid = false;
+                    } else if (cvFile.size > maxSize) {
+                        alert('CV file size must be less than 5MB.');
+                        cvFileInput.value = '';
+                        isValid = false;
+                    }
+                }
+
+                // Cover letter validation (optional)
+                const coverLetterInput = document.querySelector('input[name="CoverLetterFile"]');
+                if (coverLetterInput.files[0]) {
+                    const coverLetterFile = coverLetterInput.files[0];
+                    const coverLetterExtension = coverLetterFile.name.split('.').pop().toLowerCase();
+                    const allowedCoverLetterExtensions = ['pdf', 'doc', 'docx', 'txt'];
+
+                    if (!allowedCoverLetterExtensions.includes(coverLetterExtension)) {
+                        alert('Cover letter must be PDF, DOC, DOCX, or TXT format.');
+                        coverLetterInput.value = '';
+                        isValid = false;
+                    } else if (coverLetterFile.size > maxSize) {
+                        alert('Cover letter file size must be less than 5MB.');
+                        coverLetterInput.value = '';
+                        isValid = false;
+                    }
+                }
+
+                return isValid;
+            }
+
+            // Real-time file validation
+            document.querySelectorAll('input[type="file"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    validateFiles();
+                });
+            });
+
+            // Form submission with loading state
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                const form = document.getElementById('applicationForm');
+                form.addEventListener('submit', function() {
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+                    submitBtn.disabled = true;
+                });
+            }
+        });
+    </script>
+}

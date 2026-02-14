@@ -1,0 +1,164 @@
+/**
+ * Companies Page - Enhanced Styles
+ */
+
+/* ===============================
+   COMPANY CARD ENHANCED
+   =============================== */
+
+.company-card {
+    background: var(--white);
+    border: 1px solid var(--light-gray);
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    height: 100%;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.company-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.company-logo-container {
+    flex-shrink: 0;
+}
+
+.company-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border: 2px solid var(--primary-yellow);
+    border-radius: 10px;
+    padding: 8px;
+    background: var(--white);
+}
+
+.company-logo-placeholder {
+    width: 80px;
+    height: 80px;
+    border: 2px solid var(--primary-yellow);
+    border-radius: 10px;
+    background: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--medium-gray);
+    font-size: 2rem;
+}
+
+.company-info {
+    flex-grow: 1;
+}
+
+.company-rating {
+    font-size: 0.9rem;
+}
+
+    .company-rating .fa-star {
+        margin-right: 2px;
+    }
+
+.company-services .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.company-contact small {
+    font-size: 0.8rem;
+    color: var(--medium-gray);
+}
+
+.company-contact i {
+    width: 16px;
+    text-align: center;
+}
+
+.company-footer .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+
+/* ===============================
+   FILTER STYLES
+   =============================== */
+
+.border-bottom {
+    border-bottom: 1px solid var(--light-gray) !important;
+}
+
+.input-group {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.input-group-text {
+    background-color: var(--primary-black) !important;
+    border-color: var(--primary-black) !important;
+    color: var(--primary-yellow) !important;
+    padding: 0.75rem 1rem;
+}
+
+.form-control, .form-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 10px;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-yellow);
+        box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+    }
+
+/* ===============================
+   ANIMATIONS
+   =============================== */
+
+.company-item {
+    transition: all 0.3s ease;
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+
+@media (max-width: 768px) {
+    .company-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .company-info {
+        width: 100%;
+    }
+
+    .company-logo,
+    .company-logo-placeholder {
+        width: 60px;
+        height: 60px;
+    }
+
+    .form-control, .form-select {
+        margin-bottom: 0.5rem;
+    }
+}

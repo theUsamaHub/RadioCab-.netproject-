@@ -1,0 +1,208 @@
+﻿@model RadioCab.Models.CDVM
+
+@{
+    ViewData["Title"] = "Payment Management";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<link href="~/css/payment.css" rel="stylesheet" />
+
+<div class="container-fluid">
+
+    <!-- Filters Section -->
+    <div class="filter-card">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label fw-bold">Status Filter</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All Statuses</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label fw-bold">Payment Method</label>
+                        <select class="form-select" id="methodFilter">
+                            <option value="all">All Methods</option>
+                            @foreach (var method in Model.Payment_list.Select(p => p.PaymentMethod.MethodName).Distinct())
+                            {
+                                <option value="@method">@method</option>
+                            }
+                        </select>
+                    </div>    
+                </div>
+            </div>
+            <div class="col-lg-4 mt-3">
+                <div class="d-flex flex-column h-100 justify-content-center">
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary flex-grow-1" id="applyFiltersBtn">
+                            <i class="bi bi-funnel me-1"></i> Apply Filters
+                        </button>
+                        <button class="btn btn-outline-secondary" id="resetFiltersBtn">
+                            <i class="bi bi-x-circle me-1"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Filters -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <label class="form-label fw-bold mb-2">Quick Filters:</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="javascript:void(0);" class="quick-filter-btn" data-filter="status" data-value="Pending">
+                        <i class="bi bi-clock me-1"></i> Pending Payments
+                    </a>
+                    <a href="javascript:void(0);" class="quick-filter-btn" data-filter="status" data-value="Rejected">
+                        <i class="bi bi-exclamation-triangle me-1"></i> Rejected Payments
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Filters Display -->
+        <div class="row mt-3" id="activeFiltersContainer" style="display: none;">
+            <div class="col-12">
+                <div class="d-flex align-items-center">
+                    <span class="text-muted small me-3">Active Filters:</span>
+                    <div id="activeFilters" class="d-flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <form id="antiForgeryForm">
+        @Html.AntiForgeryToken()
+    </form>
+
+    <!-- Payments Table -->
+    <div class="table-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="section-title mb-0">Payment Transactions</h5>
+            <div class="text-muted small">
+                Showing @Model.Payment_list.Count() of @Model.Payment_list.Count() payments
+            </div>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Amount</th>
+                        <th>Payment Method</th>
+                        <th>Transaction Id</th>
+                        <th>Status</th>
+                        <th>Payment Date</th>
+                        <th>Expirey Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Payment_list.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="bi bi-credit-card-2-front display-4 text-muted mb-3"></i>
+                                    <h4 class="text-muted">No Payments Found</h4>
+                                    <p class="text-muted mb-4">There are no payment records to display.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var p in Model.Payment_list)
+                        {
+                            <tr data-method="@p.PaymentMethod.MethodName" data-status="@p.PaymentStatus">
+                                <td>
+                                    <a href="#" class="text-decoration-none">
+                                        <i class="bi bi-person me-1"></i>USER-@p.UserId
+                                    </a>
+                                </td>
+                                <td>
+                                    <strong>@p.PaymentAmount.Amount</strong>
+                                </td>
+                                <td>
+                                    <span class="method-badge method-creditcard">
+                                        @p.PaymentMethod.MethodName
+                                    </span>
+                                </td>
+                                <td>@p.TransactionId</td>
+                                <td>
+                                    @if (p.PaymentStatus == "Paid")
+                                    {
+                                        <span class="status-badge badge-paid">
+                                            <i class="bi bi-check-circle me-1"></i>Paid
+                                        </span>
+                                    }
+                                    else if (p.PaymentStatus == "Pending")
+                                    {
+                                        <span class="status-badge badge-pending">
+                                            <i class="bi bi-clock me-1"></i>Pending
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge badge-failed">
+                                            <i class="bi bi-x-circle me-1"></i>Rejected
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @p.PaymentDate.ToString("MMM dd, yyyy")
+                                </td>
+                                <td>
+                                    @p.ExpiryDate.ToString("MMM dd, yyyy")
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-controller="Admin" asp-action="Invoice" asp-route-id="@p.PaymentId"
+                                           class="btn btn-sm btn-outline-primary" title="View Invoice">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-controller="Admin" asp-action="EditPayment" asp-route-id="@p.PaymentId" class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" data-id="@p.PaymentId" class="btn btn-sm btn-outline-danger js-delete-user" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/payment.js"></script>
+
+

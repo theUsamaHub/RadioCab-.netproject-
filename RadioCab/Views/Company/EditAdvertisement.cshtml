@@ -1,0 +1,137 @@
+@model RadioCab.Models.AdvertisementEditVM
+@{
+    ViewData["Title"] = "Edit Advertisement";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit Advertisement</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    <form asp-action="EditAdvertisement"
+                          asp-controller="Company"
+                          asp-route-id="@Model.AdvertisementId"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                                                  <input type="hidden" asp-for="AdvertisementId" />
+                        <input type="hidden" asp-for="ExistingImage" />
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label asp-for="Title" class="form-label">Advertisement Title</label>
+                                    <input asp-for="Title" class="form-control" placeholder="Enter advertisement title" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Description" class="form-label">Description</label>
+                                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your advertisement"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="StartDate" class="form-label">Start Date</label>
+                                    <input asp-for="StartDate" class="form-control" type="date" />
+                                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                                    <small class="form-text text-muted">Advertisement cannot start before today's date</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Advertisement Image</label>
+                                    <input type="file" name="newImage" class="form-control" accept="image/*" id="newImageInput" />
+                                    <small class="form-text text-muted">Leave empty to keep current image (JPG, PNG, GIF)</small>
+                                    
+                                    @if (!string.IsNullOrEmpty(Model.ExistingImage))
+                                    {
+                                        <div class="mt-3">
+                                            <label class="form-label">Current Image:</label>
+                                            <div class="d-flex align-items-center">
+                                                <img src="@Model.ExistingImage" alt="Current Advertisement Image" class="img-thumbnail me-3" style="max-width: 150px; max-height: 100px;" />
+                                                <div>
+                                                    <small class="text-muted">Current image will be kept unless you upload a new one</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    
+                                    <div id="newImagePreview" class="mt-2"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card bg-warning">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Important Notice</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-2">
+                                            <strong>Editing Restrictions:</strong>
+                                        </p>
+                                        <ul class="small">
+                                            <li>You can only edit advertisements <strong>before</strong> the start date</li>
+                                            <li>After the start date, only Active/Inactive toggle is allowed</li>
+                                            <li>Image upload is optional during edit</li>
+                                        </ul>
+                                        
+                                        <div class="alert alert-info mt-3">
+                                            <i class="fas fa-info-circle"></i>
+                                            <strong>Current Status:</strong>
+                                            <br>
+                                            Start Date: @Model.StartDate.ToString("MMM dd, yyyy")
+                                            <br>
+                                            @if (Model.StartDate > DateTime.Now)
+                                            {
+                                                <span class="text-success">✓ Editing Allowed</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-danger">✗ Editing Not Allowed</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a href="@Url.Action("AdvertisementList", "Company")" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Back to List
+                                    </a>
+                                    <div>
+                                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                                            <i class="fas fa-save"></i> Update Advertisement
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/css/advertisement.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/advertisement.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

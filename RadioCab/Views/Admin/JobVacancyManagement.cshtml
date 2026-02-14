@@ -1,0 +1,545 @@
+﻿@model RadioCab.Models.CDVM
+
+@{
+    ViewBag.Title = "Job Vacancy Management";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+<style>
+    /* Professional CSS */
+    .card {
+        border: 1px solid #e3e6f0;
+        border-radius: 0.35rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+        .table thead th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            color: #6c757d;
+            border-top: 1px solid #e3e6f0;
+            border-bottom: 2px solid #e3e6f0;
+            padding: 0.75rem 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f8f9fc;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fc;
+        }
+
+    .badge-light {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .badge-outline-success {
+        background-color: transparent;
+        border: 1px solid #28a745;
+        color: #28a745;
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+    }
+
+    .badge-outline-secondary {
+        background-color: transparent;
+        border: 1px solid #6c757d;
+        color: #6c757d;
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+    }
+
+    .badge-success-light {
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+
+    .badge-warning-light {
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+
+    .badge-danger-light {
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    .badge-secondary-light {
+        background-color: rgba(108, 117, 125, 0.1);
+    }
+
+    .btn-group .btn {
+        border-radius: 0.25rem;
+        margin-right: 0.25rem;
+    }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+
+    .btn-outline-primary:hover,
+    .btn-outline-secondary:hover,
+    .btn-outline-info:hover,
+    .btn-outline-danger:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+
+    .modal-header,
+    .modal-footer {
+        padding: 1rem 1.5rem;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .border-left-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+
+    .border-left-danger {
+        border-left: 0.25rem solid #e74a3b !important;
+    }
+</style>
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Job Vacancy Management</h1>
+            <p class="text-muted mb-0">Manage all job vacancies from verified companies</p>
+        </div>      
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Vacancies
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CompanyVacancy_list.Count</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-briefcase fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Approved
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.CompanyVacancy_list.Count(v => v.ApprovalStatus == "Approved")
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Review
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.CompanyVacancy_list.Count(v => v.ApprovalStatus == "Pending")
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Rejected
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.CompanyVacancy_list.Count(v => v.ApprovalStatus == "Rejected")
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Filters</h6>
+        </div>
+        <div class="card-body">
+            <form method="get" action="@Url.Action("JobVacancyManagement", "Admin")" class="row">
+                <div class="form-group col-md-4">
+                    <label for="jobType" class="form-label">Job Type</label>
+                    <select id="jobType" name="jobType" class="form-control">
+                        <option value="">All Types</option>
+                        @foreach (var type in Model.JobTypes)
+                        {
+                            <option value="@type" selected="@(type == Model.SelectedJobType)">@type</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" name="status" class="form-control">
+                        <option value="">All Statuses</option>
+                        @foreach (var status in Model.Statuses)
+                        {
+                            <option value="@status" selected="@(status == Model.SelectedStatus)">@status</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-4 d-flex align-items-end">
+                    <div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter mr-2"></i>Apply Filters
+                        </button>
+                        <a href="@Url.Action("JobVacancyManagement", "Admin")" class="btn btn-outline-secondary ml-2">
+                            <i class="fas fa-redo mr-2"></i>Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vacancies Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Job Vacancies</h6>
+                <div class="text-muted small">
+                    <span class="mr-3"><i class="fas fa-building text-success mr-1"></i> Paid Companies Only</span>
+                    <span>@Model.CompanyVacancy_list.Count records</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (!Model.CompanyVacancy_list.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-file-alt fa-3x text-gray-300 mb-3"></i>
+                    <h5 class="text-gray-400">No vacancies found</h5>
+                    <p class="text-muted">
+                        @if (!string.IsNullOrEmpty(Model.SelectedJobType) || !string.IsNullOrEmpty(Model.SelectedStatus))
+                        {
+                            <span>Try <a href="@Url.Action("JobVacancyManagement", "Admin")" class="text-primary">clearing filters</a> or </span>
+                        }
+                        
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th class="border-0">#</th>
+                                <th class="border-0">Company</th>
+                                <th class="border-0">Job Title</th>
+                                <th class="border-0">Type</th>
+                                <th class="border-0">Experience</th>
+                                <th class="border-0">Salary</th>
+                                <th class="border-0">Status</th>
+                                <th class="border-0">Created</th>
+                                <th class="border-0 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.CompanyVacancy_list.Count; i++)
+                            {
+                                var vacancy = Model.CompanyVacancy_list[i];
+                                var company = Model.Company_list.FirstOrDefault(c => c.CompanyId == vacancy.CompanyId);
+
+                                <tr>
+                                    <td class="align-middle">
+                                        <span class="text-muted">@(i + 1)</span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="d-flex align-items-center">
+                                            @if (!string.IsNullOrEmpty(company?.CompanyLogo))
+                                            {
+                                                <img src="@company.CompanyLogo"
+                                                     class="rounded-circle mr-3"
+                                                     alt="@company.CompanyName"
+                                                     width="36"
+                                                     height="36"
+                                                     style="object-fit: cover;">
+                                            }
+                                            <div>
+                                                <div class="font-weight-bold text-gray-900">@(company?.CompanyName ?? "N/A")</div>
+                                                <div class="text-muted small">@vacancy.Location</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="font-weight-bold text-gray-900">@vacancy.JobTitle</div>
+                                        <div class="text-muted small">@vacancy.JobType</div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <span class="badge badge-light border">@vacancy.JobType</span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <span class="text-gray-700">@(vacancy.RequiredExperience ?? "-")</span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <span class="font-weight-bold text-gray-900">@(vacancy.Salary ?? "-")</span>
+                                    </td>
+                                    <td class="align-middle">
+                                        @if (vacancy.ApprovalStatus == "Approved")
+                                        {
+                                            <span class="badge badge-success-light border border-success text-success">
+                                                <i class="fas fa-check-circle mr-1"></i>@vacancy.ApprovalStatus
+                                            </span>
+                                        }
+                                        else if (vacancy.ApprovalStatus == "Pending")
+                                        {
+                                            <span class="badge badge-warning-light border border-warning text-warning">
+                                                <i class="fas fa-clock mr-1"></i>@vacancy.ApprovalStatus
+                                            </span>
+                                        }
+                                        else if (vacancy.ApprovalStatus == "Rejected")
+                                        {
+                                            <span class="badge badge-danger-light border border-danger text-danger">
+                                                <i class="fas fa-times-circle mr-1"></i>@vacancy.ApprovalStatus
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary-light border border-secondary text-secondary">
+                                                @vacancy.ApprovalStatus
+                                            </span>
+                                        }
+                                        <div class="mt-1">
+                                            @if (vacancy.IsActive)
+                                            {
+                                                <span class="badge badge-outline-success">
+                                                    <i class="fas fa-circle text-success mr-1" style="font-size: 8px;"></i>Active
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-outline-secondary">
+                                                    <i class="fas fa-circle text-secondary mr-1" style="font-size: 8px;"></i>Inactive
+                                                </span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="text-gray-700">@vacancy.CreatedAt.ToString("dd MMM")</div>
+                                        <div class="text-muted small">@vacancy.CreatedAt.ToString("yyyy")</div>
+                                    </td>
+                                    <td class="align-middle text-right">
+                                        <div class="btn-group" role="group">
+                                            <a asp-route-id="@vacancy.VacancyId" asp-action="UpdateVacancy" asp-controller="Admin" class="btn btn-sm btn-outline-secondary"
+                                                    title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="javascript:void(0);"
+                                               class="btn btn-sm btn-outline-danger js-delete-user"
+                                               data-id="@vacancy.VacancyId"
+                                               title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+          document.addEventListener('DOMContentLoaded', function() {
+        // Set active navigation
+        document.querySelector('[data-page="job"]').classList.add('active');
+    });
+
+      document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('.js-delete-user').forEach(btn => {
+
+            btn.addEventListener('click', function () {
+
+                const userId = this.dataset.id;
+                const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This vacancy will be permanently deleted!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete'
+                }).then((result) => {
+
+                    if (!result.isConfirmed) return;
+
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    fetch('/Admin/DeleteVacancy', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `id=${userId}&__RequestVerificationToken=${token}`
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: 'Vcancy has been deleted.'
+                            });
+
+                            // Remove row from table
+                            btn.closest('tr').remove();
+
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+
+                    })
+                    .catch(() => {
+                        Swal.fire('Error', 'Something went wrong.', 'error');
+                    });
+
+                });
+
+            });
+
+        });
+
+    });
+
+
+    // Show Status Modal
+    function showStatusModal(vacancyId, currentStatus) {
+        $('#vacancyId').val(vacancyId);
+        $('#newStatus').val('');
+
+        // Display current status
+        let statusDisplay = '';
+        switch(currentStatus) {
+            case 'Approved':
+                statusDisplay = '<span class="badge badge-success">Approved</span>';
+                break;
+            case 'Pending':
+                statusDisplay = '<span class="badge badge-warning">Pending</span>';
+                break;
+            case 'Rejected':
+                statusDisplay = '<span class="badge badge-danger">Rejected</span>';
+                break;
+            default:
+                statusDisplay = '<span class="badge badge-secondary">' + currentStatus + '</span>';
+        }
+        $('#currentStatusDisplay').html(statusDisplay);
+
+        $('#adminRemarks').val('');
+        $('#statusModal').modal('show');
+    }
+
+   
+
+    // Initialize DataTable
+    $(document).ready(function() {
+        $('#dataTable').DataTable({
+            pageLength: 25,
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            order: [[0, 'asc']],
+            language: {
+                search: "",
+                searchPlaceholder: "Search vacancies...",
+                lengthMenu: "_MENU_ per page"
+            },
+            dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                 '<"row"<"col-sm-12"tr>>' +
+                 '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            columnDefs: [
+                { orderable: false, targets: 8 } // Actions column
+            ]
+        });
+    });
+</script>

@@ -1,0 +1,305 @@
+﻿@model RadioCab.Models.CDVM
+@{
+    ViewData["Title"] = "Feedback";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link href="~/css/compf.css" rel="stylesheet" />
+
+  
+        <!-- Filters Section -->
+        <div class="filters-container">
+            <div class="filters-header">
+                <i class="fas fa-filter"></i>
+                <h2>Filter Compliments</h2>
+            </div>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="filterCity">City</label>
+                    <select id="filterCity" class="filter-select">
+                    <option value="all">All Cities</option>
+                        @foreach(var city in Model.City_list)
+                        {
+                            <option value="@city.CityName">@city.CityName</option>
+					}                                         
+                    </select>
+                </div>
+                <div class="filter-group filter-actions">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary" id="applyFiltersBtn">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <button class="btn btn-secondary" id="clearFiltersBtn">
+                        <i class="fas fa-redo"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compliments Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-header-left">
+                    <i class="fas fa-comments"></i>
+                    <h2>Compliments List</h2>
+                </div>               
+            </div>
+            
+  
+            <table class="table" id="complimentsTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Mobile No</th>
+                        <th>Email</th>
+                        <th>City</th>
+                        <th>Feedback Type</th>
+                        <th>Description</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="complimentsTableBody">
+
+                @foreach (var c in Model.feedback_list)
+                {                   
+
+                <tr>
+                        <td>
+                            <div class="user-info">
+                                <div class="user-details">
+                                    <h4>@c.Name</h4>
+                                </div>
+                            </div>
+                        </td>
+                        <td>@c.MobileNo</td>
+                        <td>@c.Email</td>
+                        <td>@c.City.CityName</td>
+                        <td><span class="badge badge-compliment">@c.FeedbackType</span></td>
+                        <td>
+                            <div class="description-preview" title="@c.Description">
+                                @c.Description
+                            </div>
+                        </td>
+                        <td class="date-cell">@c.CreatedAt</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-action btn-view" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <a href="javascript:void(0);"
+                                   class="btn-action btn-delete js-delete-user"
+                                   data-id="@c.FeedbackId"
+                                   title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>    
+                    
+                }
+                </tbody>
+            </table>
+
+        </div>
+   
+
+
+    <!-- View Compliment Modal -->
+    <div class="modal" id="viewComplimentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Compliment Details</h3>
+                <button class="modal-close" id="closeViewModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-row">
+                    <div class="detail-label">Customer Name:</div>
+                    <div class="detail-value" id="viewName">Rahul Sharma</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Mobile No:</div>
+                    <div class="detail-value" id="viewMobile">9876543210</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Email:</div>
+                    <div class="detail-value" id="viewEmail">rahul.sharma@email.com</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">City:</div>
+                    <div class="detail-value" id="viewCity">Mumbai</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Feedback Type:</div>
+                    <div class="detail-value">
+                        <span class="badge badge-compliment">Compliment</span>
+                    </div>
+                </div>              
+                <div class="detail-row">
+                    <div class="detail-label">Created At:</div>
+                    <div class="detail-value" id="viewCreatedAt">15 January 2024, 10:30 AM</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Description:</div>
+                    <div class="detail-value description" id="viewDescription">
+                        Excellent service! The driver was very professional and the car was clean. Arrived 5 minutes early. Would definitely recommend RadioCab to my friends and family.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterCity = document.getElementById('filterCity');
+        const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+        const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+        const complimentsTable = document.getElementById('complimentsTable');
+        const complimentsTableBody = document.getElementById('complimentsTableBody');
+        const complimentsRows = document.querySelectorAll('#complimentsTableBody tr');
+
+        // Store original rows data for filtering
+        let allCompliments = Array.from(complimentsRows).map(row => ({
+            element: row,
+            city: row.querySelector('td:nth-child(4)').textContent.trim(),
+            name: row.querySelector('td:nth-child(1) h4').textContent.trim(),
+            mobile: row.querySelector('td:nth-child(2)').textContent.trim(),
+            email: row.querySelector('td:nth-child(3)').textContent.trim(),
+            type: row.querySelector('td:nth-child(5) .badge').textContent.trim()
+        }));
+
+        // Apply filter function
+        function applyFilters() {
+            const selectedCity = filterCity.value;
+
+            allCompliments.forEach(item => {
+                const showRow = selectedCity === 'all' || item.city === selectedCity;
+                item.element.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        // Clear filters function
+        function clearFilters() {
+            filterCity.value = 'all';
+            allCompliments.forEach(item => {
+                item.element.style.display = '';
+            });
+        }
+
+        // Event listeners for filter buttons
+        applyFiltersBtn.addEventListener('click', applyFilters);
+        clearFiltersBtn.addEventListener('click', clearFilters);
+
+        // Also apply filter when city selection changes
+        filterCity.addEventListener('change', applyFilters);
+
+        // View button functionality
+        document.querySelectorAll('.btn-view').forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                const row = btn.closest('tr');
+                const modal = document.getElementById('viewComplimentModal');
+
+                // Fill modal with row data
+                document.getElementById('viewName').textContent = allCompliments[index].name;
+                document.getElementById('viewMobile').textContent = row.cells[1].textContent;
+                document.getElementById('viewEmail').textContent = row.cells[2].textContent;
+                document.getElementById('viewCity').textContent = row.cells[3].textContent;
+                document.getElementById('viewDescription').textContent = row.cells[5].querySelector('.description-preview').title;
+                document.getElementById('viewCreatedAt').textContent = row.cells[6].textContent;
+
+                modal.classList.add('active');
+            });
+        });
+
+        // Close modal
+        document.getElementById('closeViewModal').addEventListener('click', function() {
+            document.getElementById('viewComplimentModal').classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('viewComplimentModal')) {
+                document.getElementById('viewComplimentModal').classList.remove('active');
+            }
+        });
+
+        // Delete functionality
+        document.querySelectorAll('.js-delete-user').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userId = this.dataset.id;
+                const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+                const row = this.closest('tr');
+                const complimentName = row.querySelector('td:first-child h4').textContent;
+
+                Swal.fire({
+                    title: 'Delete Compliment?',
+                    text: `Are you sure you want to delete ${complimentName}'s feedback?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#6c7280',
+                    confirmButtonText: 'Yes, delete',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (!result.isConfirmed) return;
+
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    fetch('/Admin/DeleteFeedbackAjax', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: `id=${userId}`
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: 'Compliment has been deleted.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+
+                            // Remove from allCompliments array
+                            const rowIndex = allCompliments.findIndex(item => item.element === row);
+                            if (rowIndex !== -1) {
+                                allCompliments.splice(rowIndex, 1);
+                            }
+
+                            // Remove row from table
+                            row.remove();
+                        } else {
+                            Swal.fire('Error', data.message || 'Failed to delete compliment', 'error');
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire('Error', 'Network error. Please try again.', 'error');
+                    });
+                });
+            });
+        });
+
+        // Apply filters on page load if there's a selected city in the filter
+        if (filterCity.value !== 'all') {
+            applyFilters();
+        }
+    });
+</script>

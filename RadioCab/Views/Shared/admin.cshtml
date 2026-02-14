@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadioCab Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/admin.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="admin-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-taxi"></i>
+                    </div>
+                    <div class="logo-text">RadioCab</div>
+                </a>
+                <div class="sidebar-toggle-btn" id="sidebarToggleBtn">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-item" data-page="dashboard">
+                    <a asp-controller="Admin" asp-action="Index" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                </div>
+
+                <div class="menu-item" data-page="city">
+                    <a asp-controller="Admin" asp-action="City_list" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-city"></i>
+                        <span class="menu-text">Cities</span>
+                    </a>
+                </div>
+
+                <!-- Services Dropdown -->
+                <div class="sidebar-dropdown">
+                    <button class="sidebar-dropdown-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-concierge-bell"></i>
+                        <span class="menu-text">Services</span>
+                        <i class="fas fa-chevron-down sidebar-dropdown-arrow"></i>
+                    </button>
+                    <ul class="dropdown-menu">                       
+                        <li>
+                            <a class="dropdown-item sidebar-dropdown-item" asp-controller="Admin" asp-action="Platform" data-page="global-services">
+                                <i class="fas fa-globe"></i>
+                                <span>Platform Services</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item sidebar-dropdown-item" asp-controller="Admin" asp-action="Service" data-page="services-manage">
+                                <i class="fas fa-cog"></i>
+                                <span>Services Manage</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Payment Dropdown -->
+                <div class="sidebar-dropdown">
+                    <button class="sidebar-dropdown-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-concierge-bell"></i>
+                        <span class="menu-text">MemberShip</span>
+                        <i class="fas fa-chevron-down sidebar-dropdown-arrow"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item sidebar-dropdown-item" asp-controller="Admin" asp-action="Member" data-page="members">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>MemberShip Plan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item sidebar-dropdown-item" asp-controller="Admin" asp-action="PaymentAmountList" data-page="paymentamount">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>MemberShip Amount</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item sidebar-dropdown-item" asp-controller="Admin" asp-action="Feature" data-page="feature">
+                                <i class="fas fa-globe"></i>
+                                <span>Features</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item sidebar-dropdown-item" asp-controller="Admin" asp-action="FeatureValue" data-page="featurevalue">
+                                <i class="fas fa-cog"></i>
+                                <span>FeatureValue</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="menu-item" data-page="paymentmethod">
+                    <a asp-controller="Admin" asp-action="PaymentMethodList" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-city"></i>
+                        <span class="menu-text">Payment Method</span>
+                    </a>
+                </div>
+
+                <div class="menu-item" data-page="companies">
+                    <a asp-controller="Admin" asp-action="CompanyManage" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-building"></i>
+                        <span class="menu-text">Companies</span>
+                    </a>
+                </div>
+
+                <div class="menu-item" data-page="faqs">
+                    <a asp-controller="Admin" asp-action="Faqs" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-handshake"></i>
+                        <span class="menu-text">Faqs</span>
+                    </a>
+                </div>
+
+                <div class="menu-item" data-page="drivers">
+                    <a asp-controller="Admin" asp-action="DriverManage" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-users"></i>
+                        <span class="menu-text">Drivers</span>
+                    </a>
+                </div>
+
+                <div class="menu-item" data-page="ads">
+                    <a asp-controller="Admin" asp-action="Ads" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-ad"></i>
+                        <span class="menu-text">Advertisements</span>
+                    </a>
+                </div>
+
+                <div class="menu-item" data-page="payments">
+                    <a asp-controller="Admin" asp-action="PaymentManage" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-credit-card"></i>
+                        <span class="menu-text">Payments</span>
+                    </a>
+                </div>
+
+                <!-- Feedback Dropdown -->
+                <div class="sidebar-dropdown">
+                    <button class="sidebar-dropdown-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-comments"></i>
+                        <span class="menu-text">Feedback</span>
+                        <i class="fas fa-chevron-down sidebar-dropdown-arrow"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item sidebar-dropdown-item" asp-controller="Admin" asp-action="Complain" data-page="complaints">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>Complaints</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item sidebar-dropdown-item" asp-controller="Admin" asp-action="Suggestion" data-page="suggestions">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Suggestions</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item sidebar-dropdown-item" asp-controller="Admin" asp-action="Feedback" data-page="compliments">
+                                <i class="fas fa-star"></i>
+                                <span>Compliments</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="menu-item" data-page="user">
+                    <a asp-controller="Admin" asp-action="UsersManage" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-user-friends"></i>
+                        <span class="menu-text">Users</span>
+                    </a>
+                </div>
+
+                <div class="menu-item" data-page="cf">
+                    <a asp-controller="Admin" asp-action="Companyfeedback" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-user-friends"></i>
+                        <span class="menu-text">Companyfeedback</span>
+                    </a>
+                </div>
+                <div class="menu-item" data-page="df">
+                    <a asp-controller="Admin" asp-action="Driverfeedback" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-user-friends"></i>
+                        <span class="menu-text">Driverfeedback</span>
+                    </a>
+                </div>
+
+                <div class="menu-item" data-page="job">
+                    <a asp-controller="Admin" asp-action="JobVacancyManagement" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-cog"></i>
+                        <span class="menu-text">Job Vaccany</span>
+                    </a>
+                </div>
+                <div class="menu-item" data-page="logout">
+                    <a asp-controller="Account" asp-action="Logout" class="d-flex align-items-center gap-3 text-decoration-none text-white w-100">
+                        <i class="fas fa-sign-out-alt"></i> 
+                        <span class="menu-text">Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+
+        <div class="main-content" id="mainContent">
+            <div class="top-header">
+                <div class="header-left">
+                    <div class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <div class="header-left-content">
+                        <h1>@ViewData["Title"]</h1>
+                        <p>@ViewData["Subtitle"]</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="date-display">
+                        <i class="far fa-calendar-alt"></i>
+                        <span id="currentDate"></span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar">A</div>
+                        <div class="user-name">Admin</div>
+
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="ms-3">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn ">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        }
+
+        // Initialize from localStorage
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('expanded');
+        }
+
+        sidebarToggleBtn.addEventListener('click', toggleSidebar);
+
+        menuToggle.addEventListener('click', () => {
+            if (window.innerWidth <= 991) {
+                sidebar.classList.toggle('active');
+                mobileOverlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+            } else {
+                toggleSidebar();
+            }
+        });
+
+        mobileOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            mobileOverlay.style.display = 'none';
+        });
+
+        // Initialize Bootstrap dropdowns and handle arrow rotation
+        document.querySelectorAll('.sidebar-dropdown-toggle').forEach(toggle => {
+            const dropdown = new bootstrap.Dropdown(toggle);
+            const arrow = toggle.querySelector('.sidebar-dropdown-arrow');
+
+            toggle.addEventListener('show.bs.dropdown', () => {
+                arrow.style.transform = 'rotate(180deg)';
+                toggle.classList.add('active');
+            });
+
+            toggle.addEventListener('hide.bs.dropdown', () => {
+                arrow.style.transform = 'rotate(0deg)';
+                toggle.classList.remove('active');
+            });
+        });
+
+        // Close dropdowns when sidebar is collapsed (desktop only)
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 991 && sidebar.classList.contains('collapsed')) {
+                document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                    const dropdown = bootstrap.Dropdown.getInstance(menu.previousElementSibling);
+                    if (dropdown) dropdown.hide();
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>

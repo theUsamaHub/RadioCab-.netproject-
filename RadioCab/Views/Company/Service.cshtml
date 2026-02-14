@@ -1,0 +1,84 @@
+﻿@model RadioCab.Models.CompanyServiceVM
+
+@{
+    ViewData["Title"] = "Service";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+
+
+<div class="services-container">
+    <div class="services-header">
+        <h2 class="services-title"><i class="fas fa-cogs me-2"></i>Services Management</h2>
+    </div>
+
+    <div class="row services-row g-4">
+        <!-- Form Column -->
+        <div class="col-lg-5 col-xl-4 form-column">
+            <div class="service-form">
+                <h5 class="mb-4" style="color: var(--primary);">
+                    <i class="fas fa-edit me-2"></i>Add/Edit Service
+                </h5>
+
+                <form asp-action="Service" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <label class="form-label">Select Service *</label>
+                    <select asp-for="Input.SelectedServiceId"
+                            asp-items="@(new SelectList(Model.AvailableServices, "ServiceId", "ServiceName"))"
+                            class="form-select">
+
+                        <option value="">-- Select Service --</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary-custom w-100 mt-3">
+                        Add Service
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Table Column -->
+        <div class="col-lg-7 col-xl-8 table-column">
+            <div class="services-table-container">
+                @if (TempData["added"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["added"]
+                    </div>
+                }
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Service Name</th>
+                                <th style="width: 40%;">Description</th>
+                                <th style="width: 15%;">Status</th>
+                                <th style="width: 20%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.CompanyServices)
+                            {
+                                <tr>
+                                    <td>@item.Service.ServiceName</td>
+                                    <td>@item.Service.ServiceDescription</td> <!-- now valid -->
+                                    <td>
+                                        <span class="badge bg-success">Active</span>
+                                    </td>
+                                    <td>
+                                        <a asp-action="DelSer" asp-route-id="@item.CompanyServiceId" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

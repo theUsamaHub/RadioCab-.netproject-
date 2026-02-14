@@ -1,0 +1,869 @@
+﻿@model RadioCab.Models.FaqVM
+@{
+    ViewData["Title"] = "FAQ Management";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<style>
+    /* FAQ Management Styles */
+    .faq-management {
+        padding: 0;
+        max-width: 100%;
+        background-color: var(--light-gray);
+        min-height: calc(100vh - var(--header-height));
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 20px 20px 15px;
+        background-color: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+
+        .page-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .page-header h2 i {
+                color: var(--orange);
+            }
+
+        .page-header .btn-add-faq {
+            background: linear-gradient(135deg, var(--orange), #ff7b00);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(252, 163, 17, 0.2);
+        }
+
+            .page-header .btn-add-faq:hover {
+                background: linear-gradient(135deg, var(--orange-hover), #e68a00);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(252, 163, 17, 0.3);
+            }
+
+    /* Success Message */
+    .alert-success {
+        background-color: #d1e7dd;
+        border: 1px solid #badbcc;
+        color: #0f5132;
+        padding: 12px 20px;
+        border-radius: var(--border-radius);
+        margin: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: fadeIn 0.3s ease;
+    }
+
+        .alert-success i {
+            color: #0f5132;
+        }
+
+    /* Form Container */
+    .faq-form-container {
+        background-color: var(--white);
+        border-radius: var(--border-radius);
+        padding: 25px;
+        margin: 20px;
+        box-shadow: var(--box-shadow);
+        border: 1px solid var(--medium-gray);
+        display: none;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+    }
+
+        .faq-form-container.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--medium-gray);
+    }
+
+        .form-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .form-header h3 i {
+                color: var(--orange);
+            }
+
+        .form-header .btn-close-form {
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-size: 20px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+            .form-header .btn-close-form:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+                color: #dc3545;
+            }
+
+    /* Form Styles */
+    .faq-form {
+        display: grid;
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-blue);
+            font-size: 14px;
+        }
+
+            .form-group label.required::after {
+                content: " *";
+                color: #dc3545;
+            }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            background-color: var(--white);
+            font-family: inherit;
+        }
+
+            .form-group input:focus,
+            .form-group textarea:focus {
+                border-color: var(--orange);
+                box-shadow: 0 0 0 0.25rem rgba(252, 163, 17, 0.25);
+                outline: none;
+            }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+    .text-danger {
+        display: block;
+        font-size: 13px;
+        margin-top: 5px;
+        min-height: 20px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        padding-top: 20px;
+        border-top: 1px solid var(--medium-gray);
+        margin-top: 10px;
+    }
+
+        .form-actions button {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-actions .btn-submit {
+            background: linear-gradient(135deg, var(--dark-blue), var(--dark-blue-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(20, 33, 61, 0.15);
+        }
+
+            .form-actions .btn-submit:hover {
+                background: linear-gradient(135deg, #1a274b, #243056);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(20, 33, 61, 0.25);
+            }
+
+        .form-actions .btn-cancel {
+            background-color: var(--light-gray);
+            color: #6c757d;
+            border: 1px solid var(--medium-gray);
+        }
+
+            .form-actions .btn-cancel:hover {
+                background-color: #e9ecef;
+                color: #495057;
+            }
+
+    /* FAQ List Container */
+    .faq-list-container {
+        background-color: var(--white);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+        border: 1px solid var(--medium-gray);
+        margin: 20px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .faq-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+    }
+
+        .faq-table thead {
+            background: linear-gradient(135deg, var(--dark-blue), var(--dark-blue-light));
+        }
+
+        .faq-table th {
+            padding: 16px 20px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+            .faq-table th:first-child {
+                border-top-left-radius: var(--border-radius);
+            }
+
+            .faq-table th:last-child {
+                border-top-right-radius: var(--border-radius);
+            }
+
+        .faq-table tbody tr {
+            border-bottom: 1px solid var(--medium-gray);
+            transition: all 0.2s ease;
+        }
+
+            .faq-table tbody tr:hover {
+                background-color: rgba(252, 163, 17, 0.05);
+            }
+
+            .faq-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+        .faq-table td {
+            padding: 16px 20px;
+            color: var(--dark-blue);
+            font-size: 14px;
+            vertical-align: top;
+        }
+
+    .question-cell {
+        font-weight: 500;
+        color: var(--dark-blue);
+    }
+
+    .answer-cell {
+        color: #6c757d;
+        line-height: 1.5;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+    .btn-edit {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: #3498db;
+    }
+
+        .btn-edit:hover {
+            background-color: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .btn-delete {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+    }
+
+        .btn-delete:hover {
+            background-color: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 64px;
+            color: var(--medium-gray);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        .empty-state p {
+            font-size: 15px;
+            margin: 0;
+        }
+
+    /* Animation */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+    /* Ensure validation errors are visible */
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+        font-size: 13px;
+        margin-top: 5px;
+        min-height: 20px;
+        display: block;
+    }
+
+    /* Keep form visible when there are errors */
+    .faq-form-container.has-errors {
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+    /* Responsive Design */
+    /* @@media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+                .page-header .btn-add-faq {
+                    align-self: flex-start;
+                }
+
+            .faq-form-container,
+            .faq-list-container,
+            .page-header {
+                margin: 15px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+                .form-actions button {
+                    width: 100%;
+                }
+
+            .faq-table th,
+            .faq-table td {
+                padding: 12px 15px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .faq-table {
+                min-width: 100%;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 32px;
+                height: 32px;
+            }
+        } */
+</style>
+
+<div class="faq-management">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>
+            <i class="fas fa-question-circle"></i>
+            FAQ Management
+        </h2>
+        <button type="button" class="btn-add-faq" id="btnAddFaq">
+            <i class="fas fa-plus-circle"></i> Add New FAQ
+        </button>
+    </div>
+
+    <!-- Success Message -->
+    @if (TempData["faqSuccessMessage"] != null)
+    {
+        <div class="alert-success">
+            <i class="fas fa-check-circle"></i>
+            @TempData["faqSuccessMessage"]
+        </div>
+    }
+
+    <!-- FAQ Form (Initially Hidden) -->
+    <div class="faq-form-container @(ViewBag.ShowForm != null && ViewBag.ShowForm ? "show" : "")" id="faqFormContainer">
+        <div class="form-header">
+            <h3 id="formTitle">
+                <i class="fas fa-plus-circle"></i>
+                Add New FAQ
+            </h3>
+            <button type="button" class="btn-close-form" id="btnCloseForm">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form class="faq-form" id="faqForm" asp-action="Faqs" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="faqform.FaqId" id="faqId" />
+
+            <div class="form-group">
+                <label for="Question" class="required">Question</label>
+                <input type="text" id="Question" asp-for="faqform.Question"
+                       class="form-control @(ViewData.ModelState["faqform.Question"]?.Errors.Any() == true ? "is-invalid" : "")"
+                       placeholder="Enter your question here..."
+                       maxlength="300" />
+                <span asp-validation-for="faqform.Question" class="text-danger"></span>
+                <small class="text-muted">Maximum 300 characters</small>
+            </div>
+
+            <div class="form-group">
+                <label for="Answer" class="required">Answer</label>
+                <textarea id="Answer" asp-for="faqform.Answer"
+                          class="form-control @(ViewData.ModelState["faqform.Answer"]?.Errors.Any() == true ? "is-invalid" : "")"
+                          placeholder="Enter the answer here..."
+                          rows="4"></textarea>
+                <span asp-validation-for="faqform.Answer" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" id="btnCancel">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn-submit" id="btnSubmit">
+                    <i class="fas fa-save"></i> Save FAQ
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- FAQ List -->
+    <div class="faq-list-container">
+        @if (!Model.faqlist.Any())
+        {
+            <div class="empty-state">
+                <i class="fas fa-question-circle"></i>
+                <h3>No FAQs Found</h3>
+                <p>Add your first FAQ by clicking the "Add New FAQ" button</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="faq-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Question</th>
+                            <th style="width: 50%;">Answer</th>
+                            <th style="width: 10%;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var faq in Model.faqlist)
+                        {
+                            <tr>
+                                <td class="question-cell">@faq.Question</td>
+                                <td class="answer-cell">@faq.Answer</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button type="button" class="btn-action btn-edit js-edit-faq"
+                                                data-id="@faq.FaqId"
+                                                data-question="@faq.Question"
+                                                data-answer="@faq.Answer"
+                                                title="Edit FAQ">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn-action btn-delete js-delete-faq"
+                                                data-id="@faq.FaqId"
+                                                title="Delete FAQ">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Anti-Forgery Token for AJAX -->
+<form id="antiForgeryForm" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+
+               document.addEventListener('DOMContentLoaded', function() {
+        // Set active navigation
+        document.querySelector('[data-page="faqs"]').classList.add('active');
+    });
+
+
+
+    $(document).ready(function () {
+        // Elements
+        const formContainer = $('#faqFormContainer');
+        const btnAddFaq = $('#btnAddFaq');
+        const btnCloseForm = $('#btnCloseForm');
+        const btnCancel = $('#btnCancel');
+        const faqForm = $('#faqForm');
+        const formTitle = $('#formTitle');
+        const btnSubmit = $('#btnSubmit');
+        const faqId = $('#faqId');
+        const questionInput = $('#Question');
+        const answerInput = $('#Answer');
+
+        // Track if we're in validation error state
+        let isValidationErrorState = false;
+
+        // Check if there are server-side validation errors on page load
+        function checkServerValidationErrors() {
+            // Check if Question has server-side error
+            const questionError = $('#Question').next('.text-danger');
+            const hasQuestionError = questionError.text().trim() !== '';
+
+            // Check if Answer has server-side error
+            const answerError = $('#Answer').next('.text-danger');
+            const hasAnswerError = answerError.text().trim() !== '';
+
+            // Check if there's a duplicate question error
+            const modelStateError = $('.text-danger').filter(function() {
+                return $(this).text().includes('already exists');
+            });
+            const hasDuplicateError = modelStateError.length > 0;
+
+            // Check if any validation errors exist in ModelState
+            const hasModelStateErrors = @((ViewData.ModelState?.ErrorCount ?? 0) > 0 ? "true" : "false");
+
+            // Set the validation error state
+            isValidationErrorState = hasQuestionError || hasAnswerError || hasDuplicateError || hasModelStateErrors;
+
+            // If there are server errors, show the form
+            if (isValidationErrorState) {
+                showForm();
+            }
+        }
+
+        // Call this on page load
+        checkServerValidationErrors();
+
+        // Show form for adding new FAQ
+        btnAddFaq.on('click', function () {
+            // Always allow add button to work, even if there were previous errors
+            resetForm(true); // Force reset
+            showForm();
+            isValidationErrorState = false; // Reset error state
+        });
+
+        // Close form
+        btnCloseForm.on('click', function() {
+            // Allow closing even with validation errors
+            hideForm();
+            isValidationErrorState = false; // Reset error state
+        });
+
+        btnCancel.on('click', function() {
+            // Allow canceling even with validation errors
+            hideForm();
+            isValidationErrorState = false; // Reset error state
+        });
+
+        // Edit FAQ
+        $(document).on('click', '.js-edit-faq', function () {
+            const id = $(this).data('id');
+            const question = $(this).data('question');
+            const answer = $(this).data('answer');
+
+            // Fill form with data
+            faqId.val(id);
+            questionInput.val(question);
+            answerInput.val(answer);
+
+            // Update UI
+            formTitle.html('<i class="fas fa-edit"></i> Edit FAQ');
+            btnSubmit.html('<i class="fas fa-save"></i> Update FAQ');
+
+            // Clear any previous validation errors
+            clearValidationErrors();
+
+            // Reset validation state
+            isValidationErrorState = false;
+
+            // Show form
+            showForm();
+        });
+
+        // Delete FAQ with confirmation
+        $(document).on('click', '.js-delete-faq', function () {
+            const id = $(this).data('id');
+            const token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This FAQ will be permanently deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    // Send delete request
+                    $.ajax({
+                        url: '/Admin/DeleteFaqAjax',
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': token
+                        },
+                        data: { id: id },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: 'FAQ has been deleted.',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+
+                                // Remove row from table
+                                $(`.js-delete-faq[data-id="${id}"]`).closest('tr').fadeOut(300, function () {
+                                    $(this).remove();
+
+                                    // Check if table is empty
+                                    if ($('.faq-table tbody tr').length === 0) {
+                                        location.reload(); // Reload to show empty state
+                                    }
+                                });
+                            } else {
+                                Swal.fire('Error', response.message || 'Failed to delete FAQ', 'error');
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Form validation on submit - client side
+        faqForm.on('submit', function (e) {
+            // Clear previous validation
+            clearValidationErrors();
+
+            let isValid = true;
+
+            // Client-side validation
+            if (!questionInput.val().trim()) {
+                showValidationError(questionInput, 'Question is required');
+                isValid = false;
+            } else if (questionInput.val().trim().length > 300) {
+                showValidationError(questionInput, 'Question must be less than 300 characters');
+                isValid = false;
+            }
+
+            if (!answerInput.val().trim()) {
+                showValidationError(answerInput, 'Answer is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault(); // Prevent form submission
+                showForm(); // Ensure form is visible
+                isValidationErrorState = true; // Set error state
+            } else {
+                isValidationErrorState = false; // Reset error state if form is valid
+            }
+
+            return isValid;
+        });
+
+        // Helper functions
+        function showForm() {
+            formContainer.addClass('show');
+            // Scroll to form only if it's not already visible
+            if (!formContainer.is(':visible')) {
+                $('html, body').animate({
+                    scrollTop: formContainer.offset().top - 100
+                }, 300);
+            }
+        }
+
+        function hideForm() {
+            formContainer.removeClass('show');
+            resetForm(false); // Don't force reset
+        }
+
+        function resetForm(forceReset) {
+            // Reset form if not in validation error state OR if force reset is true
+            if (!isValidationErrorState || forceReset) {
+                faqForm[0].reset();
+                faqId.val('0');
+                formTitle.html('<i class="fas fa-plus-circle"></i> Add New FAQ');
+                btnSubmit.html('<i class="fas fa-save"></i> Save FAQ');
+                clearValidationErrors();
+                isValidationErrorState = false; // Reset error state
+            }
+        }
+
+        function clearValidationErrors() {
+            // Clear all validation errors (client-side)
+            $('.text-danger').each(function() {
+                $(this).text('');
+            });
+
+            // Remove invalid class from all fields
+            $('.is-invalid').removeClass('is-invalid');
+
+            // If we're in server-side validation error state, don't clear server errors
+            if (isValidationErrorState && @((ViewData.ModelState?.ErrorCount ?? 0) > 0 ? "true" : "false")) {
+                // Re-apply server-side validation errors
+                setTimeout(() => {
+                    // Check for question error
+                    if ('@(ViewData.ModelState["faqform.Question"]?.Errors.Any() == true)' === 'True') {
+                        questionInput.addClass('is-invalid');
+                        questionInput.next('.text-danger').text('@Html.Raw(ViewData.ModelState["faqform.Question"]?.Errors.FirstOrDefault()?.ErrorMessage)');
+                    }
+
+                    // Check for answer error
+                    if ('@(ViewData.ModelState["faqform.Answer"]?.Errors.Any() == true)' === 'True') {
+                        answerInput.addClass('is-invalid');
+                        answerInput.next('.text-danger').text('@Html.Raw(ViewData.ModelState["faqform.Answer"]?.Errors.FirstOrDefault()?.ErrorMessage)');
+                    }
+
+                    // Check for duplicate question error
+                    if ('@(ViewData.ModelState["faqform.Question"]?.Errors.Any(e => e.ErrorMessage.Contains("already exists")) == true)' === 'True') {
+                        questionInput.addClass('is-invalid');
+                        const duplicateError = $('.text-danger').filter(function() {
+                            return $(this).text().includes('already exists');
+                        });
+                        if (duplicateError.length > 0) {
+                            duplicateError.show();
+                        }
+                    }
+                }, 10);
+            }
+        }
+
+        function showValidationError(inputElement, message) {
+            inputElement.addClass('is-invalid');
+            inputElement.next('.text-danger').text(message);
+        }
+
+        // Auto-hide success message after 5 seconds
+        setTimeout(function () {
+            $('.alert-success').fadeOut(300);
+        }, 5000);
+
+        // Close success message on click
+        $('.alert-success').on('click', function () {
+            $(this).fadeOut(300);
+        });
+    });
+    </script>

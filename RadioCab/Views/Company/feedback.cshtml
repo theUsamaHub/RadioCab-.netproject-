@@ -1,0 +1,304 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+
+
+@{
+    ViewData["Title"] = "Customer Feedback";
+    var feedbacks = ViewBag.Feedbacks as List<CompanyFeedback>;
+    var averageRating = ViewBag.AverageRating;
+    var totalFeedbacks = ViewBag.TotalFeedbacks;
+    var ratingDistribution = ViewBag.RatingDistribution as Dictionary<int, int>;
+    var ratingPercentages = ViewBag.RatingPercentages as Dictionary<int, double>;
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0">Customer Feedback</h1>
+            <p class="text-muted">View feedback from your customers</p>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row mb-4">
+        <!-- Average Rating Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Average Rating
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @averageRating <small class="h6">/ 5</small>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-star fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Feedbacks Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Feedbacks
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@totalFeedbacks</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5 Star Ratings Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                5 Star Ratings
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @(ratingDistribution != null && ratingDistribution.ContainsKey(5) ? ratingDistribution[5] : 0)
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-thumbs-up fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Recent Activity
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @if (feedbacks != null && feedbacks.Any())
+                                {
+                                    var latest = feedbacks.First();
+                                    <small>@latest.CreatedAt?.ToString("MMM dd")</small>
+                                }
+                                else
+                                {
+                                    <small>No activity</small>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Distribution Chart -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Rating Distribution</h6>
+                </div>
+                <div class="card-body">
+                    @if (ratingDistribution != null && totalFeedbacks > 0)
+                    {
+                        for (int i = 5; i >= 1; i--)
+                        {
+                            var count = ratingDistribution.ContainsKey(i) ? ratingDistribution[i] : 0;
+                            var percentage = ratingPercentages.ContainsKey(i) ? ratingPercentages[i] : 0;
+
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <div class="text-sm font-weight-bold">
+                                        @i <i class="fas fa-star text-warning"></i>
+                                    </div>
+                                    <div class="text-sm text-gray-600">
+                                        @count (@percentage%)
+                                    </div>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-@(i >= 4 ? "success" : i == 3 ? "warning" : "danger")"
+                                         role="progressbar"
+                                         style="width: @percentage%"
+                                         aria-valuenow="@percentage"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-chart-bar fa-3x text-gray-300 mb-3"></i>
+                            <p class="text-muted">No rating data available</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Feedback Summary</h6>
+                </div>
+                <div class="card-body">
+                    @if (ratingDistribution != null)
+                    {
+                        <div class="text-center">
+                            <div class="display-4 text-primary mb-2">@averageRating</div>
+                            <div class="mb-3">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="fas fa-star @(i <= Math.Round(averageRating) ? "text-warning" : "text-gray-300")"></i>
+                                }
+                                <span class="ml-2">out of 5</span>
+                            </div>
+                            <p class="text-muted">Based on @totalFeedbacks customer feedback(s)</p>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="text-center">
+                            <div class="row">
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    var count = ratingDistribution.ContainsKey(i) ? ratingDistribution[i] : 0;
+                                    <div class="col">
+                                        <div class="h5 mb-0">@count</div>
+                                        <small class="text-muted">
+                                            @i <i class="fas fa-star @(i >= 4 ? "text-success" : i == 3 ? "text-warning" : "text-danger")"></i>
+                                        </small>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <p class="text-muted">No feedback summary available</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">All Customer Feedbacks</h6>
+                </div>
+                <div class="card-body">
+                    @if (feedbacks != null && feedbacks.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var feedback in feedbacks)
+                            {
+                                <div class="list-group-item list-group-item-action mb-3 border rounded">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <div class="mb-1">
+                                            <!-- Rating Stars -->
+                                            <div class="mb-2">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <i class="fas fa-star @(i <= feedback.Rating ? "text-warning" : "text-gray-300")"></i>
+                                                }
+                                                <span class="ml-2 text-muted">@feedback.Rating/5</span>
+                                            </div>
+
+                                            <!-- Comment -->
+                                            <p class="mb-1">@feedback.Comment</p>
+                                        </div>
+                                        <small class="text-muted">@feedback.CreatedAt?.ToString("MMM dd, yyyy")</small>
+                                    </div>
+
+                                    <!-- User Info -->
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <div class="text-muted">
+                                            <i class="fas fa-user-circle mr-1"></i>
+                                            @if (!string.IsNullOrEmpty(feedback.Name))
+                                            {
+                                                <span>@feedback.Name</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Anonymous User</span>
+                                            }
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(feedback.Email))
+                                        {
+                                            <small class="text-muted">
+                                                <i class="fas fa-envelope mr-1"></i>@feedback.Email
+                                            </small>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-comments fa-4x text-gray-300 mb-3"></i>
+                            <h4 class="text-gray-500">No Feedback Yet</h4>
+                            <p class="text-gray-500">Your customers haven't left any feedback yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add some CSS -->
+<style>
+    .progress {
+        height: 10px;
+        border-radius: 5px;
+    }
+
+    .progress-bar {
+        border-radius: 5px;
+    }
+
+    .list-group-item {
+        border: 1px solid #e3e6f0 !important;
+        transition: all 0.3s;
+    }
+
+        .list-group-item:hover {
+            background-color: #f8f9fc;
+            transform: translateY(-2px);
+            box-shadow: 0 0.15rem 0.35rem rgba(0, 0, 0, 0.1);
+        }
+</style>

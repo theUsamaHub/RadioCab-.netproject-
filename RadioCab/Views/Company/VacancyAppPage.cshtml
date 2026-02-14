@@ -1,0 +1,174 @@
+﻿@model IEnumerable<RadioCab.Models.VacancyApplication>
+@{
+    ViewData["Title"] = "VacancyAppPage";
+    Layout = "~/Views/Shared/CompanyLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Company/css/VacancyAppPage.css" asp-append-version="true" />
+<div class="container">
+    <!-- Header -->
+    <div class="header-container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2><i class="bi bi-person-lines-fill me-2" style="color: var(--accent1);"></i>Vacancy Application Management System</h2>
+                <p class="lead mb-0" style="color: black; font-size:15px;">Track and manage all job applications in one place</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-container">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="jobTypeFilter" class="form-label">Job Type</label>
+                <select class="form-select" id="jobTypeFilter">
+                    <option value="">All Job Type</option>
+                    <option value="full time">Full time</option>
+                    <option value="part time">Part Time</option>
+                    <option value="contract based">Contract based</option>
+
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="statusFilter" class="form-label">Application Status</label>
+                <select class="form-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="reviewed">Reviewed</option>
+                    <option value="shortlisted">Shortlisted</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="hired">Hired</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary w-100"><i class="bi bi-funnel me-2"></i>Apply Filters</button>
+            </div>
+        </div>
+    </div>
+    <!-- Statistics Cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <span class="stat-number">@Model.Count()</span>
+            <span class="stat-label">Total Applications</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">@Model.Count(a => a.Status == "Applied")</span>
+            <span class="stat-label">New Applications</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">@Model.Count(a => a.Status == "Shortlisted")</span>
+            <span class="stat-label">Shortlisted</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">@Model.Count(a => a.Status == "Hired")</span>
+            <span class="stat-label">Hired</span>
+        </div>
+    </div>
+    <!-- Application Table -->
+    <div class="application-table-container">
+        <div class="table-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h3 class="mb-0">Recent Applications</h3>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="input-group" style="max-width: 300px; margin-left: auto;">
+                        <input type="text" class="form-control" placeholder="Search applications...">
+                        <button class="btn btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            @if (TempData["update"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["update"]
+                </div>
+            }
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Job Type</th>
+                        <th>Applicant Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model)
+                    {
+                        <tr>
+                            <td data-label="Job Title">
+                                <div>@a.Vacancy.JobTitle</div>
+
+                            </td>
+                            <td data-label="Job Type">
+                                <span class="job-type-badge">@a.Vacancy.JobType</span>
+                            </td>
+                            <td data-label="Applicant Name">
+                                <div class="d-flex align-items-center">
+                                    <div class="applicant-avatar">@(string.Join("", a.ApplicantName.Split(' ').Select(n => n[0])))</div>
+                                    <div>@a.ApplicantName</div>
+                                </div>
+                            </td>
+                            <td data-label="Email">
+                                <a href="mailto:@a.Email" class="email-link">@a.Email</a>
+                            </td>
+                            <td data-label="Mobile">@a.MobileNo</td>
+                            <td data-label="Status">
+                                @if (a.Status == "Shortlisted")
+                                {
+                                    <span class="badge-status badge-shortlisted">Shortlisted</span>
+                                }
+                                else if (a.Status == "Reviewed")
+                                {
+                                    <span class="badge-status badge-reviewed">Reviewed</span>
+                                }
+                                else if (a.Status == "Hired")
+                                {
+                                    <span class="badge-status badge-hired">Hired</span>
+                                }
+                                else if (a.Status == "Applied")
+                                {
+                                    <span class="badge-status badge-pending">Applied</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-status badge-rejected">Rejected</span>
+                                }
+
+
+                            </td>
+                            <td data-label="Action">
+                                <a asp-action="ViewVacancyApp" asp-controller="Company" asp-route-id="@a.ApplicationId" style="text-decoration:none;">
+                                    <button class="action-btn view-btn" title="View Details"><i class="bi bi-eye me-1"></i>View</button>
+                                </a>
+
+                            </td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+
+    <!-- Footer Note -->
+    <div class="text-center text-muted mb-5" style="color: var(--neutral-light) !important;">
+        <p>Vacancy Application Management System &copy; 2023 | Streamline your hiring process</p>
+    </div>
+</div>
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/Company/js/VacancyAppPage.js" asp-append-version="true"></script>
+

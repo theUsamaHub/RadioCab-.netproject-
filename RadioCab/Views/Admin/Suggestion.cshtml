@@ -1,0 +1,361 @@
+﻿@model RadioCab.Models.CDVM
+
+@{
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+<link href="~/css/sugf.css" rel="stylesheet" />
+
+
+
+    <!-- Compact Filters -->
+    <div class="filters-card">
+        <div class="filters-header">
+            <i class="fas fa-filter"></i>
+            <h2>Filter Suggestions</h2>
+        </div>
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label for="filterCity">City</label>
+                <select id="filterCity" class="filter-select">
+                    <option value="all">All Cities</option>
+                    @foreach (var city in Model.City_list)
+                    {
+                        <option value="@city.CityName">@city.CityName</option>
+                    }
+                </select>
+            </div>   
+            <div class="filter-group filter-actions">
+                <button class="btn btn-primary" id="applyFiltersBtn">
+                    <i class="fas fa-filter"></i> Apply
+                </button>
+                <button class="btn btn-secondary" id="clearFiltersBtn">
+                    <i class="fas fa-redo"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-header-left">
+                <i class="fas fa-lightbulb"></i>
+                <h2>Suggestions List (@Model.feedback_list.Count)</h2>
+            </div>
+        </div>
+
+        <table class="table" id="suggestionsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>City</th>
+
+                    <th>Description</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="suggestionsTableBody">
+
+              <tr id="noDataRow" style="display:none;">
+                <td colspan="7" class="no-data">
+                    <i class="fas fa-inbox"></i>
+                    <div>No suggestions match your filters</div>
+                </td>
+              </tr>
+
+                @if (!Model.feedback_list.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="no-data">
+                            <i class="fas fa-inbox"></i>
+                            <div>No suggestions found</div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var s in Model.feedback_list)
+                    {
+                        <tr data-city="@s.City?.CityName"                          
+                            data-name="@s.Name.ToLower()"
+                            data-email="@s.Email?.ToLower()"
+                            data-mobile="@s.MobileNo"
+                            data-description="@s.Description?.ToLower()">
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-details">
+                                        <h4>@s.Name</h4>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@s.MobileNo</td>
+                            <td>@s.Email</td>
+                            <td>@s.City?.CityName</td>
+                            <td>
+                                <div class="description-preview" title="@s.Description">
+                                    @(s.Description?.Length > 50 ? s.Description.Substring(0, 50) + "..." : s.Description)
+                                </div>
+                            </td>
+                            <td class="date-cell">
+                                @s.CreatedAt.ToString("dd MMM")
+                                <div style="font-size:11px;color:#999;">@s.CreatedAt.ToString("hh:mm tt")</div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-view" title="View" data-id="@s.FeedbackId">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                <a href="javascript:void(0);" class="btn-action btn-delete js-delete-feedback"
+                                            title="Delete"
+                                            data-id="@s.FeedbackId"
+                                            data-name="@s.Name">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+<!-- Modal -->
+<div class="modal" id="viewSuggestionModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Suggestion Details</h3>
+            <button class="modal-close" id="closeViewModal">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Content loaded via JavaScript -->
+        </div>
+    </div>
+</div>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+       // suggestions-filter.js
+
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu();
+        initializeSuggestionFilters();
+        initializeSuggestionEvents();
+    });
+
+    /* ==============================
+       Navigation
+    ============================== */
+    function setActiveMenu() {
+        const nav = document.querySelector('[data-page="feedback"]');
+        if (nav) nav.classList.add('active');
+    }
+
+    /* ==============================
+       Filter Logic
+    ============================== */
+    function initializeSuggestionFilters() {
+        const applyBtn = document.getElementById('applyFiltersBtn');
+        const clearBtn = document.getElementById('clearFiltersBtn');
+        const cityDropdown = document.getElementById('filterCity');
+
+        if (applyBtn) applyBtn.addEventListener('click', applySuggestionFilters);
+        if (cityDropdown) cityDropdown.addEventListener('change', applySuggestionFilters);
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                if (cityDropdown) cityDropdown.value = 'all';
+
+                // Show all rows
+                const rows = document.querySelectorAll('#suggestionsTableBody tr[data-city]');
+                rows.forEach(r => r.style.display = '');
+
+                hideNoDataRow();
+                updateSuggestionCount();
+            });
+        }
+    }
+
+    function applySuggestionFilters() {
+        const cityFilter = document.getElementById('filterCity')?.value || 'all';
+        const rows = document.querySelectorAll('#suggestionsTableBody tr[data-city]');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const city = (row.getAttribute('data-city') || '').trim();
+
+            const cityMatch = cityFilter === 'all' || city === cityFilter;
+
+            if (cityMatch) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        updateSuggestionCount(visibleCount);
+
+        if (visibleCount === 0) {
+            showNoDataRow();
+        } else {
+            hideNoDataRow();
+        }
+    }
+
+    /* ==============================
+       No Data Handling (Safe)
+    ============================== */
+    function showNoDataRow() {
+        const row = document.getElementById('noDataRow');
+        if (row) row.style.display = '';
+    }
+
+    function hideNoDataRow() {
+        const row = document.getElementById('noDataRow');
+        if (row) row.style.display = 'none';
+    }
+
+    /* ==============================
+       Count Update
+    ============================== */
+    function updateSuggestionCount(count = null) {
+        if (count === null) {
+            count = document.querySelectorAll('#suggestionsTableBody tr[data-city]:not([style*="display: none"])').length;
+        }
+
+        const header = document.querySelector('.table-header-left h2');
+        if (header) {
+            header.textContent = `Suggestions List (${count})`;
+        }
+    }
+
+    /* ==============================
+       View + Delete Events
+    ============================== */
+    function initializeSuggestionEvents() {
+
+        document.addEventListener('click', function (e) {
+
+            // View
+            if (e.target.closest('.btn-view')) {
+                const button = e.target.closest('.btn-view');
+                const feedbackId = button.getAttribute('data-id');
+                viewSuggestion(feedbackId);
+            }
+
+            // Delete
+            if (e.target.closest('.js-delete-feedback')) {
+                const button = e.target.closest('.js-delete-feedback');
+                const feedbackId = button.getAttribute('data-id');
+                const feedbackName = button.getAttribute('data-name');
+                deleteSuggestion(feedbackId, feedbackName);
+            }
+        });
+
+        // Modal close
+        const closeBtn = document.getElementById('closeViewModal');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                document.getElementById('viewSuggestionModal')?.classList.remove('active');
+            });
+        }
+
+        const modal = document.getElementById('viewSuggestionModal');
+        if (modal) {
+            modal.addEventListener('click', function (e) {
+                if (e.target === this) this.classList.remove('active');
+            });
+        }
+
+        document.addEventListener('keydown', function (e) {
+            const modal = document.getElementById('viewSuggestionModal');
+            if (e.key === 'Escape' && modal?.classList.contains('active')) {
+                modal.classList.remove('active');
+            }
+        });
+    }
+
+    /* ==============================
+       View Suggestion
+    ============================== */
+    function viewSuggestion(feedbackId) {
+        const button = document.querySelector(`.btn-view[data-id="${feedbackId}"]`);
+        if (!button) return;
+
+        const row = button.closest('tr');
+        if (!row) return;
+
+        const name = row.cells[0]?.innerText || 'N/A';
+        const mobile = row.cells[1]?.innerText || 'N/A';
+        const email = row.cells[2]?.innerText || 'N/A';
+        const city = row.cells[3]?.innerText || 'N/A';
+
+        const descEl = row.cells[4]?.querySelector('.description-preview');
+        const description = descEl?.getAttribute('title') || descEl?.innerText || 'N/A';
+
+        const created = row.cells[5]?.innerText || 'N/A';
+
+        document.getElementById('modalBody').innerHTML = `
+            <div class="detail-row"><div class="detail-label">Name:</div><div class="detail-value">${name}</div></div>
+            <div class="detail-row"><div class="detail-label">Mobile:</div><div class="detail-value">${mobile}</div></div>
+            <div class="detail-row"><div class="detail-label">Email:</div><div class="detail-value">${email}</div></div>
+            <div class="detail-row"><div class="detail-label">City:</div><div class="detail-value">${city}</div></div>
+            <div class="detail-row"><div class="detail-label">Created:</div><div class="detail-value">${created}</div></div>
+            <div class="detail-row"><div class="detail-label">Description:</div></div>
+            <div class="detail-value description">${description}</div>
+        `;
+
+        document.getElementById('viewSuggestionModal')?.classList.add('active');
+    }
+
+    /* ==============================
+       Delete Suggestion
+    ============================== */
+    function deleteSuggestion(id, name) {
+        const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+        Swal.fire({
+            title: 'Delete Suggestion',
+            html: `<p>Delete suggestion from <strong>${name}</strong>?</p>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            confirmButtonText: 'Delete'
+        }).then(result => {
+            if (!result.isConfirmed) return;
+
+            fetch('/Admin/DeleteFeedbackAjax', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}&__RequestVerificationToken=${token}`
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const row = document.querySelector(`.js-delete-feedback[data-id="${id}"]`)?.closest('tr');
+                    if (row) row.remove();
+
+                    updateSuggestionCount();
+
+                    const remaining = document.querySelectorAll('#suggestionsTableBody tr[data-city]');
+                    if (remaining.length === 0) showNoDataRow();
+
+                    Swal.fire({ icon: 'success', title: 'Deleted', timer: 1200, showConfirmButton: false });
+                }
+                else {
+                    Swal.fire('Error', data.message || 'Delete failed', 'error');
+                }
+            });
+        });
+    }
+
+</script>

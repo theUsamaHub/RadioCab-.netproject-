@@ -1,0 +1,1033 @@
+﻿
+/* Company Management Specific Styles */
+.company-management-page {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Page Header */
+.page-header {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+    .page-header h2 {
+        color: var(--dark-blue);
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .page-header p {
+        color: #666;
+        font-size: 14px;
+        margin: 0;
+    }
+
+/* Company Actions Bar */
+.company-actions-bar {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+    .search-box i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+        font-size: 16px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+        background: var(--light-gray);
+    }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(252, 163, 17, 0.1);
+        }
+
+.action-buttons-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Filter Dropdowns */
+.status-filter,
+.membership-filter {
+    position: relative;
+}
+
+.status-select,
+.membership-select {
+    padding: 12px 40px 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--dark-blue);
+    background: var(--white);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    min-width: 160px;
+    transition: all 0.3s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2314213d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+}
+
+    .status-select:focus,
+    .membership-select:focus {
+        outline: none;
+        border-color: var(--orange);
+        box-shadow: 0 0 0 3px rgba(252, 163, 17, 0.1);
+    }
+
+    .status-select:hover,
+    .membership-select:hover {
+        border-color: var(--dark-blue);
+    }
+
+/* Buttons */
+.btn {
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: var(--orange);
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: #e69500;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(252, 163, 17, 0.3);
+    }
+
+.btn-outline {
+    background: transparent;
+    color: var(--dark-blue);
+    border: 1px solid #ddd;
+}
+
+    .btn-outline:hover {
+        background: var(--light-gray);
+        border-color: var(--dark-blue);
+    }
+
+/* Companies Table Container */
+.companies-table-container {
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 100%;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+}
+
+    .table-wrapper::after {
+        content: '↔ Scroll horizontally';
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        color: var(--orange);
+        font-size: 12px;
+        opacity: 0.7;
+        z-index: 1;
+        display: none;
+    }
+
+.companies-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1300px;
+}
+
+    .companies-table thead {
+        background: #f8f9fa;
+        border-bottom: 2px solid #eee;
+    }
+
+    .companies-table th {
+        padding: 16px 15px;
+        text-align: left;
+        font-weight: 600;
+        color: var(--dark-blue);
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .companies-table tbody tr {
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.3s ease;
+    }
+
+        .companies-table tbody tr:hover {
+            background: rgba(252, 163, 17, 0.05);
+        }
+
+    .companies-table td {
+        padding: 15px;
+        color: #333;
+        font-size: 14px;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+/* Checkbox Styling */
+.select-all, .company-select {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--orange);
+}
+
+/* Company Info Cell */
+.company-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 200px;
+}
+
+.company-avatar-sm {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--orange);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.company-details strong {
+    display: block;
+    font-weight: 500;
+    color: var(--dark-blue);
+    margin-bottom: 2px;
+}
+
+.company-details small {
+    color: #999;
+    font-size: 12px;
+}
+
+/* Designation Cell */
+.companies-table td:nth-child(3) { /* Designation column */
+    min-width: 150px;
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* Contact Information */
+.companies-table td:nth-child(4), /* Telephone */
+.companies-table td:nth-child(5) { /* Fax Number */
+    min-width: 120px;
+}
+
+.companies-table td:nth-child(6) { /* Email */
+    min-width: 180px;
+    word-break: break-all;
+}
+
+.companies-table td:nth-child(7) { /* City */
+    min-width: 100px;
+}
+
+/* Logo Preview */
+.logo-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 100px;
+}
+
+.logo-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    background: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark-blue);
+    font-size: 20px;
+    border: 1px dashed #ddd;
+}
+
+.logo-preview small {
+    color: var(--orange);
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+    .logo-preview small:hover {
+        color: #e69500;
+        text-decoration: underline;
+    }
+
+/* Certificate Link */
+.certificate-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--dark-blue);
+    min-width: 140px;
+}
+
+    .certificate-link i {
+        color: #e74c3c;
+        font-size: 18px;
+    }
+
+    .certificate-link span {
+        font-size: 13px;
+        color: #666;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .certificate-link:hover span {
+        color: var(--orange);
+    }
+
+/* Membership ID */
+.membership-id {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 100px;
+    text-align: center;
+}
+
+    .membership-id.premium {
+        background: rgba(155, 89, 182, 0.1);
+        color: #9b59b6;
+        border: 1px solid rgba(155, 89, 182, 0.2);
+    }
+
+    .membership-id.gold {
+        background: rgba(241, 196, 15, 0.1);
+        color: #f1c40f;
+        border: 1px solid rgba(241, 196, 15, 0.2);
+    }
+
+    .membership-id.silver {
+        background: rgba(189, 195, 199, 0.1);
+        color: #bdc3c7;
+        border: 1px solid rgba(189, 195, 199, 0.2);
+    }
+
+    .membership-id.basic {
+        background: rgba(52, 152, 219, 0.1);
+        color: #3498db;
+        border: 1px solid rgba(52, 152, 219, 0.2);
+    }
+.membership-id.free {
+    background: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+    .status-badge.active {
+        background: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+    }
+
+    .status-badge.pending {
+        background: rgba(241, 196, 15, 0.1);
+        color: #f1c40f;
+    }
+
+    .status-badge.rejected {
+        background: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+    }
+
+    .status-badge.inactive {
+        background: rgba(149, 165, 166, 0.1);
+        color: #95a5a6;
+    }
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    min-width: 160px;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-action.view:hover {
+        background: rgba(52, 152, 219, 0.1);
+        color: #3498db;
+    }
+
+    .btn-action.edit:hover {
+        background: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+    }
+
+    .btn-action.suspend:hover,
+    .btn-action.verify:hover {
+        background: rgba(241, 196, 15, 0.1);
+        color: #f1c40f;
+    }
+
+    .btn-action.delete:hover {
+        background: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+    }
+
+/* Table Footer */
+.table-footer {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.showing-count {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+
+/* RESPONSIVE STYLES - Pure CSS Media Queries */
+
+/* Large Desktop: 1200px and above */
+@media screen and (min-width: 1200px) {
+    .company-actions-bar {
+        padding: 20px 25px;
+    }
+
+    .companies-table th,
+    .companies-table td {
+        padding: 16px 20px;
+    }
+}
+
+/* Desktop: 992px to 1199px */
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+    .search-box {
+        min-width: 280px;
+        max-width: 400px;
+    }
+
+    .companies-table {
+        min-width: 1200px;
+    }
+
+        .companies-table th,
+        .companies-table td {
+            padding: 14px 16px;
+            font-size: 13.5px;
+        }
+
+    .status-select,
+    .membership-select {
+        min-width: 140px;
+    }
+}
+
+/* Tablet Landscape: 768px to 991px */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .company-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .search-box {
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .action-buttons-container {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .status-filter,
+    .membership-filter {
+        min-width: 160px;
+    }
+
+    .companies-table {
+        min-width: 1150px;
+    }
+
+        .companies-table th,
+        .companies-table td {
+            padding: 12px 14px;
+            font-size: 13.5px;
+        }
+
+    .company-avatar-sm {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .logo-placeholder {
+        width: 45px;
+        height: 45px;
+    }
+
+    .action-buttons {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .btn-action {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+    }
+
+    .table-wrapper::after {
+        display: block;
+    }
+}
+
+/* Tablet Portrait: 600px to 767px */
+@media screen and (min-width: 600px) and (max-width: 767px) {
+    .page-header {
+        padding: 18px;
+    }
+
+        .page-header h2 {
+            font-size: 20px;
+        }
+
+    .company-actions-bar {
+        padding: 18px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .action-buttons-container {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .status-filter,
+    .membership-filter {
+        width: 100%;
+    }
+
+    .status-select,
+    .membership-select {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+        justify-content: center;
+    }
+
+    .companies-table {
+        min-width: 1100px;
+    }
+
+        .companies-table th,
+        .companies-table td {
+            padding: 12px;
+            font-size: 13px;
+        }
+
+    .company-avatar-sm {
+        width: 34px;
+        height: 34px;
+    }
+
+    .logo-placeholder {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .action-buttons {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .btn-action {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .membership-id,
+    .status-badge {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+
+    .table-footer {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+        padding: 18px;
+    }
+
+    .table-wrapper::after {
+        display: block;
+    }
+}
+
+/* Mobile Large: 480px to 599px */
+@media screen and (max-width: 599px) {
+    .company-management-page {
+        padding: 0 8px;
+    }
+
+
+
+    .search-box {
+        width: 100%;
+    }
+
+        .search-box input {
+            padding: 10px 15px 10px 40px;
+            font-size: 13.5px;
+        }
+
+    .action-buttons-container {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .status-filter,
+    .membership-filter {
+        width: 100%;
+    }
+
+    .status-select,
+    .membership-select {
+        width: 100%;
+        min-width: 100%;
+        padding: 10px 40px 10px 15px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+        justify-content: center;
+    }
+
+    .companies-table-container {
+        border-radius: 6px;
+    }
+
+    .companies-table {
+        min-width: 1050px;
+        font-size: 13px;
+    }
+
+        .companies-table th,
+        .companies-table td {
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+
+    .company-info {
+        gap: 8px;
+        min-width: 180px;
+    }
+
+    .company-avatar-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .company-details strong {
+        font-size: 13px;
+    }
+
+    .company-details small {
+        font-size: 11px;
+    }
+
+    .logo-placeholder {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+
+    .certificate-link {
+        gap: 6px;
+    }
+
+        .certificate-link i {
+            font-size: 16px;
+        }
+
+        .certificate-link span {
+            font-size: 12px;
+        }
+
+    .action-buttons {
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 140px;
+    }
+
+    .btn-action {
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
+    }
+
+    .membership-id,
+    .status-badge {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    .table-footer {
+        padding: 16px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    .table-wrapper::after {
+        display: block;
+        font-size: 11px;
+        right: 5px;
+        top: 5px;
+    }
+}
+
+/* Mobile Small: 320px to 479px */
+@media screen and (max-width: 479px) {
+    .company-management-page {
+        padding: 0 6px;
+    }
+
+    .page-header {
+        padding: 14px;
+    }
+
+        .page-header h2 {
+            font-size: 17px;
+        }
+
+        .page-header p {
+            font-size: 12px;
+        }
+
+    .company-actions-bar {
+        padding: 14px;
+    }
+
+    .search-box input {
+        padding: 9px 15px 9px 38px;
+        font-size: 13px;
+    }
+
+    .search-box i {
+        left: 12px;
+        font-size: 14px;
+    }
+
+    .status-select,
+    .membership-select {
+        padding: 9px 40px 9px 15px;
+        font-size: 13px;
+    }
+
+    .btn {
+        padding: 11px;
+        font-size: 13.5px;
+    }
+
+    .companies-table {
+        min-width: 1000px;
+        font-size: 12.5px;
+    }
+
+        .companies-table th,
+        .companies-table td {
+            padding: 8px 10px;
+            font-size: 12.5px;
+        }
+
+    .company-avatar-sm {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .company-details strong {
+        font-size: 12.5px;
+    }
+
+    .company-details small {
+        font-size: 10px;
+    }
+
+    .logo-placeholder {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .logo-preview small {
+        font-size: 11px;
+    }
+
+    .certificate-link {
+        min-width: 110px;
+    }
+
+        .certificate-link i {
+            font-size: 14px;
+        }
+
+        .certificate-link span {
+            font-size: 11px;
+        }
+
+    .action-buttons {
+        gap: 4px;
+        min-width: 120px;
+    }
+
+    .btn-action {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+    }
+
+    .table-footer {
+        padding: 14px;
+    }
+
+    .showing-count,
+    .pagination-info {
+        font-size: 12.5px;
+    }
+
+    .pagination-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .table-wrapper::after {
+        content: '↔';
+        font-size: 10px;
+        right: 5px;
+        top: 5px;
+    }
+}
+
+/* Extra Small Mobile: Below 320px */
+@media screen and (max-width: 319px) {
+    .page-header h2 {
+        font-size: 16px;
+    }
+
+    .search-box input {
+        font-size: 12.5px;
+    }
+
+    .status-select,
+    .membership-select {
+        font-size: 12.5px;
+    }
+
+    .btn {
+        font-size: 13px;
+    }
+
+    .companies-table th,
+    .companies-table td {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+
+    .company-info {
+        gap: 6px;
+    }
+
+    .company-avatar-sm {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+}
+
+
+/* Add these styles to your existing CSS */
+/*.search-filter {
+    flex: 1;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}*/
+
+.btn-reset-filters {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.3s;
+}
+
+    .btn-reset-filters:hover {
+        background: #5a6268;
+    }
+
+.action-buttons-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+#filterResults {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+    .action-buttons-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-filter {
+        max-width: 100%;
+    }
+}
+

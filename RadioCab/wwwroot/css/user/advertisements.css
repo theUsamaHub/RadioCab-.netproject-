@@ -1,0 +1,229 @@
+﻿/**
+ * Advertisements Page Styles
+ */
+
+/* ===============================
+   FILTER AND SORT CONTROLS
+   =============================== */
+.filter-section {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.sorting-controls {
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+}
+
+.sort-select {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.3s ease;
+    background: white url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") no-repeat right 0.75rem center/16px 12px;
+    appearance: none;
+    cursor: pointer;
+}
+
+    .sort-select:focus {
+        border-color: #ffc107;
+        box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+        outline: none;
+    }
+
+.sort-label {
+    color: #495057;
+    font-weight: 600;
+    margin-right: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+    .sort-label i {
+        color: #ffc107;
+        margin-right: 0.5rem;
+    }
+
+.filter-btn {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #dee2e6;
+    background: white;
+    color: #6c757d;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+    .filter-btn:hover {
+        border-color: #ffc107;
+        color: #ffc107;
+        transform: translateY(-2px);
+    }
+
+    .filter-btn.active {
+        background: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+    }
+
+/* ===============================
+   MASONRY GRID ANIMATIONS
+   =============================== */
+.masonry-item {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Stagger animation delay */
+.masonry-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.masonry-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.masonry-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.masonry-item:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.masonry-item:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.masonry-item:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+/* ===============================
+   MODAL STYLES
+   =============================== */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: 3px solid #ffc107;
+}
+
+.btn-close-white {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+    .btn-close-white:hover {
+        opacity: 1;
+    }
+
+/* ===============================
+   AD CARD HOVER EFFECTS
+   =============================== */
+.ad-card {
+    position: relative;
+}
+
+    .ad-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, transparent 0%, transparent 50%, rgba(0,0,0,0.7) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 12px;
+        pointer-events: none;
+    }
+
+    .ad-card:hover::after {
+        opacity: 1;
+    }
+
+/* ===============================
+   RESPONSIVE DESIGN
+   =============================== */
+@media (max-width: 1200px) {
+    .filter-btn {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-section {
+        padding: 1rem 0;
+    }
+
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .filter-btn {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .ad-image-container {
+        height: 250px;
+    }
+
+    .ad-title {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .masonry-grid {
+        column-count: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .masonry-grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 576px) {
+    .masonry-grid {
+        column-count: 1;
+    }
+}

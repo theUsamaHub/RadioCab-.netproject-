@@ -1,0 +1,164 @@
+﻿@model RadioCab.Models.Driver
+@{
+    var v = Model.VehicleInfo?.Split('|');
+}
+@{
+    ViewData["Title"] = "ViewProfileDriver";
+    Layout = "~/Views/Shared/driverlayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Driver/css/ViewProfileDriver.css" asp-append-version="true" />
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <div class="card-header">
+            <div class="back-button">
+                <a href="#" class="back-btn" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </a>
+            </div>
+            <div class="driver-photo-container">
+                <img src="@Model.DriverPhoto" alt="Driver Photo" class="driver-photo">
+            </div>
+            <div class="driver-info-header">
+                <h1>@Model.DriverName</h1>
+                <p>Professional Driver <span class="experience-badge">@Model.Experience Experience</span></p>
+                <span class="driver-status">@Model.Membership.MembershipName</span>
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="info-section">
+                <h3 class="section-title"><i class="fas fa-user-circle"></i> Personal Information</h3>
+
+                <div class="info-row">
+                    <div class="info-label">Driver Name:</div>
+                    <div class="info-value">@Model.DriverName</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Email Address:</div>
+                    <div class="info-value">@Model.Email</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Telephone:</div>
+                    <div class="info-value">@Model.Telephone</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Address:</div>
+                    <div class="info-value">@Model.Address</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">CNIC:</div>
+                    <div class="info-value">@Model.Cnic</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">City:</div>
+                    <div class="info-value">@Model.City.CityName</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Driving Experience:</div>
+                    <div class="info-value">@Model.Experience</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">Documents:</div>
+                    <div class="info-value">
+                        <div class="document-links">
+                            <a href="@Model.DriverPhoto" target="_blank" class="document-link" id="photo-link">
+                                <div class="document-icon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <div class="document-info">
+                                    <div class="document-name">Driver Photo</div>
+                                    <div class="document-size">JPG • 2.3 MB</div>
+                                </div>
+                                <div class="download-indicator">
+                                    <i class="fas fa-download"></i>
+                                </div>
+                            </a>
+                            <a href="@Model.DrivingLicenseFile" target="_blank" class="document-link" id="license-link">
+                                <div class="document-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <div class="document-info">
+                                    <div class="document-name">Driving License</div>
+                                    <div class="document-size">PDF • 1.5 MB</div>
+                                </div>
+                                <div class="download-indicator">
+                                    <i class="fas fa-download"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3 class="section-title"><i class="fas fa-car"></i> Vehicle Information</h3>
+
+                <div class="vehicle-details">
+                    <div class="vehicle-info">
+                        <div class="vehicle-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="vehicle-text">
+                            <h4>@v?[0] @v?[2] @v?[1]</h4>
+                            <p>Vehicle Make & Model</p>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Vehicle Make:</div>
+                        <div class="info-value">@v?[0]</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Vehicle Model:</div>
+                        <div class="info-value">@v?[1]</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Vehicle Year:</div>
+                        <div class="info-value">@v?[2]</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Plate Number:</div>
+                        <div class="info-value">@v?[3]</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Vehicle Color:</div>
+                        <div class="info-value">@v?[4]</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Driving License #:</div>
+                        <div class="info-value">@Model.DrivingLicenseNumber</div>
+                    </div>
+                </div>
+
+                <h3 class="section-title" style="margin-top: 30px;"><i class="fas fa-award"></i> Additional Information</h3>
+
+                <div class="description-container" style="margin-top: 20px;">
+                    <div class="description-title">
+                        <i class="fas fa-file-alt"></i> Description:
+                    </div>
+                    <div class="description-content">
+                        @Model.Description
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <p>Driver profile View | Information is confidential and proprietary</p>
+        </div>
+    </div>
+</div>

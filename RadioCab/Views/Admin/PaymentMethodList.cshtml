@@ -1,0 +1,151 @@
+﻿@model RadioCab.Models.PaymentMethodVM
+@{
+    ViewData["Title"] = "Payment Method Management";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="~/css/paymentmethod.css" rel="stylesheet" />
+@Html.AntiForgeryToken()
+
+<div class="dashboard-content">
+    <!-- Add Payment Method Form -->
+    <div class="form-container">
+        <div class="form-header">
+            <i class="fas fa-plus-circle"></i>
+            <h2>Add New Payment Method</h2>
+        </div>
+        <form id="paymentMethodForm" asp-controller="Admin" method="post" asp-action="PaymentMethodList">
+            <div class="payment-method-form">
+                <div class="form-group">
+                    <label for="MethodName" class="required">Method Name</label>
+                    <input type="text" id="MethodName" asp-for="paymentMethodValidateForm.MethodName"
+                           class="form-control"
+                           placeholder="Enter payment method name (e.g., Credit Card, PayPal, Cash)" />
+                    <span class="error-message" asp-validation-for="paymentMethodValidateForm.MethodName"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i>
+                        Save Payment Method
+                    </button>
+                    <button type="reset" class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i>
+                        Clear Form
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Payment Method List Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-header-left">
+                <i class="fas fa-credit-card"></i>
+                <h2>Payment Methods List</h2>
+                <span class="table-stats" id="paymentMethodCount">
+                    @Model.paymentMethods_list.Count payment methods
+                </span>
+            </div>
+        </div>
+
+        @if (!Model.paymentMethods_list.Any())
+        {
+            <div id="emptyState" style="display: block;">
+                <i class="fas fa-credit-card"></i>
+                <h3>No Payment Methods Found</h3>
+                <p>Add your first payment method using the form above</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Payment Method ID</th>
+                            <th>Method Name</th>
+                            <th>IsActive</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var paymentMethod in Model.paymentMethods_list)
+                        {
+                            <tr>
+                                <td>@paymentMethod.PaymentMethodId</td>
+                                <td>@paymentMethod.MethodName</td>
+                                @if (@paymentMethod.IsActive == true)
+                                {
+                                    <td>Active</td>
+                                }else
+                                {
+                                    <td>DeActive</td>
+                                }
+                                <td>
+                                    <button class="btn btn-sm btn-edit" onclick="editPaymentMethod(@paymentMethod.PaymentMethodId)">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <a href="javascript:void(0);" class="btn btn-sm btn-delete js-delete-payment" data-id="@paymentMethod.PaymentMethodId">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:white; width:400px; padding:20px; border-radius:10px;">
+        <h3><i class="fas fa-edit me-2"></i>Edit Payment Method</h3>
+
+        <input type="hidden" id="editPaymentMethodId" />
+
+        <div class="form-group mb-3">
+            <label class="form-label required">Method Name *</label>
+            <input type="text" id="editMethodName" class="form-control" />
+            <span id="editMethodNameError" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label class="form-label">
+                <i class="fas fa-toggle-on me-2"></i>Status
+            </label>
+            <select id="editIsActive" class="form-select">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button onclick="saveEdit()" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i>Save Changes
+            </button>
+            <button onclick="closeEditModal()" class="btn btn-secondary">
+                <i class="fas fa-times me-1"></i>Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/paymentmethod.js"></script>
