@@ -346,5 +346,9 @@ namespace RadioCab.Controllers
             return RedirectToAction("Login");
         }
 
+        public IActionResult CheckPage()
+        {
+            return View();
+        }
     }
 }
