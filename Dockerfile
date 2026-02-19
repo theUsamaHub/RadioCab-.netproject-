@@ -7,14 +7,18 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy project files
-COPY *.csproj ./
-RUN dotnet restore RadioCab.csproj
+# Copy solution and project files
+COPY RadioCab.sln ./
+COPY RadioCab/*.csproj ./RadioCab/
 
-# Copy everything else
+# Restore
+RUN dotnet restore RadioCab.sln
+
+# Copy all source
 COPY . .
-RUN dotnet publish RadioCab.csproj -c Release -o /app/publish
 
+# Publish
+RUN dotnet publish RadioCab/RadioCab.csproj -c Release -o /app/publish
 
 # Final image
 FROM base AS final
