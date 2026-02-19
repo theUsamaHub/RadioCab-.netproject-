@@ -1,33 +1,24 @@
-# ---------- Base Runtime ----------
+# Base runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-# ---------- Build Stage ----------
+# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy solution and project files
-COPY *.sln .
-COPY RadioCab/*.csproj ./RadioCab/
-
-# Restore dependencies
-RUN dotnet restore RadioCab/RadioCab.csproj
-
-
-# Copy everything else
+# Copy entire repository
 COPY . .
 
-# Publish project
-WORKDIR /src/RadioCab
+# Restore using explicit project path
+RUN dotnet restore RadioCab/RadioCab.csproj
+
+# Publish
 RUN dotnet publish RadioCab/RadioCab.csproj -c Release -o /app/publish
 
-
-# ---------- Final Stage ----------
+# Final image
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "RadioCab.dll"]
-
-
