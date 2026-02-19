@@ -610,7 +610,9 @@ namespace RadioCab.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
+    .HasColumnType("timestamp with time zone");
+
+                   
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -646,9 +648,10 @@ namespace RadioCab.Migrations
                         .IsUnicode(false)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime");
 
+
+                    b.Property<DateTime?>("UpdatedAt")
+                         .HasColumnType("timestamp with time zone");
                     b.HasKey("FeedbackId")
                         .HasName("PK__Feedback__6A4BEDD66C664ECF");
 
@@ -726,13 +729,13 @@ namespace RadioCab.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PaymentId"));
 
                     b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime");
+                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("PaymentAmountId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime");
+                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("PaymentMethodId")
                         .HasColumnType("integer");

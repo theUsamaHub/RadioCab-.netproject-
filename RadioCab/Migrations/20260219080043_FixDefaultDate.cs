@@ -150,8 +150,8 @@ namespace RadioCab.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false),
                     AdminRemarks = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),  // type will be inferred as timestamp with time zone
+                    UpdatedAt = table.Column<DateTime>(nullable: true),   // type will be inferred as timestamp with time zone
                     CityId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -334,8 +334,8 @@ namespace RadioCab.Migrations
                     PaymentMethodId = table.Column<int>(type: "integer", nullable: false),
                     PaymentStatus = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false, defaultValue: "Pending"),
                     TransactionId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    PaymentDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    PaymentDate = table.Column<DateTime>(nullable: false),
+                    ExpiryDate = table.Column<DateTime>( nullable: false),
                     PaymentScreenshot = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     PaymentPurpose = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true)
                 },
