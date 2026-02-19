@@ -138,31 +138,31 @@ namespace RadioCab.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Feedback",
-                columns: table => new
-                {
-                    FeedbackId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
-                    MobileNo = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false),
-                    Email = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
-                    FeedbackType = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false),
-                    AdminRemarks = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: false),  // type will be inferred as timestamp with time zone
-                    UpdatedAt = table.Column<DateTime>(nullable: true),   // type will be inferred as timestamp with time zone
-                    CityId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Feedback__6A4BEDD66C664ECF", x => x.FeedbackId);
-                    table.ForeignKey(
-                        name: "FK_Feedback_City",
-                        column: x => x.CityId,
-                        principalTable: "City",
-                        principalColumn: "CityId");
-                });
+           name: "Feedback",
+           columns: table => new
+           {
+               FeedbackId = table.Column<int>(type: "integer", nullable: false)
+                   .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+               Name = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
+               MobileNo = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false),
+               Email = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
+               FeedbackType = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false),
+               Description = table.Column<string>(type: "text", nullable: false),
+               Status = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false),
+               AdminRemarks = table.Column<string>(type: "text", nullable: true),
+               CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+               UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+               CityId = table.Column<int>(type: "integer", nullable: false)
+           },
+           constraints: table =>
+           {
+               table.PrimaryKey("PK__Feedback__6A4BEDD66C664ECF", x => x.FeedbackId);
+               table.ForeignKey(
+                   name: "FK_Feedback_City",
+                   column: x => x.CityId,
+                   principalTable: "City",
+                   principalColumn: "CityId");
+           });
 
             migrationBuilder.CreateTable(
                 name: "MembershipFeature",
@@ -324,40 +324,40 @@ namespace RadioCab.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payment",
-                columns: table => new
-                {
-                    PaymentId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    PaymentAmountId = table.Column<int>(type: "integer", nullable: false),
-                    PaymentMethodId = table.Column<int>(type: "integer", nullable: false),
-                    PaymentStatus = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false, defaultValue: "Pending"),
-                    TransactionId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    PaymentDate = table.Column<DateTime>(nullable: false),
-                    ExpiryDate = table.Column<DateTime>( nullable: false),
-                    PaymentScreenshot = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
-                    PaymentPurpose = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Payment__9B556A3832F375B9", x => x.PaymentId);
-                    table.ForeignKey(
-                        name: "FK_Payment_Amount",
-                        column: x => x.PaymentAmountId,
-                        principalTable: "PaymentAmount",
-                        principalColumn: "PaymentAmountId");
-                    table.ForeignKey(
-                        name: "FK_Payment_Method",
-                        column: x => x.PaymentMethodId,
-                        principalTable: "PaymentMethod",
-                        principalColumn: "PaymentMethodId");
-                    table.ForeignKey(
-                        name: "FK_Payment_User",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserID");
-                });
+      name: "Payment",
+      columns: table => new
+      {
+          PaymentId = table.Column<int>(type: "integer", nullable: false)
+              .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+          UserId = table.Column<int>(type: "integer", nullable: false),
+          PaymentAmountId = table.Column<int>(type: "integer", nullable: false),
+          PaymentMethodId = table.Column<int>(type: "integer", nullable: false),
+          PaymentStatus = table.Column<string>(type: "character varying(20)", unicode: false, maxLength: 20, nullable: false, defaultValue: "Pending"),
+          TransactionId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+          PaymentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+          ExpiryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+          PaymentScreenshot = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+          PaymentPurpose = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true)
+      },
+      constraints: table =>
+      {
+          table.PrimaryKey("PK__Payment__9B556A3832F375B9", x => x.PaymentId);
+          table.ForeignKey(
+              name: "FK_Payment_Amount",
+              column: x => x.PaymentAmountId,
+              principalTable: "PaymentAmount",
+              principalColumn: "PaymentAmountId");
+          table.ForeignKey(
+              name: "FK_Payment_Method",
+              column: x => x.PaymentMethodId,
+              principalTable: "PaymentMethod",
+              principalColumn: "PaymentMethodId");
+          table.ForeignKey(
+              name: "FK_Payment_User",
+              column: x => x.UserId,
+              principalTable: "Users",
+              principalColumn: "UserID");
+      });
 
             migrationBuilder.CreateTable(
                 name: "CompanyFeedback",
