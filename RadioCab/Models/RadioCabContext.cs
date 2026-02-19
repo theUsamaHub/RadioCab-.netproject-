@@ -59,17 +59,39 @@ public partial class RadioCabContext : DbContext
 
     public virtual DbSet<VacancyApplication> VacancyApplications { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        // Add this to handle timestamp comparisons
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+    }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Force all DateTime properties to use timestamp with time zone
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                {
+                    property.SetColumnType("timestamp with time zone");
+                }
+            }
+        }
+
         modelBuilder.Entity<Advertisement>(entity =>
         {
             entity.HasKey(e => e.AdvertisementId).HasName("PK__Advertis__C4C7F4CDABFE821A");
 
             entity.Property(e => e.ApprovalStatus).HasDefaultValue("Pending");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
+            entity.Property(e => e.StartDate)
+                .HasColumnType("timestamp with time zone");
+            entity.Property(e => e.EndDate)
+                .HasColumnType("timestamp with time zone");
 
             entity.HasOne(d => d.Payment).WithMany(p => p.Advertisements).HasConstraintName("FK_Advertisement_Payment");
         });
@@ -102,7 +124,9 @@ public partial class RadioCabContext : DbContext
         {
             entity.HasKey(e => e.FeedbackId).HasName("PK__CompanyF__6A4BEDD6CEF586DF");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
 
             entity.HasOne(d => d.Company).WithMany(p => p.CompanyFeedbacks)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -113,7 +137,9 @@ public partial class RadioCabContext : DbContext
         {
             entity.HasKey(e => e.CompanyServiceId).HasName("PK__CompanyS__44FB59A09AB73129");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.isActive).HasDefaultValue(true);
 
             entity.HasOne(d => d.Company).WithMany(p => p.CompanyServices).HasConstraintName("FK_company_services_Company");
@@ -128,7 +154,9 @@ public partial class RadioCabContext : DbContext
             entity.HasKey(e => e.VacancyId).HasName("PK__CompanyV__6456763F89BC3FE9");
 
             entity.Property(e => e.ApprovalStatus).HasDefaultValue("Pending");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
 
             entity.HasOne(d => d.Company).WithMany(p => p.CompanyVacancies).HasConstraintName("FK_CompanyVacancy_Company");
@@ -138,7 +166,9 @@ public partial class RadioCabContext : DbContext
         {
             entity.HasKey(e => e.ContactRequestId).HasName("PK__ContactR__96BC305FE008A6DE");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.Status).HasDefaultValue("New");
 
             entity.HasOne(d => d.User).WithMany(p => p.ContactRequests).HasConstraintName("FK_ContactRequest_User");
@@ -167,7 +197,9 @@ public partial class RadioCabContext : DbContext
         {
             entity.HasKey(e => e.FeedbackId).HasName("PK__DriverFe__6A4BEDD6FDF8474F");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
 
             entity.HasOne(d => d.Driver).WithMany(p => p.DriverFeedbacks)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -178,7 +210,9 @@ public partial class RadioCabContext : DbContext
         {
             entity.HasKey(e => e.DriverServiceId).HasName("PK__DriverSe__29A2842642F447D9");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
 
             entity.HasOne(d => d.Driver).WithMany(p => p.DriverServices)
@@ -203,6 +237,11 @@ public partial class RadioCabContext : DbContext
         modelBuilder.Entity<Feedback>(entity =>
         {
             entity.HasKey(e => e.FeedbackId).HasName("PK__Feedback__6A4BEDD66C664ECF");
+
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("timestamp with time zone");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("timestamp with time zone");
 
             entity.HasOne(d => d.City).WithMany(p => p.Feedbacks)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -236,6 +275,10 @@ public partial class RadioCabContext : DbContext
             entity.HasKey(e => e.PaymentId).HasName("PK__Payment__9B556A3832F375B9");
 
             entity.Property(e => e.PaymentStatus).HasDefaultValue("Pending");
+            entity.Property(e => e.PaymentDate)
+                .HasColumnType("timestamp with time zone");
+            entity.Property(e => e.ExpiryDate)
+                .HasColumnType("timestamp with time zone");
 
             entity.HasOne(d => d.PaymentAmount).WithMany(p => p.Payments)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -273,7 +316,9 @@ public partial class RadioCabContext : DbContext
             entity.HasKey(e => e.ServiceId).HasName("PK__Platform__C51BB00AF1088673");
 
             entity.Property(e => e.ApprovalStatus).HasDefaultValue("Approved");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.isActive).HasDefaultValue(true);
         });
 
@@ -281,7 +326,9 @@ public partial class RadioCabContext : DbContext
         {
             entity.HasKey(e => e.ServiceId).HasName("PK__Services__C51BB00A84AA8E3A");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
         });
 
@@ -289,7 +336,9 @@ public partial class RadioCabContext : DbContext
         {
             entity.HasKey(e => e.UserID).HasName("PK__Users__1788CCAC984B90A8");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.Status).HasDefaultValue("Pending");
         });
 
@@ -297,7 +346,9 @@ public partial class RadioCabContext : DbContext
         {
             entity.HasKey(e => e.ApplicationId).HasName("PK__VacancyA__C93A4C99C86FBC7F");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.Status).HasDefaultValue("Applied");
 
             entity.HasOne(d => d.Vacancy).WithMany(p => p.VacancyApplications).HasConstraintName("FK_VacancyApplication_Vacancy");
