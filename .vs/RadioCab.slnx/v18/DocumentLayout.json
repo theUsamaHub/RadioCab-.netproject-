@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5827DD6E-F914-44B2-6DAF-973B80E65008}|RadioCab\\RadioCab.csproj|c:\\users\\usama saleem\\downloads\\radiocab\\radiocab\\radiocab\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{5827DD6E-F914-44B2-6DAF-973B80E65008}|RadioCab\\RadioCab.csproj|solutionrelative:radiocab\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5827DD6E-F914-44B2-6DAF-973B80E65008}|RadioCab\\RadioCab.csproj|c:\\users\\usama saleem\\downloads\\radiocab\\radiocab\\radiocab\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5827DD6E-F914-44B2-6DAF-973B80E65008}|RadioCab\\RadioCab.csproj|solutionrelative:radiocab\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -22,32 +26,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "RadioCabContext.cs",
-              "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Models\\RadioCabContext.cs",
-              "RelativeDocumentMoniker": "RadioCab\\Models\\RadioCabContext.cs",
-              "ToolTip": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Models\\RadioCabContext.cs",
-              "RelativeToolTip": "RadioCab\\Models\\RadioCabContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T06:47:46.048Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Program.cs",
-              "RelativeDocumentMoniker": "RadioCab\\Program.cs",
-              "ToolTip": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Program.cs",
-              "RelativeToolTip": "RadioCab\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T06:47:01.664Z",
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Dockerfile",
+              "RelativeDocumentMoniker": "RadioCab\\Dockerfile",
+              "ToolTip": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Dockerfile",
+              "RelativeToolTip": "RadioCab\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-02-19T07:02:12.125Z",
               "EditorCaption": ""
             },
             {
@@ -61,6 +52,31 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "RadioCabContext.cs",
+              "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Models\\RadioCabContext.cs",
+              "RelativeDocumentMoniker": "RadioCab\\Models\\RadioCabContext.cs",
+              "ToolTip": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Models\\RadioCabContext.cs",
+              "RelativeToolTip": "RadioCab\\Models\\RadioCabContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-19T06:47:46.048Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Program.cs",
+              "RelativeDocumentMoniker": "RadioCab\\Program.cs",
+              "ToolTip": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Program.cs",
+              "RelativeToolTip": "RadioCab\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-19T06:47:01.664Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "RadioCab\\Controllers\\AccountController.cs",
@@ -68,8 +84,7 @@
               "RelativeToolTip": "RadioCab\\Controllers\\AccountController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-17T16:11:34.847Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-17T16:11:34.847Z"
             }
           ]
         },

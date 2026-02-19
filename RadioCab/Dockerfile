@@ -12,14 +12,16 @@ COPY *.sln .
 COPY RadioCab/*.csproj ./RadioCab/
 
 # Restore dependencies
-RUN dotnet restore
+RUN dotnet restore RadioCab/RadioCab.csproj
+
 
 # Copy everything else
 COPY . .
 
 # Publish project
 WORKDIR /src/RadioCab
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish RadioCab/RadioCab.csproj -c Release -o /app/publish
+
 
 # ---------- Final Stage ----------
 FROM base AS final
