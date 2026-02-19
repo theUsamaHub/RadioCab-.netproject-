@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CE680D34-EB0C-3E00-6A71-274A85AE951D}|RadioCab\\RadioCab.csproj|c:\\users\\usama saleem\\downloads\\radiocab\\radiocab\\radiocab\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{CE680D34-EB0C-3E00-6A71-274A85AE951D}|RadioCab\\RadioCab.csproj|solutionrelative:radiocab\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CE680D34-EB0C-3E00-6A71-274A85AE951D}|RadioCab\\RadioCab.csproj|c:\\users\\usama saleem\\downloads\\radiocab\\radiocab\\radiocab\\models\\radiocabcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CE680D34-EB0C-3E00-6A71-274A85AE951D}|RadioCab\\RadioCab.csproj|solutionrelative:radiocab\\models\\radiocabcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -19,14 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RadioCabContext.cs",
-              "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Models\\RadioCabContext.cs",
-              "RelativeDocumentMoniker": "RadioCab\\Models\\RadioCabContext.cs",
-              "ToolTip": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Models\\RadioCabContext.cs",
-              "RelativeToolTip": "RadioCab\\Models\\RadioCabContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T07:57:28.121Z",
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\appsettings.json",
+              "RelativeDocumentMoniker": "RadioCab\\appsettings.json",
+              "ToolTip": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\appsettings.json",
+              "RelativeToolTip": "RadioCab\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-19T08:05:11.705Z",
               "EditorCaption": ""
             },
             {
@@ -36,6 +40,19 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RadioCabContext.cs",
+              "DocumentMoniker": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Models\\RadioCabContext.cs",
+              "RelativeDocumentMoniker": "RadioCab\\Models\\RadioCabContext.cs",
+              "ToolTip": "C:\\Users\\Usama Saleem\\Downloads\\RadioCab\\RadioCab\\RadioCab\\Models\\RadioCabContext.cs",
+              "RelativeToolTip": "RadioCab\\Models\\RadioCabContext.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAuwDMAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-19T07:57:28.121Z",
+              "EditorCaption": ""
             }
           ]
         },
