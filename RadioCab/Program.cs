@@ -23,7 +23,8 @@ builder.Services.AddDbContext<RadioCabContext>(options =>
     ));
 
 
-
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
 
 //2. // Session Add Karo for Authentication purpose
 builder.Services.AddSession(options => {
